@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import { JitsiMeeting } from '@jitsi/react-sdk';
 import { Icon } from "@iconify/react";
 import { Modal, DatePicker, TimePicker, AutoComplete, Input, message, Tooltip } from "antd";
@@ -67,10 +68,19 @@ const VideoConsult = () => {
     fetchMeetings();
   }, [doctorId]);
 
-  // Auto-generate Google Meet link helper is no longer needed since we dynamically create real Google Meet sessions via the API.
+  const location = useLocation();
   useEffect(() => {
-    setRoomName("");
-  }, []);
+    if (location.state?.roomName) {
+      setActiveTab("instant");
+      setRoomName(location.state.roomName);
+      setMeetingStarted(true);
+      
+      // Clear the state so it doesn't auto-join on subsequent navigation
+      window.history.replaceState({}, document.title);
+    } else {
+      setRoomName("");
+    }
+  }, [location.state]);
 
   const handleStartMeet = async (customRoomName = null) => {
     let targetRoom = customRoomName || roomName;
