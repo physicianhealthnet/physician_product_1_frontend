@@ -44,17 +44,25 @@ const BillFormat = forwardRef(({ selectedBill }, ref) => {
         <thead>
           <tr className="bg-gray-100">
             <th className="border p-2 text-left">#</th>
-            <th className="border p-2 text-left">Treatment</th>
-            <th className="border p-2 text-right">Cost</th>
+            <th className="border p-2 text-left">Category</th>
+            <th className="border p-2 text-left">Item Name</th>
+            <th className="border p-2 text-center">Qty</th>
+            <th className="border p-2 text-right">Price</th>
+            <th className="border p-2 text-right">Total</th>
           </tr>
         </thead>
         <tbody>
           {selectedBill?.treatments?.map((t, index) => (
             <tr key={index}>
               <td className="border p-2">{index + 1}</td>
+              <td className="border p-2">{t.category || "Treatment"}</td>
               <td className="border p-2">{t.name}</td>
+              <td className="border p-2 text-center">{t.quantity || 1}</td>
               <td className="border p-2 text-right">
                 {Number(t.price).toFixed(2)}
+              </td>
+              <td className="border p-2 text-right">
+                {Number(t.total || (Number(t.price) * Number(t.quantity || 1))).toFixed(2)}
               </td>
             </tr>
           ))}
