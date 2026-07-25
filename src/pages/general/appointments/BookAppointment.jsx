@@ -72,11 +72,12 @@ const BookAppointment = ({
       const res = await AxiosInstance.get(
         `/appointments/search?query=${value}`,
       );
+      console.log(res, "response");
 
       if (res.data?.patients) {
         setSearchResults(
           res.data.patients.map((p) => ({
-            value: p.patientName,
+            value: p.patientId,
             label: (
               <div className="flex flex-col p-1 border-b border-slate-100  last:border-0 hover:bg-slate-50 :bg-slate-800 transition-colors rounded">
                 <div className="flex items-center gap-2 text-sm font-medium text-slate-800 ">
@@ -111,6 +112,7 @@ const BookAppointment = ({
   // 📝 Autofill patient details
   const handleSelectPatient = (value, option) => {
     const p = option.data;
+    console.log(p, option, "data");
 
     setFormData((prev) => ({
       ...prev,
@@ -119,6 +121,7 @@ const BookAppointment = ({
       patientAadhar: p.patientAadhar || "",
       phoneNumber: p.patientPhone,
       patientId: p.patientId || "",
+      fcmToken: p?.fcmToken?.[0],
     }));
 
     message.success("Patient details loaded");
@@ -214,7 +217,7 @@ const BookAppointment = ({
             style={{ width: "100%" }}
             options={searchResults}
             onSearch={handleSearch}
-            onSelect={handleSelectPatient}
+            onSelect={(value, option) => handleSelectPatient(value, option)}
             placeholder="🔍 Search by Name / Phone / Email / Patient ID"
             allowClear
             loading={searchLoading}
