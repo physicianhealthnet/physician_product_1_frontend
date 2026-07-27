@@ -11,6 +11,7 @@ import {
   StaggerItem,
 } from "../../../component/ui/Transitions";
 import ReactMarkdown from 'react-markdown';
+import chatSocketService from "../../../utilities/chatSocketService";
 
 // Chart.js imports
 import {
@@ -302,6 +303,22 @@ const PatientHealthDashboard = () => {
       }
     };
     fetchData();
+  }, [patientId]);
+
+  useEffect(() => {
+    const handleVitalsUpdate = (data) => {
+      console.log("[PatientHealthDashboard] Socket vitals:updated received:", data);
+      if (data.patientId === patientId && data.vitals) {
+        setVitalsData(data.vitals);
+        message.success("Patient vitals updated in real-time!");
+      }
+    };
+
+    chatSocketService.on("vitals:updated", handleVitalsUpdate);
+
+    return () => {
+      chatSocketService.off("vitals:updated", handleVitalsUpdate);
+    };
   }, [patientId]);
 
   // Parse blood pressure safely

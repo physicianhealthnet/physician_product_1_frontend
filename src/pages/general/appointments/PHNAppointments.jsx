@@ -3,6 +3,7 @@ import { StaggerContainer, StaggerItem } from "../../../component/ui/Transitions
 import { useNavigate } from "react-router-dom";
 import { AxiosInstanceSecondryServer, AxiosInstance } from "../../../utilities/AxiosInstance";
 import { Icon } from "@iconify/react";
+import chatSocketService from "../../../utilities/chatSocketService";
 import Card from "../../../component/ui/Card";
 import Button from "../../../component/ui/Button";
 import { message, Select, DatePicker, ConfigProvider, theme, Modal, TimePicker, Input } from "antd";
@@ -139,6 +140,21 @@ function PHNAppointments() {
   useEffect(() => {
     fetchAppointments();
     if (cid) fetchDoctors();
+  }, [cid]);
+
+  useEffect(() => {
+    const handleAppointmentUpdate = (payload) => {
+      if (payload.entity === "appointment") {
+        console.log("[PHNAppointments] Received real-time appointment update:", payload);
+        fetchAppointments();
+      }
+    };
+
+    chatSocketService.on("data:updated", handleAppointmentUpdate);
+
+    return () => {
+      chatSocketService.off("data:updated", handleAppointmentUpdate);
+    };
   }, [cid]);
 
   const openApproveModal = (appt) => {

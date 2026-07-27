@@ -6,6 +6,7 @@ class ChatSocketService {
   constructor() {
     this.socket = null;
     this.isConnected = false;
+    this.queuedListeners = [];
   }
 
   /**
@@ -51,6 +52,14 @@ class ChatSocketService {
     });
 
     this.setupEventListeners();
+
+    // Bind any queued listeners
+    if (this.queuedListeners && this.queuedListeners.length > 0) {
+      console.log(`Binding ${this.queuedListeners.length} queued socket listeners`);
+      this.queuedListeners.forEach(({ event, callback }) => {
+        this.socket.on(event, callback);
+      });
+    }
   }
 
   setupEventListeners() {
@@ -144,6 +153,33 @@ class ChatSocketService {
     if (!this.socket?.connected) return;
 
     this.socket.emit("message:read", { messageId });
+  }
+
+  /**
+   * Register a socket event listener
+   * @param {string} event - Event name
+   * @param {function} callback - Callback function
+   */
+  on(event, callback) {
+    if (this.socket) {
+      this.socket.on(event, callback);
+    } else {
+      this.queuedListeners.push({ event, callback });
+    }
+  }
+
+  /**
+   * Remove a socket event listener
+   * @param {string} event - Event name
+   * @param {function} callback - Callback function
+   */
+  off(event, callback) {
+    if (this.socket) {
+      this.socket.off(event, callback);
+    }
+    this.queuedListeners = this.queuedListeners.filter(
+      (l) => !(l.event === event && l.callback === callback)
+    );
   }
 
   /**

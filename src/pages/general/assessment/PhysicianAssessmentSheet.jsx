@@ -12,6 +12,7 @@ import { Skeleton } from "../../../component/ui/Skeleton";
 import Prescription from "../prescription/Prescription";
 import PrescriptionFormatShow from "../prescription/PrescriptionFormatShow";
 import PatientDocuments from "../../../component/patientDetails/PatientDocuments";
+import chatSocketService from "../../../utilities/chatSocketService";
 
 export default function PhysicianAssessmentSheet() {
   const { patient_id } = useParams();
@@ -655,6 +656,26 @@ export default function PhysicianAssessmentSheet() {
 
   useEffect(() => {
     getAssessmentData();
+  }, [patient_id]);
+
+  useEffect(() => {
+    const handleVitalsUpdate = (data) => {
+      console.log("[PhysicianAssessmentSheet] Socket vitals:updated received:", data);
+      if (data.patientId === patient_id && data.vitals) {
+        setVitalsHistory((prev) => {
+          const exists = prev.some((v) => v.date === data.vitals.date);
+          if (exists) return prev;
+          return [...prev, data.vitals];
+        });
+        message.success("Patient vitals updated in real-time!");
+      }
+    };
+
+    chatSocketService.on("vitals:updated", handleVitalsUpdate);
+
+    return () => {
+      chatSocketService.off("vitals:updated", handleVitalsUpdate);
+    };
   }, [patient_id]);
 
   useEffect(() => {

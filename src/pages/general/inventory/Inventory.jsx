@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { AxiosInstance } from "../../../utilities/AxiosInstance";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { message } from "antd";
+import chatSocketService from "../../../utilities/chatSocketService";
 import formatDateToDDMMYYYY from "../../../utilities/formatter";
 import { TableSkeleton, Skeleton } from "../../../component/ui/Skeleton";
 
@@ -78,6 +79,21 @@ function Inventory() {
 
   useEffect(() => {
     handleGetProducts();
+  }, []);
+
+  useEffect(() => {
+    const handleInventoryUpdate = (payload) => {
+      if (payload.entity === "inventory") {
+        console.log("[Inventory] Received real-time inventory update:", payload);
+        handleGetProducts();
+      }
+    };
+
+    chatSocketService.on("data:updated", handleInventoryUpdate);
+
+    return () => {
+      chatSocketService.off("data:updated", handleInventoryUpdate);
+    };
   }, []);
 
   // 🔹 Filter products based on search

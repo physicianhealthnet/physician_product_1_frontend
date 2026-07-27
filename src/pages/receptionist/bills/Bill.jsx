@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { AxiosInstance } from "../../../utilities/AxiosInstance";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import chatSocketService from "../../../utilities/chatSocketService";
 import BillForm from "./BillForm";
 import ViewBillModal from "./ViewBillModal";
 import { message } from "antd";
@@ -58,6 +59,21 @@ function Bill() {
 
   useEffect(() => {
     handleGetBills();
+  }, []);
+
+  useEffect(() => {
+    const handleBillUpdate = (payload) => {
+      if (payload.entity === "bill") {
+        console.log("[Bill] Received real-time billing update:", payload);
+        handleGetBills();
+      }
+    };
+
+    chatSocketService.on("data:updated", handleBillUpdate);
+
+    return () => {
+      chatSocketService.off("data:updated", handleBillUpdate);
+    };
   }, []);
 
   // -------- Delete --------
