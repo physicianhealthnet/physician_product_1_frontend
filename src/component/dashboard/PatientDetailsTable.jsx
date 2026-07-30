@@ -6,7 +6,13 @@ import PatientClinicalDataModal from "./PatientClinicalDataModal";
 
 const PAGE_SIZE = 5;
 
-const PatientDetailsTable = ({ todayAppointments = [], futureAppointments = [] }) => {
+const PatientDetailsTable = ({ 
+  todayAppointments = [], 
+  futureAppointments = [],
+  isDemoMode = false,
+  demoPatients = [],
+  demoPatientDetails = {}
+}) => {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -21,23 +27,28 @@ const PatientDetailsTable = ({ todayAppointments = [], futureAppointments = [] }
   const user = JSON.parse(sessionStorage.getItem("user") || "{}");
   const clinicId = user?.clinicId;
 
-  // Fetch all patients on mount
+  // Handle demo mode vs real data fetching
   useEffect(() => {
-    const fetchAllPatients = async () => {
-      setLoading(true);
-      const route1 = `/patient/get-all-by-clinic/${clinicId}`;
-      const route2 = "/patient/get-all";
-      try {
-        const response = await AxiosInstance.get(clinicId ? route1 : route2);
-        setData(response.data.patients || []);
-      } catch (error) {
-        console.error("Error fetching all patients:", error);
-      }
-      setLoading(false);
-    };
+    if (isDemoMode) {
+      setData(demoPatients);
+      setPatientDetails(demoPatientDetails);
+    } else {
+      const fetchAllPatients = async () => {
+        setLoading(true);
+        const route1 = `/patient/get-all-by-clinic/${clinicId}`;
+        const route2 = "/patient/get-all";
+        try {
+          const response = await AxiosInstance.get(clinicId ? route1 : route2);
+          setData(response.data.patients || []);
+        } catch (error) {
+          console.error("Error fetching all patients:", error);
+        }
+        setLoading(false);
+      };
 
-    fetchAllPatients();
-  }, [clinicId]);
+      fetchAllPatients();
+    }
+  }, [isDemoMode, clinicId, demoPatients, demoPatientDetails]);
 
   // Sort data so today's and future appointments appear first
   const sortedData = useMemo(() => {
@@ -80,6 +91,7 @@ const PatientDetailsTable = ({ todayAppointments = [], futureAppointments = [] }
 
   // Fetch detailed info for current page patients
   useEffect(() => {
+    if (isDemoMode) return;
     const fetchDetails = async () => {
       if (!currentIdsList) return;
       setLoadingDetails(true);
@@ -96,7 +108,7 @@ const PatientDetailsTable = ({ todayAppointments = [], futureAppointments = [] }
     };
 
     fetchDetails();
-  }, [currentIdsList]);
+  }, [currentIdsList, isDemoMode]);
 
   if (loading && data.length === 0) {
     return (

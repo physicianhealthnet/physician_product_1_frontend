@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { AxiosInstance } from "../../utilities/AxiosInstance";
 import formatDateToDDMMYYYY from "../../utilities/formatter";
-import { Modal, DatePicker, Button } from "antd";
+import { Modal, DatePicker } from "antd";
+import Button from "../ui/Button";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import dayjs from "dayjs";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import isToday from "dayjs/plugin/isToday";
+import { useNavigate } from "react-router-dom";
 
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
@@ -15,6 +17,7 @@ dayjs.extend(isToday);
 import { StaggerContainer, StaggerItem } from "../ui/Transitions";
 
 function NextReview() {
+  const navigate = useNavigate();
   const clinicId = JSON.parse(sessionStorage.getItem("user"))?.clinicId;
   const { RangePicker } = DatePicker;
   const [dateRange, setDateRange] = useState([null, null]);
@@ -124,16 +127,18 @@ function NextReview() {
         if (isDateInRange(d, tomorrowStart, tomorrowEnd)) newCounts.tomorrow++;
         if (isDateInRange(d, thisWeekStart, thisWeekEnd)) newCounts.thisWeek++;
         if (isDateInRange(d, nextWeekStart, nextWeekEnd)) newCounts.nextWeek++;
-        if (isDateInRange(d, thisMonthStart, thisMonthEnd)) newCounts.thisMonth++;
-        if (isDateInRange(d, nextMonthStart, nextMonthEnd)) newCounts.nextMonth++;
+        if (isDateInRange(d, thisMonthStart, thisMonthEnd))
+          newCounts.thisMonth++;
+        if (isDateInRange(d, nextMonthStart, nextMonthEnd))
+          newCounts.nextMonth++;
       });
-      
+
       setCounts(newCounts);
 
       // Define totalUpcoming on the state to access it in the UI mapping
       setFilteredData(upcoming);
       setHistoryData(past);
-      setCounts(prev => ({ ...prev, totalUpcoming: upcoming.length }));
+      setCounts((prev) => ({ ...prev, totalUpcoming: upcoming.length }));
     } catch (error) {
       console.error("Error fetching treatment tracker:", error);
     }
@@ -181,13 +186,16 @@ function NextReview() {
         {/* Header Section */}
         <StaggerItem>
           <div className="flex flex-col lg:flex-row justify-between rounded items-start lg:items-center gap-8">
-            <div>
-              <h1 className="font-black text-slate-800  text-4xl tracking-tight">
-                Next <span className="text-blue-500">Review</span>
-              </h1>
-              <p className="text-slate-500  font-medium mt-2 tracking-wide uppercase text-[10px]">
-                Schedule and track upcoming patient follow-ups
-              </p>
+            <div className="flex flex-row flex-nowrap gap-3 items-center">
+              <Button onClick={() => navigate(-1)}>Back</Button>
+              <div>
+                <h1 className="font-black text-slate-800  text-4xl tracking-tight">
+                  Next <span className="text-blue-500">Review</span>
+                </h1>
+                <p className="text-slate-500  font-medium mt-2 tracking-wide uppercase text-[10px]">
+                  Schedule and track upcoming patient follow-ups
+                </p>
+              </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-4 bg-slate-50/50  p-3 border border-slate-200  shadow-inner">
@@ -216,27 +224,99 @@ function NextReview() {
         <StaggerItem>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 lg:gap-6">
             {[
-              { label: "Today", count: counts.today, total: counts.totalUpcoming || 0, color: "bg-orange-500", bgGradient: "from-orange-500/10 to-amber-500/10", iconBg: "bg-orange-500/10", iconColor: "text-orange-600", icon: "solar:calendar-bold-duotone" },
-              { label: "Tomorrow", count: counts.tomorrow, total: counts.totalUpcoming || 0, color: "bg-blue-500", bgGradient: "from-blue-500/10 to-indigo-500/10", iconBg: "bg-blue-500/10", iconColor: "text-blue-600", icon: "solar:calendar-line-duotone" },
-              { label: "This Week", count: counts.thisWeek, total: counts.totalUpcoming || 0, color: "bg-emerald-500", bgGradient: "from-emerald-500/10 to-teal-500/10", iconBg: "bg-emerald-500/10", iconColor: "text-emerald-600", icon: "solar:calendar-mark-bold-duotone" },
-              { label: "Next Week", count: counts.nextWeek, total: counts.totalUpcoming || 0, color: "bg-indigo-500", bgGradient: "from-indigo-500/10 to-violet-500/10", iconBg: "bg-indigo-500/10", iconColor: "text-indigo-600", icon: "solar:calendar-add-bold-duotone" },
-              { label: "This Month", count: counts.thisMonth, total: counts.totalUpcoming || 0, color: "bg-purple-500", bgGradient: "from-purple-500/10 to-fuchsia-500/10", iconBg: "bg-purple-500/10", iconColor: "text-purple-600", icon: "solar:calendar-date-bold-duotone" },
-              { label: "Next Month", count: counts.nextMonth, total: counts.totalUpcoming || 0, color: "bg-rose-500", bgGradient: "from-rose-500/10 to-pink-500/10", iconBg: "bg-rose-500/10", iconColor: "text-rose-600", icon: "solar:calendar-search-bold-duotone" },
+              {
+                label: "Today",
+                count: counts.today,
+                total: counts.totalUpcoming || 0,
+                color: "bg-orange-500",
+                bgGradient: "from-orange-500/10 to-amber-500/10",
+                iconBg: "bg-orange-500/10",
+                iconColor: "text-orange-600",
+                icon: "solar:calendar-bold-duotone",
+              },
+              {
+                label: "Tomorrow",
+                count: counts.tomorrow,
+                total: counts.totalUpcoming || 0,
+                color: "bg-blue-500",
+                bgGradient: "from-blue-500/10 to-indigo-500/10",
+                iconBg: "bg-blue-500/10",
+                iconColor: "text-blue-600",
+                icon: "solar:calendar-line-duotone",
+              },
+              {
+                label: "This Week",
+                count: counts.thisWeek,
+                total: counts.totalUpcoming || 0,
+                color: "bg-emerald-500",
+                bgGradient: "from-emerald-500/10 to-teal-500/10",
+                iconBg: "bg-emerald-500/10",
+                iconColor: "text-emerald-600",
+                icon: "solar:calendar-mark-bold-duotone",
+              },
+              {
+                label: "Next Week",
+                count: counts.nextWeek,
+                total: counts.totalUpcoming || 0,
+                color: "bg-indigo-500",
+                bgGradient: "from-indigo-500/10 to-violet-500/10",
+                iconBg: "bg-indigo-500/10",
+                iconColor: "text-indigo-600",
+                icon: "solar:calendar-add-bold-duotone",
+              },
+              {
+                label: "This Month",
+                count: counts.thisMonth,
+                total: counts.totalUpcoming || 0,
+                color: "bg-purple-500",
+                bgGradient: "from-purple-500/10 to-fuchsia-500/10",
+                iconBg: "bg-purple-500/10",
+                iconColor: "text-purple-600",
+                icon: "solar:calendar-date-bold-duotone",
+              },
+              {
+                label: "Next Month",
+                count: counts.nextMonth,
+                total: counts.totalUpcoming || 0,
+                color: "bg-rose-500",
+                bgGradient: "from-rose-500/10 to-pink-500/10",
+                iconBg: "bg-rose-500/10",
+                iconColor: "text-rose-600",
+                icon: "solar:calendar-search-bold-duotone",
+              },
             ].map((c, i) => (
-              <div key={i} className={`group relative overflow-hidden bg-linear-to-br ${c.bgGradient} backdrop-blur-xl border border-slate-200/60 rounded-xl hover:scale-[1.02] transition-all duration-300`}>
-                <div className={`absolute -top-12 -right-12 w-32 h-32 rounded-full blur-2xl opacity-10 transition-opacity group-hover:opacity-20 ${c.color}`} />
+              <div
+                key={i}
+                className={`group relative overflow-hidden bg-linear-to-br ${c.bgGradient} backdrop-blur-xl border border-slate-200/60 rounded-xl hover:scale-[1.02] transition-all duration-300`}
+              >
+                <div
+                  className={`absolute -top-12 -right-12 w-32 h-32 rounded-full blur-2xl opacity-10 transition-opacity group-hover:opacity-20 ${c.color}`}
+                />
                 <div className="p-5 flex items-center justify-between z-10 relative">
                   <div className="flex flex-col gap-1 flex-1 pr-4">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{c.label}</span>
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      {c.label}
+                    </span>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-3xl font-black text-slate-800">{c.count}</span>
-                      <span className="text-sm font-medium text-slate-400 opacity-80">/ {c.total}</span>
+                      <span className="text-3xl font-black text-slate-800">
+                        {c.count}
+                      </span>
+                      <span className="text-sm font-medium text-slate-400 opacity-80">
+                        / {c.total}
+                      </span>
                     </div>
                     <div className="w-full bg-slate-200/50 h-1.5 rounded-full mt-1 overflow-hidden shadow-inner">
-                      <div className={`h-full ${c.color.replace('bg-', 'bg-')} bg-opacity-80 rounded-full transition-all duration-1000`} style={{ width: `${c.total > 0 ? (c.count / c.total) * 100 : 0}%` }}></div>
+                      <div
+                        className={`h-full ${c.color.replace("bg-", "bg-")} bg-opacity-80 rounded-full transition-all duration-1000`}
+                        style={{
+                          width: `${c.total > 0 ? (c.count / c.total) * 100 : 0}%`,
+                        }}
+                      ></div>
                     </div>
                   </div>
-                  <div className={`w-12 h-12 shrink-0 rounded-xl ${c.iconBg} flex items-center justify-center ${c.iconColor} group-hover:scale-110 transition-transform`}>
+                  <div
+                    className={`w-12 h-12 shrink-0 rounded-xl ${c.iconBg} flex items-center justify-center ${c.iconColor} group-hover:scale-110 transition-transform`}
+                  >
                     <Icon icon={c.icon} className="text-2xl" />
                   </div>
                 </div>
@@ -342,7 +422,11 @@ function NextReview() {
                                       : "bg-blue-500"
                                 }`}
                               />
-                              {isToday ? "Today" : isPast ? "Overdue" : "Upcoming"}
+                              {isToday
+                                ? "Today"
+                                : isPast
+                                  ? "Overdue"
+                                  : "Upcoming"}
                             </div>
                           </td>
                           <td className="px-8 py-6 text-center font-bold text-slate-600  text-sm">

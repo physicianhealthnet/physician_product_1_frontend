@@ -9,8 +9,10 @@ import Button from "../../../component/ui/Button";
 import Input from "../../../component/ui/Input";
 import Textarea from "../../../component/ui/Textarea";
 import { StaggerContainer, StaggerItem } from "../../../component/ui/Transitions";
+import { useNavigate } from "react-router-dom";
 
 function PreloadPrescription() {
+  const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
   const [preloadedMedicinesData, setPreloadedMedicinesData] = useState([]);
   const [singleMedicineData, setSingleMedicineData] = useState({});
@@ -195,14 +197,17 @@ function PreloadPrescription() {
         {/* Header Section */}
         <StaggerItem>
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-            <div className="flex flex-col gap-2">
-              <h1 className="text-4xl font-black text-slate-800  tracking-tight">
-                Prescription <span className="text-blue-500">Templates</span>
-              </h1>
-              <p className="text-slate-500  font-medium max-w-xl">
-                Create and manage pre-loaded clinical bundles for faster
-                prescription workflow and standardized care.
-              </p>
+            <div className="flex flex-row flex-nowrap gap-3 items-center">
+              <Button onClick={() => navigate(-1)}>Back</Button>
+              <div className="flex flex-col gap-2">
+                <h1 className="text-4xl font-black text-slate-800  tracking-tight">
+                  Prescription <span className="text-blue-500">Templates</span>
+                </h1>
+                <p className="text-slate-500  font-medium max-w-xl">
+                  Create and manage pre-loaded clinical bundles for faster
+                  prescription workflow and standardized care.
+                </p>
+              </div>
             </div>
             <Button
               onClick={() => {
@@ -560,7 +565,7 @@ function PreloadPrescription() {
                   </div>
                 </div>
 
-                <div className="md:col-span-3 flex flex-col gap-2">
+                <div className="md:col-span-2 flex flex-col gap-2">
                   <label className="text-[10px] font-black text-slate-400  uppercase tracking-widest ml-1">
                     Additional Instruction
                   </label>
@@ -576,7 +581,7 @@ function PreloadPrescription() {
 
                 <Button
                   onClick={handleMedicineSubmit}
-                  className="h-12 rounded-2xl shadow-md transition-all active:scale-95 flex items-center gap-2"
+                  className="h-12 rounded-2xl shadow-md transition-all active:scale-95 flex items-center gap-2 w-full justify-center"
                   variant={
                     editingMedicineIndex !== null ? "secondary" : "primary"
                   }

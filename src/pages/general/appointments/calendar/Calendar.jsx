@@ -11,9 +11,15 @@ import HeroSection from "../../../../component/hero/HeroSection";
 import { Stethoscope, History } from "lucide-react";
 import { DayPilotNavigator } from "@daypilot/daypilot-lite-react";
 
-import { StaggerContainer, StaggerItem } from "../../../../component/ui/Transitions";
+import {
+  StaggerContainer,
+  StaggerItem,
+} from "../../../../component/ui/Transitions";
+import Button from "../../../../component/ui/Button";
+import { useNavigate } from "react-router-dom";
 
 export default function Calendar({ refreshTrigger }) {
+  const navigate = useNavigate();
   const user = JSON.parse(
     sessionStorage.getItem("master") || sessionStorage.getItem("user"),
   );
@@ -106,13 +112,12 @@ export default function Calendar({ refreshTrigger }) {
     <StaggerContainer>
       <div className="flex flex-col gap-6 p-6 h-[calc(100vh-80px)] bg-slate-50/50">
         <StaggerItem>
-          {user?.userType === "master" ? (
-            <HeroSection role={"receptionist"} />
-          ) : (
-            <h1 className="font-black text-slate-800 text-4xl tracking-tight">
-              Internal <span className="text-blue-500">Appointments</span>
-            </h1>
-          )}
+            <div className="flex flex-row flex-nowrap gap-3 items-center">
+              <Button onClick={() => navigate(-1)}>Back</Button>
+              <h1 className="font-black text-slate-800 text-4xl tracking-tight">
+                Internal <span className="text-blue-500">Appointments</span>
+              </h1>
+            </div>
         </StaggerItem>
 
         <div className="flex flex-col gap-8 w-full items-start">

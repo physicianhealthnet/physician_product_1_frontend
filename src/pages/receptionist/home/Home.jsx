@@ -27,7 +27,7 @@ const Home = () => {
           {user?.userType === "master" ? (
             <div className="flex flex-col gap-1">
               <h1 className="font-black text-slate-800 text-4xl tracking-tight">
-                Patient <span className="text-blue-500">Registry</span>
+                Patient <span className="text-blue-500">information</span>
               </h1>
               <p className="text-slate-500 font-medium">
                 Comprehensive patient database and management system

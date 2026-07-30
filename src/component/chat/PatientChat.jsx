@@ -166,6 +166,11 @@ const PatientChat = () => {
           unreadCount: 0,
         };
 
+        const isActive = activePatientIdRef.current === patientId;
+        if (isActive) {
+          newSocket.emit("doctor:read_messages", { patientId });
+        }
+
         return [
           {
             ...currentSession,
@@ -175,10 +180,7 @@ const PatientChat = () => {
               timestamp: new Date(),
             },
             // Increment unread if not active
-            unreadCount:
-              activePatientIdRef.current === patientId
-                ? 0
-                : (currentSession.unreadCount || 0) + 1,
+            unreadCount: isActive ? 0 : (currentSession.unreadCount || 0) + 1,
             lastActivity: new Date(),
           },
           ...otherSessions,
@@ -197,6 +199,23 @@ const PatientChat = () => {
         ...prev,
         [patientId]: [...(prev[patientId] || []), msg],
       }));
+
+      // Update session list to move to top and update lastMessage
+      setSessions((prev) => {
+        const otherSessions = prev.filter((s) => s.patientId !== patientId);
+        const currentSession = prev.find((s) => s.patientId === patientId);
+        if (!currentSession) return prev;
+
+        return [
+          {
+            ...currentSession,
+            lastMessage: msg,
+            lastActivity: new Date(),
+            unreadCount: 0,
+          },
+          ...otherSessions,
+        ];
+      });
     });
 
     newSocket.on("doctor:message_broadcast", (data) => {
@@ -221,6 +240,15 @@ const PatientChat = () => {
           ...otherSessions,
         ];
       });
+    });
+
+    newSocket.on("doctor:read_messages_broadcast", (data) => {
+      const { patientId } = data;
+      setSessions((prev) =>
+        prev.map((s) =>
+          s.patientId === patientId ? { ...s, unreadCount: 0 } : s
+        )
+      );
     });
 
     return () => {
@@ -358,6 +386,13 @@ const PatientChat = () => {
                   key={session.patientId}
                   onClick={async () => {
                     setActivePatientId(session.patientId);
+
+                    // Immediately clear unreadCount locally
+                    setSessions((prev) =>
+                      prev.map((s) =>
+                        s.patientId === session.patientId ? { ...s, unreadCount: 0 } : s
+                      )
+                    );
 
                     // Fetch history
                     try {

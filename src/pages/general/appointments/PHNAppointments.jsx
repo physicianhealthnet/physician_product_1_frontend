@@ -18,6 +18,7 @@ import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { sendTemplateWhatsApp } from "../../../component/whatsApp/sendTemplateWhatsApp";
 
+
 dayjs.extend(isBetween);
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
@@ -397,6 +398,8 @@ function PHNAppointments() {
         {/* Header Section */}
         <StaggerItem>
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+               <div className="flex flex-row flex-nowrap gap-3 items-center">
+              <Button onClick={() => navigate(-1)}>Back</Button>
             <div className="flex flex-col gap-1">
               <h1 className="font-black text-slate-800  text-4xl tracking-tight">
                 Web <span className="text-blue-500">Appointments</span>
@@ -404,6 +407,7 @@ function PHNAppointments() {
               <p className="text-slate-500  font-medium">
                 Manage and process digital health network appointment requests
               </p>
+            </div>
             </div>
             <div className="flex items-center gap-2">
               <Button

@@ -4,11 +4,22 @@ import { AxiosInstance } from "../../../utilities/AxiosInstance";
 import { Icon } from "@iconify/react";
 import { StaggerContainer, StaggerItem } from "../../../component/ui/Transitions";
 import PatientDetailsTable from "../../../component/dashboard/PatientDetailsTable";
+import { mockDashboardData, mockPatientsList, mockPatientDetails } from "./mockDashboardData";
 
 const DoctorDashboard = () => {
   const navigate = useNavigate();
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isDemoMode, setIsDemoMode] = useState(() => {
+    return localStorage.getItem("isDemoMode") === "true";
+  });
+
+  const toggleDemoMode = () => {
+    const newVal = !isDemoMode;
+    setIsDemoMode(newVal);
+    localStorage.setItem("isDemoMode", newVal ? "true" : "false");
+    window.location.reload();
+  };
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -42,13 +53,15 @@ const DoctorDashboard = () => {
     })
     .replace(/ /g, " ");
 
-  const patientStats = dashboardData?.patientStats || null;
-  const nextPatient = dashboardData?.nextPatient || null;
-  const morningAppointments = dashboardData?.morningAppointments || [];
-  const afternoonAppointments = dashboardData?.afternoonAppointments || [];
-  const eveningAppointments = dashboardData?.eveningAppointments || [];
+  const activeData = isDemoMode ? mockDashboardData : dashboardData;
 
-  if (loading) {
+  const patientStats = activeData?.patientStats || null;
+  const nextPatient = activeData?.nextPatient || null;
+  const morningAppointments = activeData?.morningAppointments || [];
+  const afternoonAppointments = activeData?.afternoonAppointments || [];
+  const eveningAppointments = activeData?.eveningAppointments || [];
+
+  if (loading && !isDemoMode) {
     return (
       <div className="flex items-center justify-center p-12 min-h-screen bg-[#F4F7FF]">
         <div className="flex flex-col items-center gap-4">
@@ -72,7 +85,7 @@ const DoctorDashboard = () => {
 
       <div className="p-6 flex items-center justify-between z-10 relative">
         <div className="flex flex-col gap-2 flex-1">
-          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+          <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">
             {title}
           </span>
           <div className="flex items-baseline gap-1">
@@ -159,7 +172,7 @@ const DoctorDashboard = () => {
           <div className="flex flex-col lg:flex-row justify-between rounded items-start lg:items-center gap-8">
             <div className="flex flex-col">
               <h1 className="font-black text-slate-800 text-4xl tracking-tight">
-                Appointment Status <span className="text-blue-500">Dashboard</span>
+                Appointment <span className="text-blue-500">Dashboard</span>
               </h1>
               <h1 className="font-black text-slate-800 text-xl tracking-tight">
                 Doctor Dashboard
@@ -170,6 +183,25 @@ const DoctorDashboard = () => {
               </p>
             </div>
             <div className="flex items-center gap-3 bg-slate-50/50 p-2 border border-slate-200 shadow-inner rounded w-fit">
+              <div className="flex items-center gap-2 px-3 py-2 bg-blue-50 border border-blue-200 rounded">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                </span>
+                <span className="text-[10px] font-black text-blue-700 uppercase tracking-widest">
+                  Demo Mode (Tamil Nadu)
+                </span>
+                <button
+                  onClick={toggleDemoMode}
+                  className={`ml-2 px-2 py-1 rounded text-[9px] font-black uppercase transition-all duration-200 ${
+                    isDemoMode
+                      ? "bg-blue-600 text-white hover:bg-blue-700 shadow-sm"
+                      : "bg-slate-200 text-slate-600 hover:bg-slate-300"
+                  }`}
+                >
+                  {isDemoMode ? "ON" : "OFF"}
+                </button>
+              </div>
               <h1 className="text-slate-500 text-[10px] uppercase font-black tracking-widest pl-2 pr-1">
                 Quick Links:
               </h1>
@@ -190,6 +222,12 @@ const DoctorDashboard = () => {
                 className="px-5 py-2.5 text-[10px] uppercase font-black tracking-widest rounded transition-all duration-300 bg-white shadow-sm text-slate-800 border border-slate-200 hover:text-blue-600"
               >
                 Next Review & Apt
+              </button>
+              <button
+                onClick={() => navigate("/video-consult")}
+                className="px-5 py-2.5 text-[10px] uppercase font-black tracking-widest rounded transition-all duration-300 bg-white shadow-sm text-slate-800 border border-slate-200 hover:text-blue-600"
+              >
+                Video Chat
               </button>
             </div>
           </div>
@@ -240,8 +278,30 @@ const DoctorDashboard = () => {
             />
           </div>
         </StaggerItem>
-
-        {/* ROW 2: MAIN WORKSPACE */}
+        <StaggerItem>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6 mt-4">
+            {[
+              { label: "Tomorrow", count: patientStats?.tomorrowCount || 0, icon: "solar:calendar-mark-linear", color: "bg-blue-500", bgGradient: "from-blue-500/10 to-indigo-500/10", iconBg: "bg-blue-500/10", iconColor: "text-blue-600" },
+              { label: "This Week", count: patientStats?.thisWeekCount || 0, icon: "solar:calendar-bold-duotone", color: "bg-amber-500", bgGradient: "from-amber-500/10 to-orange-500/10", iconBg: "bg-amber-500/10", iconColor: "text-amber-600" },
+              { label: "Next Week", count: patientStats?.nextWeekCount || 0, icon: "solar:calendar-line-duotone", color: "bg-sky-500", bgGradient: "from-sky-500/10 to-cyan-500/10", iconBg: "bg-sky-500/10", iconColor: "text-sky-600" },
+              { label: "This Month", count: patientStats?.thisMonthCount || 0, icon: "solar:chart-square-bold-duotone", color: "bg-indigo-500", bgGradient: "from-indigo-500/10 to-violet-500/10", iconBg: "bg-indigo-500/10", iconColor: "text-indigo-600" },
+            ].map((c, i) => (
+              <div key={i} className={`group relative overflow-hidden bg-linear-to-br ${c.bgGradient} backdrop-blur-xl border border-slate-200/60 rounded-xl hover:scale-[1.02] transition-all duration-300`}>
+                <div className={`absolute -top-12 -right-12 w-32 h-32 rounded-full blur-2xl opacity-10 transition-opacity group-hover:opacity-20 ${c.color}`} />
+                <div className="p-5 flex items-center justify-between z-10 relative">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">{c.label}</span>
+                    <span className="text-3xl font-black text-slate-800">{c.count}</span>
+                  </div>
+                  <div className={`w-12 h-12 rounded-xl ${c.iconBg} flex items-center justify-center ${c.iconColor} group-hover:scale-110 transition-transform`}>
+                    <Icon icon={c.icon} className="text-2xl" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </StaggerItem>
+        {/* ROW 3: MAIN WORKSPACE */}
         <StaggerItem>
           <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
             <div className="xl:col-span-4 flex flex-col gap-6">
@@ -397,29 +457,7 @@ const DoctorDashboard = () => {
           </div>
         </StaggerItem>
 
-        <StaggerItem>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6 mt-4">
-            {[
-              { label: "Tomorrow", count: patientStats?.tomorrowCount || 0, icon: "solar:calendar-mark-linear", color: "bg-blue-500", bgGradient: "from-blue-500/10 to-indigo-500/10", iconBg: "bg-blue-500/10", iconColor: "text-blue-600" },
-              { label: "This Week", count: patientStats?.thisWeekCount || 0, icon: "solar:calendar-bold-duotone", color: "bg-emerald-500", bgGradient: "from-emerald-500/10 to-teal-500/10", iconBg: "bg-emerald-500/10", iconColor: "text-emerald-600" },
-              { label: "Next Week", count: patientStats?.nextWeekCount || 0, icon: "solar:calendar-line-duotone", color: "bg-orange-500", bgGradient: "from-orange-500/10 to-amber-500/10", iconBg: "bg-orange-500/10", iconColor: "text-orange-600" },
-              { label: "This Month", count: patientStats?.thisMonthCount || 0, icon: "solar:chart-square-bold-duotone", color: "bg-rose-500", bgGradient: "from-rose-500/10 to-pink-500/10", iconBg: "bg-rose-500/10", iconColor: "text-rose-600" },
-            ].map((c, i) => (
-              <div key={i} className={`group relative overflow-hidden bg-linear-to-br ${c.bgGradient} backdrop-blur-xl border border-slate-200/60 rounded-xl hover:scale-[1.02] transition-all duration-300`}>
-                <div className={`absolute -top-12 -right-12 w-32 h-32 rounded-full blur-2xl opacity-10 transition-opacity group-hover:opacity-20 ${c.color}`} />
-                <div className="p-5 flex items-center justify-between z-10 relative">
-                  <div className="flex flex-col gap-1">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{c.label}</span>
-                    <span className="text-3xl font-black text-slate-800">{c.count}</span>
-                  </div>
-                  <div className={`w-12 h-12 rounded-xl ${c.iconBg} flex items-center justify-center ${c.iconColor} group-hover:scale-110 transition-transform`}>
-                    <Icon icon={c.icon} className="text-2xl" />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </StaggerItem>
+
 
         <StaggerItem>
           <div className="mt-8">
@@ -436,7 +474,7 @@ const DoctorDashboard = () => {
                   <div className={`absolute -top-12 -right-12 w-32 h-32 rounded-full blur-2xl opacity-10 transition-opacity group-hover:opacity-20 ${c.color}`} />
                   <div className="p-4 flex items-center justify-between z-10 relative">
                     <div className="flex flex-col gap-1">
-                      <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{c.label}</span>
+                      <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest">{c.label}</span>
                       <span className="text-2xl font-black text-slate-800">{c.count}</span>
                     </div>
                     <div className={`w-10 h-10 rounded-xl ${c.iconBg} flex items-center justify-center ${c.iconColor} group-hover:scale-110 transition-transform`}>
@@ -452,8 +490,11 @@ const DoctorDashboard = () => {
         {/* ROW 4: PATIENT DETAILS TABLE */}
         <StaggerItem>
            <PatientDetailsTable 
-             todayAppointments={dashboardData?.todayAppointments || []} 
-             futureAppointments={dashboardData?.futureAppointments || []} 
+             todayAppointments={activeData?.todayAppointments || []} 
+             futureAppointments={activeData?.futureAppointments || []} 
+             isDemoMode={isDemoMode}
+             demoPatients={mockPatientsList}
+             demoPatientDetails={mockPatientDetails}
            />
         </StaggerItem>
       </div>

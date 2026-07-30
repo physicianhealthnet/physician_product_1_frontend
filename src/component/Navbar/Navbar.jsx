@@ -11,8 +11,11 @@ import {
   UserOutlined,
   DownOutlined,
 } from "@ant-design/icons";
-
+import { toggleChat } from "../../redux/slices/chatSlice";
 import { motion } from "framer-motion";
+import PHNChat from "../chat/PHNChat";
+import Button from "../ui/Button";
+import { Icon } from "@iconify/react";
 
 function Navbar() {
   const navigate = useNavigate();
@@ -31,9 +34,17 @@ function Navbar() {
     dispatch(toggleSidebar());
   };
 
+  const handleChatToggle = () => {
+    dispatch(toggleChat());
+  };
+  const { isOpen: chatIsOpen, unreadCount } = useSelector(
+    (state) => state.chat,
+  );
+
   const handleLogout = () => {
     navigate("/login");
     sessionStorage.clear();
+    localStorage.setItem("isDemoMode", "false");
     message.success("Logged out successfully");
   };
 
@@ -62,7 +73,7 @@ function Navbar() {
   };
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
@@ -89,6 +100,26 @@ function Navbar() {
 
       {/* Right Side: Profile Actions */}
       <div className="flex items-center gap-4 md:gap-6">
+        {/* PHN Chat Button */}
+        <div className="p-4 border-t border-[#e0e0e0]">
+          <Button
+            onClick={handleChatToggle}
+            className="w-full flex items-center gap-3 px-3 py-3 bg-primary-500 hover:bg-primary-600 text-white transition-all duration-200 shadow-md shadow-primary-500/30 relative"
+          >
+            <div className="flex items-center justify-center">
+              <Icon icon="tabler:headset" width={24} height={24} />
+            </div>
+
+            {<span>Clinic Support</span>}
+
+            {/* Unread Badge */}
+            {unreadCount > 0 && (
+              <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-xs font-bold text-white animate-pulse">
+                {unreadCount > 9 ? "9+" : unreadCount}
+              </div>
+            )}
+          </Button>
+        </div>
         <Dropdown
           menu={dropdownItems}
           trigger={["click"]}
@@ -103,16 +134,21 @@ function Navbar() {
             <div className="flex flex-col items-start leading-tight">
               <span className="font-semibold text-slate-700 text-sm">
                 {userInfo?.userName || "User"}
-                {userInfo?.userType === "doctor" && userInfo?.department && ` - ${userInfo.department}`}
+                {userInfo?.userType === "doctor" &&
+                  userInfo?.department &&
+                  ` - ${userInfo.department}`}
               </span>
               <span className="text-xs text-slate-500 font-medium">
                 {userRole}
-                {userInfo?.userType === "doctor" && userInfo?.userId && ` - ID: ${userInfo.userId}`}
+                {userInfo?.userType === "doctor" &&
+                  userInfo?.userId &&
+                  ` - ID: ${userInfo.userId}`}
               </span>
             </div>
             <DownOutlined className="text-[10px] text-slate-400" />
           </div>
         </Dropdown>
+        <PHNChat isOpen={chatIsOpen} onClose={handleChatToggle} />
       </div>
     </motion.div>
   );

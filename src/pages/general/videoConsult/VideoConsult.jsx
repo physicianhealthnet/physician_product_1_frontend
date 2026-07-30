@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { JitsiMeeting } from '@jitsi/react-sdk';
 import { Icon } from "@iconify/react";
 import { Modal, DatePicker, TimePicker, AutoComplete, Input, message, Tooltip } from "antd";
@@ -8,6 +8,7 @@ import { AxiosInstance, AxiosInstanceDependency } from "../../../utilities/Axios
 import Button from "../../../component/ui/Button";
 
 const VideoConsult = () => {
+  const navigate = useNavigate();
   // Navigation tabs: "instant" or "scheduled"
   const [activeTab, setActiveTab] = useState("scheduled");
   
@@ -216,6 +217,12 @@ const VideoConsult = () => {
         {/* Header Section */}
         <div className="bg-gradient-to-r from-primary-500 to-primary-600 p-6 text-center relative overflow-hidden flex flex-col sm:flex-row items-center justify-between shrink-0">
           <div className="flex items-center gap-4 text-left z-10">
+            <button
+              onClick={() => navigate(-1)}
+              className="px-3.5 py-2.5 rounded-xl text-xs font-black transition-all duration-300 border border-white/20 bg-white/10 hover:bg-white/25 text-white flex items-center gap-1.5 cursor-pointer uppercase tracking-widest shadow-sm"
+            >
+              <Icon icon="solar:alt-arrow-left-bold" className="text-sm" /> Back
+            </button>
             <div className="w-12 h-12 bg-white/20 rounded-xl backdrop-blur-sm flex items-center justify-center border border-white/30 shrink-0">
               <Icon icon="solar:videocamera-record-bold-duotone" className="text-white text-2xl" />
             </div>

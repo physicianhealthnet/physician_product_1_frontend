@@ -61,7 +61,7 @@ describe('Login Component', () => {
     expect(screen.getByPlaceholderText('9876543210')).toBeInTheDocument();
   });
 
-  it('handles successful login and redirects to /book-appointment for master', async () => {
+  it('handles successful login and redirects to /dashboard for master', async () => {
     AxiosInstance.post.mockResolvedValueOnce({
       data: {
         user: { userType: 'master', email: 'test@test.com' }
@@ -85,7 +85,7 @@ describe('Login Component', () => {
 
     await waitFor(() => {
       expect(sessionStorage.getItem('master')).toContain('test@test.com');
-      expect(mockNavigate).toHaveBeenCalledWith('/book-appointment');
+      expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
       expect(message.success).toHaveBeenCalledWith('Welcome back!');
     });
   });

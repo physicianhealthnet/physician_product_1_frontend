@@ -28,7 +28,7 @@ const ICONS = {
   "Pharmacy Management": "solar:pill-bold-duotone",
   "Scan Center": "solar:scanner-bold-duotone",
   "AI X-Ray Analysis": "solar:magic-stick-3-bold-duotone",
-  "Video Consult": "solar:videocamera-record-bold-duotone",
+  "Video Chat": "solar:videocamera-record-bold-duotone",
   Administration: "solar:shield-keyhole-bold-duotone",
 };
 
@@ -40,7 +40,7 @@ const SidebarItem = ({ text, route, isOpen, hasSubMenu, isExpanded }) => {
   return (
     <div
       className={`relative group flex items-center px-6 py-4 cursor-pointer transition-all duration-200 border-b border-[#f0f0f0]
-      ${isSelected || (hasSubMenu && isExpanded) ? "bg-[#f0f0f5]" : "bg-white hover:bg-gray-50"}`}
+      ${isSelected || (hasSubMenu && isExpanded) ? "bg-primary-500" : "bg-white hover:bg-gray-50"}`}
     >
       {/* Active Tab Blue Indicator */}
       {(isSelected || (hasSubMenu && isExpanded)) && (
@@ -48,7 +48,7 @@ const SidebarItem = ({ text, route, isOpen, hasSubMenu, isExpanded }) => {
       )}
 
       <div
-        className={`flex items-center justify-center transition-colors duration-200 ${isSelected || (hasSubMenu && isExpanded) ? "text-primary-600" : "text-[#666] group-hover:text-[#333]"}`}
+        className={`flex items-center justify-center transition-colors duration-200 ${isSelected || (hasSubMenu && isExpanded) ? "text-white" : "text-[#666] group-hover:text-[#333]"}`}
       >
         <Icon icon={ICON} width={24} height={24} />
       </div>
@@ -57,7 +57,7 @@ const SidebarItem = ({ text, route, isOpen, hasSubMenu, isExpanded }) => {
         className={`overflow-hidden flex items-center justify-between transition-all duration-300 ease-in-out ${isOpen ? "w-auto opacity-100 ml-3 flex-1" : "w-0 opacity-0"}`}
       >
         <span
-          className={`text-[15px] whitespace-nowrap ${isSelected || (hasSubMenu && isExpanded) ? "text-[#333] font-medium" : "text-[#666]"}`}
+          className={`text-[15px] whitespace-nowrap ${isSelected || (hasSubMenu && isExpanded) ? "text-white font-medium" : "text-[#666]"}`}
         >
           {text}
         </span>
@@ -74,107 +74,199 @@ const SidebarItem = ({ text, route, isOpen, hasSubMenu, isExpanded }) => {
 
 const MENU_ITEMS = {
   receptionist: [
+    // Dashboard
     { text: "Dashboard", route: "/dashboard" },
-    { text: "Patient Information", route: "/home" },
+
+    // Patient Management
     { text: "Patient Registration", route: "/enquiry-registration" },
+    { text: "Patient Information", route: "/home" },
+
+    // Appointment Management
     { text: "IN Appointments", route: "/book-appointment" },
-    { text: "Upcomming Review's", route: "/next-review" },
-    { text: "Billing", route: "/bill" },
-    { text: "Feedbacks", route: "/feedback" },
-    { text: "Pharmacy & Prescription", route: "/pre-load-prescription" },
     { text: "Web Appointments", route: "/PHNAppointments" },
+    { text: "Upcoming Reviews", route: "/next-review" },
+
+    // Clinical
+    { text: "Pharmacy & Prescription", route: "/pre-load-prescription" },
+
+    // Billing
+    { text: "Billing", route: "/bill" },
+
+    // Pharmacy
     { text: "Pharmacy Management", route: "/pharmacy" },
+
+    // Patient Experience
+    { text: "Feedbacks", route: "/feedback" },
+
+    // Administration
     {
       text: "Administration",
-      subMenu: [{ text: "Identicards", route: "/administration/identicards" }],
-    },
-  ],
-  doctor: [
-    { text: "Dashboard", route: "/dashboard" },
-    { text: "IN Appointments", route: "/book-appointment" },
-    { text: "Web Appointments", route: "/PHNAppointments" },
-    { text: "Upcomming Review's", route: "/next-review" },
-    { text: "Patient Registration", route: "/enquiry-registration" },
-    { text: "Patient Information", route: "/home" },
-    { text: "Pharmacy & Prescription", route: "/pre-load-prescription" },
-    { text: "Pharmacy Management", route: "/pharmacy" },
-    { text: "Billing", route: "/bill" },
-    { text: "Patient Chat", route: "/patient-chat" },
-    { text: "Video Consult", route: "/video-consult" },
-    {
-      text: "Scan Center",
       subMenu: [
         {
-          text: "For Doctor",
+          text: "Identicards",
+          route: "/administration/identicards",
+        },
+      ],
+    },
+  ],
+
+  doctor: [
+    // Dashboard
+    { text: "Dashboard", route: "/dashboard" },
+
+    // Today's Patients
+    { text: "IN Appointments", route: "/book-appointment" },
+    { text: "Web Appointments", route: "/PHNAppointments" },
+    { text: "Upcoming Reviews", route: "/next-review" },
+
+    // Patients
+    { text: "Patient Registration", route: "/enquiry-registration" },
+    { text: "Patient Information", route: "/home" },
+
+    // Consultation
+    { text: "Patient Chat", route: "/patient-chat" },
+    { text: "Video Consultation", route: "/video-consult" },
+
+    // Clinical
+    { text: "Pharmacy & Prescription", route: "/pre-load-prescription" },
+
+    {
+      text: "Diagnostic Center",
+      subMenu: [
+        {
+          text: "Scan Center",
           route: "/scan-prescription-from-the-doctor",
         },
         {
-          text: "For Technician",
-          route: "/appointment-for-the-scan",
-        },
-      ],
-    },
-    {
-      text: "Lab",
-      subMenu: [
-        {
-          text: "For Doctor",
+          text: "Laboratory",
           route: "/lab-prescription-from-the-doctor",
         },
+      ],
+    },
+
+    // Pharmacy
+    { text: "Pharmacy Management", route: "/pharmacy" },
+
+    // Billing
+    { text: "Billing", route: "/bill" },
+
+    // Administration
+    {
+      text: "Administration",
+      subMenu: [
         {
-          text: "For Technician",
-          route: "/appointment-for-the-lab",
+          text: "Identicards",
+          route: "/administration/identicards",
         },
       ],
     },
-    {
-      text: "Administration",
-      subMenu: [{ text: "Identicards", route: "/administration/identicards" }],
-    },
   ],
+
   accountant: [
+    // Finance
     { text: "Billing", route: "/bill" },
     { text: "Supplier", route: "/supplier" },
     { text: "Expenditure", route: "/expenditure" },
+
+    // Pharmacy
     { text: "Pharmacy Management", route: "/pharmacy" },
   ],
+
   generalManager: [
+    // Operations
     { text: "Patient Information", route: "/home" },
+    { text: "Doctor & Staff", route: "/master/doctor-and-staffs" },
+
+    // Finance
     { text: "Billing", route: "/bill" },
-    { text: "Inventory", route: "/inventory" },
-    { text: "Expenditure", route: "/expenditure" },
-    { text: "Doctor & Staff's", route: "/master/doctor-and-staffs" },
-    { text: "Pharmacy Management", route: "/pharmacy" },
-    {
-      text: "Administration",
-      subMenu: [{ text: "Identicards", route: "/administration/identicards" }],
-    },
-  ],
-  master: [
-    { text: "Dashboard", route: "/dashboard" },
-    { text: "IN Appointments", route: "/book-appointment" },
-    { text: "Patient Information", route: "/home" },
-    { text: "Billing", route: "/bill" },
-    { text: "Doctor & Staff's", route: "/master/doctor-and-staffs" },
     { text: "Inventory", route: "/inventory" },
     { text: "Supplier", route: "/supplier" },
     { text: "Expenditure", route: "/expenditure" },
-    { text: "Upcomming Review's", route: "/next-review" },
-    { text: "Feedbacks", route: "/feedback" },
-    { text: "Pharmacy & Prescription", route: "/pre-load-prescription" },
-    { text: "Web Appointments", route: "/PHNAppointments" },
-    { text: "Patient Chat", route: "/patient-chat" },
-    { text: "Video Consult", route: "/video-consult" },
+
+    // Pharmacy
     { text: "Pharmacy Management", route: "/pharmacy" },
-    { text: "AI X-Ray Analysis", route: "/xray-analysis" },
+
+    // Administration
     {
       text: "Administration",
-      subMenu: [{ text: "Identicards", route: "/administration/identicards" }],
+      subMenu: [
+        {
+          text: "Identicards",
+          route: "/administration/identicards",
+        },
+      ],
     },
+  ],
+
+  master: [
+    // Dashboard
+    { text: "Dashboard", route: "/dashboard" },
+
+    // Patient Management
+    { text: "Patient Registration", route: "/enquiry-registration" },
+    { text: "Patient Information", route: "/home" },
+
+    // Appointment Management
+    { text: "IN Appointments", route: "/book-appointment" },
+    { text: "Web Appointments", route: "/PHNAppointments" },
+    { text: "Upcoming Reviews", route: "/next-review" },
+
+    // Consultation
+    { text: "Patient Chat", route: "/patient-chat" },
+    { text: "Video Consultation", route: "/video-consult" },
+
+    // Clinical
+    { text: "Pharmacy & Prescription", route: "/pre-load-prescription" },
+    { text: "AI X-Ray Analysis", route: "/xray-analysis" },
+
+    {
+      text: "Diagnostic Center",
+      subMenu: [
+        {
+          text: "Scan Center",
+          route: "/scan-prescription-from-the-doctor",
+        },
+        {
+          text: "Laboratory",
+          route: "/lab-prescription-from-the-doctor",
+        },
+      ],
+    },
+
+    // Pharmacy
+    { text: "Pharmacy Management", route: "/pharmacy" },
+
+    // Finance
+    { text: "Billing", route: "/bill" },
+    { text: "Inventory", route: "/inventory" },
+    { text: "Supplier", route: "/supplier" },
+    { text: "Expenditure", route: "/expenditure" },
+
+    // Human Resources
+    { text: "Doctor & Staff", route: "/master/doctor-and-staffs" },
+
+    // Patient Experience
+    { text: "Feedbacks", route: "/feedback" },
+
+    // Analytics
     {
       text: "Analytics",
       subMenu: [
-        { text: "Revenue", route: "/revenue" },
+        {
+          text: "Revenue",
+          route: "/revenue",
+        },
+      ],
+    },
+
+    // Administration
+    {
+      text: "Administration",
+      subMenu: [
+        {
+          text: "Identicards",
+          route: "/administration/identicards",
+        },
       ],
     },
   ],
@@ -304,41 +396,50 @@ const Sidebar = () => {
           </div>
         </div>
 
-        {/* PHN Chat Button */}
-        <div className="p-4 border-t border-[#e0e0e0]">
-          <Button
-            onClick={handleChatToggle}
-            className="w-full flex items-center gap-3 px-3 py-3 bg-primary-500 hover:bg-primary-600 text-white transition-all duration-200 shadow-md shadow-primary-500/30 relative"
-          >
-            <div className="flex items-center justify-center">
-              <Icon icon="tabler:headset" width={24} height={24} />
-            </div>
-
-            {isOpen && <span>Clinic Support</span>}
-
-            {/* Unread Badge */}
-            {unreadCount > 0 && (
-              <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-xs font-bold text-white animate-pulse">
-                {unreadCount > 9 ? "9+" : unreadCount}
-              </div>
-            )}
-          </Button>
-        </div>
-
-        {/* Footer / Version */}
-        <div className="p-4 border-t border-[#e0e0e0] text-xs text-slate-500 text-center">
+        {/* Demo Mode Toggle at the bottom */}
+        <div className="p-4 border-t border-[#e0e0e0] shrink-0 bg-slate-50/50">
           {isOpen ? (
-            <div className="flex flex-col gap-1">
-              <span>v2.0 Beta</span>
+            <div className="flex items-center justify-between bg-blue-50 border border-blue-200 rounded-xl p-2.5 shadow-sm">
+              <div className="flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span className={`animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 ${localStorage.getItem("isDemoMode") === "true" ? "" : "hidden"}`}></span>
+                  <span className={`relative inline-flex rounded-full h-2 w-2 ${localStorage.getItem("isDemoMode") === "true" ? "bg-emerald-500" : "bg-slate-400"}`}></span>
+                </span>
+                <span className="text-[10px] font-black text-blue-700 uppercase tracking-wider">Demo Mode</span>
+              </div>
+              <button
+                onClick={() => {
+                  const isDemo = localStorage.getItem("isDemoMode") === "true";
+                  localStorage.setItem("isDemoMode", isDemo ? "false" : "true");
+                  window.location.reload();
+                }}
+                className={`px-2 py-0.5 rounded text-[9px] font-black uppercase transition-all duration-200 ${
+                  localStorage.getItem("isDemoMode") === "true"
+                    ? "bg-blue-600 text-white hover:bg-blue-700"
+                    : "bg-slate-200 text-slate-600 hover:bg-slate-300"
+                }`}
+              >
+                {localStorage.getItem("isDemoMode") === "true" ? "ON" : "OFF"}
+              </button>
             </div>
           ) : (
-            <span>v2.0</span>
+            <div 
+              onClick={() => {
+                const isDemo = localStorage.getItem("isDemoMode") === "true";
+                localStorage.setItem("isDemoMode", isDemo ? "false" : "true");
+                window.location.reload();
+              }}
+              title="Toggle Demo Mode"
+              className="flex items-center justify-center cursor-pointer p-2 rounded-lg bg-blue-50 hover:bg-blue-100 border border-blue-200/50"
+            >
+              <span className="relative flex h-2.5 w-2.5">
+                <span className={`animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 ${localStorage.getItem("isDemoMode") === "true" ? "" : "hidden"}`}></span>
+                <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${localStorage.getItem("isDemoMode") === "true" ? "bg-emerald-500" : "bg-slate-400"}`}></span>
+              </span>
+            </div>
           )}
         </div>
       </div>
-
-      {/* PHN Chat Component */}
-      <PHNChat isOpen={chatIsOpen} onClose={handleChatToggle} />
     </>
   );
 };
