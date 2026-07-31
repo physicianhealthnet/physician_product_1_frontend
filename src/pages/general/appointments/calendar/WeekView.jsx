@@ -84,6 +84,22 @@ export default function WeekView({
 
   const weekStartDate = getWeekStartDate(startDate);
 
+  // Generate columns with responsive short names (e.g. "Sun 26")
+  useEffect(() => {
+    if (!weekStartDate) return;
+    const cols = [];
+    const start = dayjs(weekStartDate);
+    for (let i = 0; i < 7; i++) {
+      const day = start.add(i, "day");
+      cols.push({
+        name: day.format("ddd DD"), // Compact: "Sun 26" instead of "7/26/2026"
+        id: day.format("YYYY-MM-DD"),
+        start: day.format("YYYY-MM-DD"),
+      });
+    }
+    setColumns(cols);
+  }, [weekStartDate]);
+
   // Fetch events
   useEffect(() => {
     async function fetchEvents() {
@@ -265,6 +281,7 @@ export default function WeekView({
         cellHeight={38}
         cellDuration={60}
         durationBarVisible={false}
+        heightSpec="Full"
       />
 
       <Modal

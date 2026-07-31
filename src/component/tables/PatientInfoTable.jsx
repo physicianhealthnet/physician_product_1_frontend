@@ -185,11 +185,11 @@ const PatientInfoTable = () => {
   }, [currentIdsList]);
 
   return (
-    <Card className="border-none shadow-none bg-transparent p-0 flex flex-col h-[calc(100vh-80px)] overflow-hidden">
+    <Card className="border-none shadow-none bg-transparent p-0 flex flex-col h-auto w-full">
       {/* Filter/Search Bar */}
-      <div className="flex justify-between items-center mb-4 flex-wrap gap-4 shrink-0">
-        <div className="flex items-center gap-4 flex-wrap w-full">
-          <div className="relative w-full md:w-64">
+      <div className="flex justify-between items-center mb-4 shrink-0 w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:flex lg:flex-row lg:items-center gap-4 w-full">
+          <div className="relative w-full lg:w-64">
             <input
               type="text"
               className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all text-slate-700 placeholder:text-slate-400"
@@ -200,7 +200,7 @@ const PatientInfoTable = () => {
             <IoSearchOutline className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg" />
           </div>
 
-          <div className="relative w-full md:w-64">
+          <div className="relative w-full lg:w-64">
             <input
               type="text"
               className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all text-slate-700 placeholder:text-slate-400"
@@ -211,7 +211,7 @@ const PatientInfoTable = () => {
             <IoSearchOutline className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg" />
           </div>
 
-          <div className="relative w-full md:w-64">
+          <div className="relative w-full lg:w-64">
             <input
               type="text"
               className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all text-slate-700 placeholder:text-slate-400"
@@ -222,7 +222,7 @@ const PatientInfoTable = () => {
             <IoSearchOutline className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg" />
           </div>
 
-          <div className="relative w-full md:w-64">
+          <div className="relative w-full lg:w-64">
             <input
               type="text"
               className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all text-slate-700 placeholder:text-slate-400"
@@ -234,7 +234,7 @@ const PatientInfoTable = () => {
           </div>
 
           <select
-            className="px-4 py-2.5 bg-white border border-slate-200 rounded-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 text-slate-700"
+            className="w-full lg:w-48 px-4 py-2.5 bg-white border border-slate-200 rounded-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 text-slate-700"
             value={genderFilter}
             onChange={(e) => setGenderFilter(e.target.value)}
           >

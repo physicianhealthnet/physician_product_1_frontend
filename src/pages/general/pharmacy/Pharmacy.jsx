@@ -393,7 +393,7 @@ function Pharmacy() {
             </div>
 
             <div className="overflow-x-auto custom-scrollbar">
-              <table className="w-full text-left border-separate border-spacing-0">
+              <table className="w-full text-left border-separate border-spacing-0 whitespace-nowrap">
                 <thead>
                   <tr className="bg-slate-100/50 backdrop-blur-md">
                     <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-500 border-b border-slate-200">Patient Details</th>

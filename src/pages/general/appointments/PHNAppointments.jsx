@@ -399,7 +399,10 @@ function PHNAppointments() {
         <StaggerItem>
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                <div className="flex flex-row flex-nowrap gap-3 items-center">
-              <Button onClick={() => navigate(-1)}>Back</Button>
+              <Button onClick={() => navigate(-1)} className="flex items-center gap-2">
+                <Icon icon="tabler:arrow-left" className="w-4 h-4" />
+                Back
+              </Button>
             <div className="flex flex-col gap-1">
               <h1 className="font-black text-slate-800  text-4xl tracking-tight">
                 Web <span className="text-blue-500">Appointments</span>

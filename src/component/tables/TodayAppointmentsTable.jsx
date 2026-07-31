@@ -80,7 +80,7 @@ const TodayAppointmentsTable = () => {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full text-left border-separate border-spacing-0">
+        <table className="w-full text-left border-separate border-spacing-0 whitespace-nowrap">
           <thead>
             <tr className="bg-slate-50 text-slate-500">
               <th className="px-6 py-4 font-black text-[10px] uppercase tracking-widest text-nowrap">Time</th>

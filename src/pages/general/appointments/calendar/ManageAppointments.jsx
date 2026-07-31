@@ -36,6 +36,8 @@ const ManageAppointments = ({
   setStateChange,
   stateChange,
   selectedGroup,
+  clinicId,
+  onDoctorFilterChange,
 }) => {
   const [appointments, setAppointments] = useState([]);
   const [filterDate, setFilterDate] = useState(dayjs().format("YYYY-MM-DD"));
@@ -49,6 +51,33 @@ const ManageAppointments = ({
   const [page, setPage] = useState(1);
   const [limit] = useState(1000);
   const [total, setTotal] = useState(0);
+
+  const [doctorsList, setDoctorsList] = useState([]);
+  const [filterDoctor, setFilterDoctor] = useState("");
+
+  useEffect(() => {
+    const getDoctors = async () => {
+      const currentClinicId = clinicId || JSON.parse(sessionStorage.getItem("user") || sessionStorage.getItem("master") || "{}")?.clinicId;
+      if (!currentClinicId) return;
+      try {
+        const response = await AxiosInstance.get(
+          `/user/get-doctor?clinicId=${currentClinicId}`,
+        );
+        setDoctorsList(response.data.users || []);
+      } catch (error) {
+        console.error("Failed to fetch doctors:", error);
+      }
+    };
+    getDoctors();
+  }, [clinicId]);
+
+  useEffect(() => {
+    if (selectedGroup) {
+      setFilterDoctor(selectedGroup.userName);
+    } else {
+      setFilterDoctor("");
+    }
+  }, [selectedGroup]);
 
   // Patient Details
   const navigate = useNavigate();
@@ -351,12 +380,21 @@ const ManageAppointments = ({
     setExpandedRows(newSet);
   };
 
+  const filteredAppointments = appointments.filter((appt) => {
+    const docFilter = filterDoctor || selectedGroup?.userName;
+    if (docFilter) {
+      const apptDoc = appt.doctor || appt.docName || appt.doctorName;
+      return apptDoc === docFilter;
+    }
+    return true;
+  });
+
   return (
     <div className="flex flex-col gap-5 flex-1 min-w-0 w-full bg-white p-5 border border-slate-200/50 rounded-2xl">
       {/* Filters */}
       <div className="flex flex-col gap-4 bg-slate-50/50 border border-slate-200/50  shadow-[inset_0_1px_2px_rgba(255,255,255,0.05)]">
-        <div className="flex flex-row gap-4">
-          <div className="relative group w-52">
+        <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4 w-full">
+          <div className="relative group w-full sm:w-52">
             <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-all duration-300 z-10">
               <CalendarOutlined className="text-lg" />
             </div>
@@ -373,7 +411,7 @@ const ManageAppointments = ({
             allowClear
             value={filterStatus || undefined}
             onChange={(val) => setFilterStatus(val || "")}
-            className="w-52 h-12 custom-select-premium"
+            className="w-full sm:w-52 h-12 custom-select-premium"
             popupClassName="  rounded-2xl shadow-2xl border-slate-700/50"
           >
             {[
@@ -395,7 +433,28 @@ const ManageAppointments = ({
             ))}
           </Select>
 
-          <div className="relative group w-52">
+          <Select
+            placeholder="Filter by Doctor"
+            allowClear
+            value={filterDoctor || undefined}
+            onChange={(val) => {
+              const selected = doctorsList.find((doc) => doc.userName === val);
+              setFilterDoctor(val || "");
+              if (onDoctorFilterChange) {
+                onDoctorFilterChange(selected || null);
+              }
+            }}
+            className="w-full sm:w-52 h-12 custom-select-premium"
+            popupClassName="rounded-2xl shadow-2xl border-slate-700/50"
+          >
+            {doctorsList.map((doc) => (
+              <Option key={doc._id} value={doc.userName}>
+                {doc.userName}
+              </Option>
+            ))}
+          </Select>
+
+          <div className="relative group w-full sm:w-52">
             <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-all duration-300 z-10">
               <SearchOutlined className="text-lg" />
             </div>
@@ -425,12 +484,7 @@ const ManageAppointments = ({
             </tr>
           </thead>
           <tbody>
-            {(selectedGroup
-              ? appointments.filter(
-                  (appt) => appt.doctor === selectedGroup.userName,
-                )
-              : appointments
-            ).length === 0 ? (
+            {filteredAppointments.length === 0 ? (
               <tr>
                 <td colSpan={8} className="p-10 text-center opacity-60">
                   <div className="flex flex-col items-center justify-center gap-4 py-10">
@@ -449,12 +503,7 @@ const ManageAppointments = ({
                 </td>
               </tr>
             ) : (
-              (selectedGroup
-                ? appointments.filter(
-                    (appt) => appt.doctor === selectedGroup.userName,
-                  )
-                : appointments
-              ).map((appt, idx) => {
+              filteredAppointments.map((appt, idx) => {
                 const pId = appt.patientId || appt.PHN_ID;
                 const detailsObj = patientDetails[pId] || {};
                 const detail = detailsObj.patientDetails || {};
@@ -499,7 +548,7 @@ const ManageAppointments = ({
                         {appt.phoneNumber || appt.patientPhone || appt.patientPhno || "—"}
                       </td>
                       <td className="p-4 text-sm font-bold text-blue-600">
-                        {appt.doctor || appt.docName || "—"}
+                        {appt.doctor || appt.docName || appt.doctorName || "—"}
                       </td>
                       <td className="p-4 text-sm font-medium text-slate-600">
                         <div className="flex items-center gap-1.5">

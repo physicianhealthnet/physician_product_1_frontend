@@ -30,6 +30,7 @@ const BookAppointment = ({
   onBooked,
   clinicId,
   setStateChange,
+  selectedDoctor,
 }) => {
   const initialData = {
     patientName: "",
@@ -131,9 +132,10 @@ const BookAppointment = ({
     setFormData((prev) => ({
       ...prev,
       clinicId: user?.clinicId || "",
-      doctorId: user._id,
+      doctorId: selectedDoctor ? selectedDoctor._id : (user._id || ""),
+      doctor: selectedDoctor ? selectedDoctor.userName : "",
     }));
-  }, [visible]);
+  }, [visible, selectedDoctor]);
 
   const handleChange = (e) => {
     const { name, value } = e.target || e;
@@ -272,10 +274,15 @@ const BookAppointment = ({
           </label>
           <Select
             placeholder="Select Doctor"
-            value={formData.doctor}
-            onChange={(val) =>
-              setFormData((prev) => ({ ...prev, doctor: val }))
-            }
+            value={formData.doctor || undefined}
+            onChange={(val) => {
+              const selected = allDoctors.find((d) => d.userName === val);
+              setFormData((prev) => ({
+                ...prev,
+                doctor: val,
+                doctorId: selected ? selected._id : "",
+              }));
+            }}
             className="w-full h-10 rounded-sm"
             popupClassName="rounded-sm"
           >

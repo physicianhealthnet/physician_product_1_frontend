@@ -166,12 +166,12 @@ const DoctorDashboard = () => {
 
   return (
     <StaggerContainer>
-      <div className="flex flex-col gap-10 p-10 bg-white/70 rounded backdrop-blur-3xl border border-slate-200 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] min-h-[900px]">
+      <div className="flex flex-col gap-6 sm:gap-10 p-4 sm:p-6 md:p-10 bg-white/70 rounded backdrop-blur-3xl border border-slate-200 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] min-h-[500px]">
         {/* HEADER SECTION */}
         <StaggerItem>
           <div className="flex flex-col lg:flex-row justify-between rounded items-start lg:items-center gap-8">
             <div className="flex flex-col">
-              <h1 className="font-black text-slate-800 text-4xl tracking-tight">
+              <h1 className="font-black text-slate-800 text-2xl sm:text-3xl md:text-4xl tracking-tight">
                 Appointment <span className="text-blue-500">Dashboard</span>
               </h1>
               <h1 className="font-black text-slate-800 text-xl tracking-tight">
@@ -182,8 +182,8 @@ const DoctorDashboard = () => {
                 <span className="text-[#2040B0] font-bold">{currentDate}</span>
               </p>
             </div>
-            <div className="flex items-center gap-3 bg-slate-50/50 p-2 border border-slate-200 shadow-inner rounded w-fit">
-              <div className="flex items-center gap-2 px-3 py-2 bg-blue-50 border border-blue-200 rounded">
+            <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 sm:gap-3 bg-slate-50/50 p-2 border border-slate-200 shadow-inner rounded w-full sm:w-auto">
+              <div className="flex items-center justify-between sm:justify-start gap-2 px-3 py-2 bg-blue-50 border border-blue-200 rounded w-full sm:w-auto">
                 <span className="relative flex h-2.5 w-2.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
@@ -202,30 +202,30 @@ const DoctorDashboard = () => {
                   {isDemoMode ? "ON" : "OFF"}
                 </button>
               </div>
-              <h1 className="text-slate-500 text-[10px] uppercase font-black tracking-widest pl-2 pr-1">
+              <h1 className="text-slate-500 text-[10px] uppercase font-black tracking-widest pl-2 pr-1 w-full sm:w-auto text-center sm:text-left">
                 Quick Links:
               </h1>
               <button
                 onClick={() => navigate("/book-appointment")}
-                className="px-5 py-2.5 text-[10px] uppercase font-black tracking-widest rounded transition-all duration-300 bg-white shadow-sm text-slate-800 border border-slate-200 hover:text-blue-600"
+                className="w-full sm:w-auto px-5 py-2.5 text-[10px] uppercase font-black tracking-widest rounded transition-all duration-300 bg-white shadow-sm text-slate-800 border border-slate-200 hover:text-blue-600"
               >
                 Internal Appointment
               </button>
               <button
                 onClick={() => navigate("/PHNAppointments")}
-                className="px-5 py-2.5 text-[10px] uppercase font-black tracking-widest rounded transition-all duration-300 bg-white shadow-sm text-slate-800 border border-slate-200 hover:text-blue-600"
+                className="w-full sm:w-auto px-5 py-2.5 text-[10px] uppercase font-black tracking-widest rounded transition-all duration-300 bg-white shadow-sm text-slate-800 border border-slate-200 hover:text-blue-600"
               >
                 Web Appointment
               </button>
               <button
                 onClick={() => navigate("/next-review")}
-                className="px-5 py-2.5 text-[10px] uppercase font-black tracking-widest rounded transition-all duration-300 bg-white shadow-sm text-slate-800 border border-slate-200 hover:text-blue-600"
+                className="w-full sm:w-auto px-5 py-2.5 text-[10px] uppercase font-black tracking-widest rounded transition-all duration-300 bg-white shadow-sm text-slate-800 border border-slate-200 hover:text-blue-600"
               >
                 Next Review & Apt
               </button>
               <button
                 onClick={() => navigate("/video-consult")}
-                className="px-5 py-2.5 text-[10px] uppercase font-black tracking-widest rounded transition-all duration-300 bg-white shadow-sm text-slate-800 border border-slate-200 hover:text-blue-600"
+                className="w-full sm:w-auto px-5 py-2.5 text-[10px] uppercase font-black tracking-widest rounded transition-all duration-300 bg-white shadow-sm text-slate-800 border border-slate-200 hover:text-blue-600"
               >
                 Video Chat
               </button>

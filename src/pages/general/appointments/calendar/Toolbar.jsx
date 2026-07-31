@@ -81,14 +81,14 @@ export default function Toolbar({
         </button>
       </div>
 
-      <div className="flex items-center gap-6">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 sm:gap-6 w-full sm:w-auto">
         {/* View Selection Toggle */}
-        <div className="flex items-center p-2 bg-slate-100/50 rounded backdrop-blur-sm border border-slate-200/40  shadow-sm">
+        <div className="flex items-center p-1 sm:p-2 bg-slate-100/50 rounded backdrop-blur-sm border border-slate-200/40 shadow-sm justify-between w-full sm:w-auto">
           {["day", "week", "month"].map((v) => (
             <button
               key={v}
               onClick={() => onViewChange(v)}
-              className={`px-8 py-3 text-[10px] font-black uppercase rounded tracking-widest transition-all duration-500 text-indent-[0.2em] ${view === v
+              className={`flex-1 sm:flex-none px-3 sm:px-8 py-2 sm:py-3 text-[10px] font-black uppercase rounded tracking-widest transition-all duration-500 text-indent-[0.2em] ${view === v
                 ? "bg-[#14BEF0] text-white shadow-md"
                 : "text-slate-500  hover:text-slate-800 :text-slate-200 hover:bg-white/50 :bg-slate-700/30"}`}
             >
@@ -98,10 +98,10 @@ export default function Toolbar({
         </div>
 
         {/* Action Controls */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center justify-between gap-3 w-full sm:w-auto">
           <button
             onClick={onToday}
-            className="px-6 py-3 border border-slate-200  bg-white  text-slate-600  text-xs font-black uppercase tracking-widest hover:bg-slate-50 :bg-slate-700 hover:border-slate-300 :border-slate-600 shadow-md transition-all active:scale-95 h-11 leading-none"
+            className="flex-1 sm:flex-none px-4 sm:px-6 py-2.5 sm:py-3 border border-slate-200  bg-white  text-slate-600  text-xs font-black uppercase tracking-widest hover:bg-slate-50 :bg-slate-700 hover:border-slate-300 :border-slate-600 shadow-md transition-all active:scale-95 h-11 leading-none"
           >
             Today
           </button>

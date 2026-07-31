@@ -187,7 +187,10 @@ function NextReview() {
         <StaggerItem>
           <div className="flex flex-col lg:flex-row justify-between rounded items-start lg:items-center gap-8">
             <div className="flex flex-row flex-nowrap gap-3 items-center">
-              <Button onClick={() => navigate(-1)}>Back</Button>
+              <Button onClick={() => navigate(-1)} className="flex items-center gap-2">
+                <Icon icon="tabler:arrow-left" className="w-4 h-4" />
+                Back
+              </Button>
               <div>
                 <h1 className="font-black text-slate-800  text-4xl tracking-tight">
                   Next <span className="text-blue-500">Review</span>
@@ -329,7 +332,7 @@ function NextReview() {
         <StaggerItem>
           <div className="flex-1 bg-white/50 rounded border border-slate-200  overflow-hidden shadow-2xl flex flex-col">
             <div className="overflow-x-auto custom-scrollbar">
-              <table className="w-full text-left border-separate border-spacing-0">
+              <table className="w-full text-left border-separate border-spacing-0 whitespace-nowrap">
                 <thead>
                   <tr className="bg-slate-100/50  backdrop-blur-md">
                     <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-500  border-b border-slate-200 ">

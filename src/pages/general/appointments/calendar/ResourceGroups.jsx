@@ -13,7 +13,6 @@ export default function ResourceGroups({
 }) {
   const [bookModalVisible, setBookModalVisible] = useState(false);
   const [users, setUsers] = useState([]);
-  const [selectedDoctor, setSelectedDoctor] = useState(selectedGroup || null);
 
   const user = JSON.parse(
     sessionStorage.getItem("user") || sessionStorage.getItem("master"),
@@ -35,19 +34,17 @@ export default function ResourceGroups({
   }, [user.clinicId]);
 
   const handleSelect = (doctor) => {
-    setSelectedDoctor(doctor); // set local state
     if (onChange) onChange(doctor); // notify parent
   };
 
   const clearFilter = () => {
-    setSelectedDoctor(null); // reset local state
     if (onChange) onChange(null); // notify parent
   };
 
   return (
     <div className="flex flex-col gap-5 w-full xl:w-1/4 xl:min-w-[280px] bg-white p-5 border border-slate-200/50 rounded-2xl">
       <div className="flex flex-col gap-3 justify-between w-full">
-        <div className={`flex justify-between ${selectedDoctor ? "flex-col gap-3" : "flex-row items-center"}`}>
+        <div className={`flex justify-between ${selectedGroup ? "flex-col gap-3" : "flex-row items-center"}`}>
           <div className="flex items-center gap-2.5">
             <div className="p-2 rounded-xl bg-blue-500/10 text-[#14BEF0]">
               <Stethoscope className="w-5 h-5" />
@@ -56,7 +53,7 @@ export default function ResourceGroups({
               Doctors
             </h2>
           </div>
-          {selectedDoctor && (
+          {selectedGroup && (
             <Button
               onClick={clearFilter}
               variant="ghost"
@@ -76,7 +73,7 @@ export default function ResourceGroups({
 
       <div className="group-list flex-1 overflow-auto flex flex-col gap-3 p-2 custom-scrollbar">
         {users?.map((g, idx) => {
-          const isSelected = selectedDoctor?._id === g._id;
+          const isSelected = selectedGroup?._id === g._id;
           return (
             <button
               key={g?._id}
@@ -144,6 +141,7 @@ export default function ResourceGroups({
         setVisible={setBookModalVisible}
         onBooked={() => {}}
         setStateChange={setStateChange}
+        selectedDoctor={selectedGroup}
       />
     </div>
   );

@@ -275,6 +275,7 @@ export default function DayView({
         cellDuration={60}
         durationBarVisible={true}
         onEventClick={handleEventClick}
+        heightSpec="Full"
       />
 
       {/* Appointment Modal */}

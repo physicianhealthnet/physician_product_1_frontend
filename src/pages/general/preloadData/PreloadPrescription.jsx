@@ -198,7 +198,10 @@ function PreloadPrescription() {
         <StaggerItem>
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div className="flex flex-row flex-nowrap gap-3 items-center">
-              <Button onClick={() => navigate(-1)}>Back</Button>
+              <Button onClick={() => navigate(-1)} className="flex items-center gap-2">
+                <Icon icon="tabler:arrow-left" className="w-4 h-4" />
+                Back
+              </Button>
               <div className="flex flex-col gap-2">
                 <h1 className="text-4xl font-black text-slate-800  tracking-tight">
                   Prescription <span className="text-blue-500">Templates</span>

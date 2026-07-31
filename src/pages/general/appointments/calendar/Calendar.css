@@ -278,3 +278,22 @@
     display: flex !important;
     align-items: center !important;
 }
+
+/* Sticky Column Header CSS */
+.calendar_modern_main,
+.calendar_modern_main > div {
+    overflow: visible !important;
+}
+
+.calendar_modern_header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 10 !important;
+}
+
+.calendar_modern_corner {
+    position: sticky !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 20 !important;
+}
