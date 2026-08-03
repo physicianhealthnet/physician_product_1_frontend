@@ -11,6 +11,7 @@ import Button from "../ui/Button";
 import { TableSkeleton } from "../ui/Skeleton";
 import PatientClinicalDataModal from "../dashboard/PatientClinicalDataModal";
 import dayjs from "dayjs";
+import PatientDetails from "../../pages/general/patientDetails/PatientDetails";
 
 const PAGE_SIZE = 5;
 
@@ -273,15 +274,12 @@ const PatientInfoTable = () => {
               <th className="py-4 px-6 text-center">Primary Doctor</th>
               <th className="py-4 px-6">Complaint</th>
               <th className="py-4 px-6">Appointment Date</th>
-              <th className="py-4 px-6 text-center bg-slate-50 z-30 border-l border-slate-200">
-                Actions
-              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200 bg-white">
             {loading ? (
               <tr>
-                <td colSpan={11} className="p-0">
+                <td colSpan={10} className="p-0">
                   <TableSkeleton rows={5} />
                 </td>
               </tr>
@@ -399,332 +397,73 @@ const PatientInfoTable = () => {
                           </span>
                         </div>
                       </td>
-                      <td 
-                        className="py-4 px-6 bg-white group-hover:bg-slate-50 z-10 border-l border-slate-200 shadow-[-4px_0_10px_rgba(0,0,0,0.02)] transition-colors"
-                        onClick={(e) => e.stopPropagation()} // Prevent row click from firing when clicking actions
-                      >
-                        <div className="flex items-center justify-center gap-2">
-                          {/* Action Buttons */}
-                          <div className="flex bg-slate-100 rounded-sm p-1 gap-1 items-center">
-                            <button
-                              title="Edit"
-                              onClick={() => {
-                                if (
-                                  user?.userType === "generalManager" ||
-                                  user?.userType === "receptionist"
-                                ) {
-                                  message.warning("Permission denied");
-                                  return;
-                                }
-                                navigate(
-                                  `/enquiry-registration/${patient.patientId}`,
-                                );
-                              }}
-                              className="p-1.5 hover:bg-white rounded text-slate-500 hover:text-primary-600 transition-all flex flex-col items-center justify-center"
-                            >
-                              <Icon
-                                icon="solar:pen-bold-duotone"
-                                width="16"
-                                height="16"
-                              />
-                            </button>
-  
-                            <button
-                              title="View Details"
-                              onClick={() =>
-                                navigate(`/patient-details/${patient.patientId}`)
-                              }
-                              className="p-1.5 hover:bg-white rounded text-slate-500 hover:text-blue-500 transition-all flex flex-col items-center justify-center"
-                            >
-                              <Icon
-                                icon="solar:document-bold-duotone"
-                                width="16"
-                                height="16"
-                              />
-                            </button>
-
-                            <button
-                              title="Health Monitor"
-                              onClick={() =>
-                                navigate(`/health-dashboard/${patient.patientId}`)
-                              }
-                              className="p-1.5 hover:bg-white rounded text-slate-500 hover:text-rose-500 transition-all flex flex-col items-center justify-center"
-                            >
-                              <Icon
-                                icon="solar:heart-pulse-bold-duotone"
-                                width="16"
-                                height="16"
-                              />
-                            </button>
-
-                            <button
-                              title="AI Report"
-                              onClick={() =>
-                                handleOverallAIReport(patient.patientId, patient.patientName)
-                              }
-                              className="p-1.5 hover:bg-white rounded text-slate-500 hover:text-emerald-600 transition-all flex flex-col items-center justify-center"
-                            >
-                              <Icon
-                                icon="solar:magic-stick-3-bold-duotone"
-                                width="16"
-                                height="16"
-                              />
-                            </button>
-                          </div>
-                        </div>
-                      </td>
                     </tr>
                     
                     {/* Expanded Colab Content */}
                     {expandedRow === patient.patientId && (
                       <tr className="bg-slate-50/50 border-b border-slate-200 shadow-inner">
-                        <td colSpan={11} className="p-0 whitespace-normal max-w-0">
-                          <div className="p-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                              {/* Group 1: General Info & Prescriptions */}
-                              <div className="bg-white p-5 rounded-lg border border-slate-200 shadow-sm flex flex-col gap-4 relative overflow-hidden">
-                                <div className="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
-                                <h4 className="text-xs font-black uppercase tracking-widest text-slate-500">General Info & Prescriptions</h4>
-                                <div className="flex flex-col gap-3 mt-auto">
-                                  {/* 1) Member Since */}
-                                  <div className="flex items-center gap-2 text-sm bg-slate-50 p-2 rounded-md">
-                                    <Icon icon="solar:calendar-date-bold-duotone" className="text-blue-500 text-lg shrink-0" />
-                                    <span className="text-slate-500">Member Since:</span>
-                                    <span className="font-bold text-slate-800 ml-auto">
-                                      {patient.createdAt ? dayjs(patient.createdAt).format("DD MMM YYYY") : "-"}
-                                    </span>
-                                  </div>
+                        <td colSpan={10} className="p-6 whitespace-normal max-w-0">
+                          {/* Quick Actions Bar */}
+                          <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center mb-6 bg-slate-100/50 backdrop-blur-xl p-3.5 rounded-2xl border border-slate-200/50 animate-fade-in">
+                            <span className="text-slate-600 font-extrabold text-xs uppercase tracking-widest pl-2">Patient Quick Actions</span>
+                            <div className="flex flex-wrap bg-slate-200/60 rounded-xl p-1 gap-1 items-center shadow-inner">
+                              <button
+                                title="Edit"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (
+                                    user?.userType === "generalManager" ||
+                                    user?.userType === "receptionist"
+                                  ) {
+                                    message.warning("Permission denied");
+                                    return;
+                                  }
+                                  navigate(`/enquiry-registration/${patient.patientId}`);
+                                }}
+                                className="px-4 py-2 hover:bg-white rounded-lg text-slate-500 hover:text-primary-600 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider duration-300"
+                              >
+                                <Icon icon="solar:pen-bold-duotone" width="16" height="16" />
+                                <span>Edit</span>
+                              </button>
 
-                                  {/* 2) Last Visited Date */}
-                                  <div className="flex items-center gap-2 text-sm bg-slate-50 p-2 rounded-md">
-                                    <Icon icon="solar:calendar-mark-bold-duotone" className="text-blue-500 text-lg shrink-0" />
-                                    <span className="text-slate-500">Last Visited Date:</span>
-                                    <span className="font-bold text-slate-800 ml-auto">
-                                      {detail.visitedDate
-                                        ? dayjs(detail.visitedDate).format("DD MMM YYYY")
-                                        : patient.createdAt
-                                          ? dayjs(patient.createdAt).format("DD MMM YYYY")
-                                          : "-"}
-                                    </span>
-                                  </div>
+                              <button
+                                title="View Details"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate(`/patient-details/${patient.patientId}`);
+                                }}
+                                className="px-4 py-2 hover:bg-white rounded-lg text-slate-500 hover:text-blue-500 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider duration-300"
+                              >
+                                <Icon icon="solar:document-bold-duotone" width="16" height="16" />
+                                <span>Fullscreen</span>
+                              </button>
 
-                                  {/* 3) Ongoing Treatment Button */}
-                                  {isOldPatient ? (
-                                    <button
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        navigate(`/assessment/${patient.patientId}`);
-                                      }}
-                                      className="bg-blue-600 text-white px-5 py-2.5 rounded-lg text-xs uppercase font-black tracking-widest hover:bg-blue-700 transition-colors shadow-sm active:scale-95 flex items-center justify-center gap-2"
-                                    >
-                                      <span>Ongoing Treatment</span>
-                                      <Icon icon="solar:alt-arrow-right-bold" />
-                                    </button>
-                                  ) : (
-                                    <span className="text-slate-400 font-medium text-sm text-center">No ongoing treatment found.</span>
-                                  )}
+                              <button
+                                title="Health Monitor"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate(`/health-dashboard/${patient.patientId}`);
+                                }}
+                                className="px-4 py-2 hover:bg-white rounded-lg text-slate-500 hover:text-rose-500 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider duration-300"
+                              >
+                                <Icon icon="solar:heart-pulse-bold-duotone" width="16" height="16" />
+                                <span>Monitor</span>
+                              </button>
 
-                                  {/* 4) Pharmacy Prescription Button */}
-                                  {detail.prescriptionsCount > 0 && (
-                                    <button 
-                                      onClick={(e) => { e.stopPropagation(); setModalConfig({ isOpen: true, type: 'prescription', patientId: patient.patientId }); }} 
-                                      className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-2 rounded-lg text-xs font-bold hover:bg-blue-600 hover:text-white transition-colors shadow-sm active:scale-95 flex items-center justify-center gap-2"
-                                    >
-                                      <Icon icon="solar:pill-bold-duotone" className="text-lg" />
-                                      <span>Pharmacy Prescription</span>
-                                      <span className="bg-blue-200/50 px-1.5 py-0.5 rounded text-[10px] ml-auto">{detail.prescriptionsCount}</span>
-                                    </button>
-                                  )}
-                                </div>
-                              </div>
-  
-                              {/* Group 2: Lab and Scan Center Report */}
-                              <div className="bg-white p-5 rounded-lg border border-slate-200 shadow-sm flex flex-col gap-4 relative overflow-hidden">
-                                <div className="absolute top-0 left-0 w-1 h-full bg-rose-500"></div>
-                                <h4 className="text-xs font-black uppercase tracking-widest text-slate-500">Lab and Scan Center Report</h4>
-                                <div className="flex flex-col gap-3 mt-auto">
-                                  {/* 5) Blood Test Report Button */}
-                                  {detail.labReportsCount > 0 && (
-                                    <button 
-                                      onClick={(e) => { e.stopPropagation(); setModalConfig({ isOpen: true, type: 'lab', patientId: patient.patientId }); }} 
-                                      className="bg-rose-50 border border-rose-200 text-rose-700 px-4 py-2 rounded-lg text-xs font-bold hover:bg-rose-600 hover:text-white transition-colors shadow-sm active:scale-95 flex items-center justify-center gap-2"
-                                    >
-                                      <Icon icon="solar:test-tube-bold-duotone" className="text-lg" />
-                                      <span>Blood Test Report</span>
-                                      <span className="bg-rose-200/50 px-1.5 py-0.5 rounded text-[10px] ml-auto">{detail.labReportsCount}</span>
-                                    </button>
-                                  )}
-
-                                  {/* 6) X-Ray Report Button */}
-                                  {detail.xrayReportsCount > 0 && (
-                                    <button 
-                                      onClick={(e) => { e.stopPropagation(); setModalConfig({ isOpen: true, type: 'xray', patientId: patient.patientId }); }} 
-                                      className="bg-purple-50 border border-purple-200 text-purple-700 px-4 py-2 rounded-lg text-xs font-bold hover:bg-purple-600 hover:text-white transition-colors shadow-sm active:scale-95 flex items-center justify-center gap-2"
-                                    >
-                                      <Icon icon="solar:bone-bold-duotone" className="text-lg" />
-                                      <span>X-Ray Report</span>
-                                      <span className="bg-purple-200/50 px-1.5 py-0.5 rounded text-[10px] ml-auto">{detail.xrayReportsCount}</span>
-                                    </button>
-                                  )}
-
-                                  {/* 7) CT-Scan Report Button */}
-                                  {detail.ctScanReportsCount > 0 && (
-                                    <button 
-                                      onClick={(e) => { e.stopPropagation(); setModalConfig({ isOpen: true, type: 'ctscan', patientId: patient.patientId }); }} 
-                                      className="bg-purple-50 border border-purple-200 text-purple-700 px-4 py-2 rounded-lg text-xs font-bold hover:bg-purple-600 hover:text-white transition-colors shadow-sm active:scale-95 flex items-center justify-center gap-2"
-                                    >
-                                      <Icon icon="solar:scanner-bold-duotone" className="text-lg" />
-                                      <span>CT-Scan Report</span>
-                                      <span className="bg-purple-200/50 px-1.5 py-0.5 rounded text-[10px] ml-auto">{detail.ctScanReportsCount}</span>
-                                    </button>
-                                  )}
-
-                                  {/* 8) MRI Report Button */}
-                                  {detail.mriReportsCount > 0 && (
-                                    <button 
-                                      onClick={(e) => { e.stopPropagation(); setModalConfig({ isOpen: true, type: 'mri', patientId: patient.patientId }); }} 
-                                      className="bg-purple-50 border border-purple-200 text-purple-700 px-4 py-2 rounded-lg text-xs font-bold hover:bg-purple-600 hover:text-white transition-colors shadow-sm active:scale-95 flex items-center justify-center gap-2"
-                                    >
-                                      <Icon icon="solar:scanner-2-bold-duotone" className="text-lg" />
-                                      <span>MRI Report</span>
-                                      <span className="bg-purple-200/50 px-1.5 py-0.5 rounded text-[10px] ml-auto">{detail.mriReportsCount}</span>
-                                    </button>
-                                  )}
-                                  
-                                  {!(detail.labReportsCount > 0 || detail.scanReportsCount > 0) && (
-                                    <span className="text-slate-400 font-medium text-sm text-center">No clinical reports available.</span>
-                                  )}
-                                </div>
-                              </div>
-  
-                              {/* Group 3: Attender Details */}
-                              <div className="bg-white p-5 rounded-lg border border-slate-200 shadow-sm flex flex-col gap-4 relative overflow-hidden">
-                                <div className="absolute top-0 left-0 w-1 h-full bg-amber-500"></div>
-                                <h4 className="text-xs font-black uppercase tracking-widest text-slate-500">Attender Details</h4>
-                                <div className="flex flex-col gap-3 text-sm mt-auto">
-                                  {/* 9) Attender Name */}
-                                  <div className="flex items-center gap-2 bg-slate-50 p-2 rounded-md">
-                                    <Icon icon="solar:user-rounded-bold-duotone" className="text-amber-500 text-lg shrink-0" />
-                                    <span className="text-slate-500">Attender Name:</span>
-                                    <span className="font-bold text-slate-800 ml-auto truncate">{detail.attenderName || patient.guardianName || "-"}</span>
-                                  </div>
-                                  
-                                  {/* 10) Attender Ph No */}
-                                  <div className="flex items-center gap-2 bg-slate-50 p-2 rounded-md">
-                                    <Icon icon="solar:phone-bold-duotone" className="text-amber-500 text-lg shrink-0" />
-                                    <span className="text-slate-500">Phone No:</span>
-                                    <span className="font-bold text-slate-800 ml-auto">{detail.attenderPhone || "-"}</span>
-                                  </div>
-                                  
-                                  {/* 11) Attender Relationship */}
-                                  <div className="flex items-center gap-2 bg-slate-50 p-2 rounded-md">
-                                    <Icon icon="solar:users-group-two-rounded-bold-duotone" className="text-amber-500 text-lg shrink-0" />
-                                    <span className="text-slate-500">Relationship:</span>
-                                    <span className="font-bold text-slate-800 ml-auto capitalize">{detail.attenderRelationship || "-"}</span>
-                                  </div>
-                                </div>
-                              </div>
-
+                              <button
+                                title="AI Report"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleOverallAIReport(patient.patientId, patient.patientName);
+                                }}
+                                className="px-4 py-2 hover:bg-white rounded-lg text-slate-500 hover:text-emerald-600 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider duration-300"
+                              >
+                                <Icon icon="solar:magic-stick-3-bold-duotone" width="16" height="16" />
+                                <span>AI Report</span>
+                              </button>
                             </div>
-
-                            {/* Last Visit Table */}
-                            {detail.treatmentHistory && detail.treatmentHistory.length > 0 && (() => {
-                              // Ensure we only look at plans that have a date to determine the 'lastDate'
-                              const validPlans = detail.treatmentHistory.filter(th => th && th.date);
-                              const lastDateRaw = validPlans.length > 0 ? validPlans[validPlans.length - 1].date : null;
-                              
-                              let lastVisitPlans = [];
-                              let displayDate = "-";
-
-                              if (lastDateRaw) {
-                                const formattedLastDate = dayjs(lastDateRaw).format("YYYY-MM-DD");
-                                displayDate = formattedLastDate;
-                                lastVisitPlans = detail.treatmentHistory.filter(th => {
-                                  if (!th || !th.date) return false;
-                                  return dayjs(th.date).format("YYYY-MM-DD") === formattedLastDate;
-                                });
-                              } else {
-                                // If no dates are found in the history, just show the absolute last entry
-                                lastVisitPlans = detail.treatmentHistory.slice(-1);
-                              }
-
-                              if (lastVisitPlans.length === 0) return null;
-                              
-                              return (
-                                <div className="mt-6 border-t border-slate-200 pt-6">
-                                  <h4 className="text-sm font-black uppercase tracking-widest text-slate-700 mb-4 flex items-center gap-2">
-                                    Last Visit Table 
-                                    <span className="text-slate-500 font-medium lowercase text-xs">(Date of visit: {displayDate})</span>
-                                  </h4>
-                                  <div className="overflow-x-auto rounded-lg border border-slate-200 shadow-sm bg-white">
-                                    <table className="w-full text-left text-sm text-slate-600">
-                                      <thead className="bg-slate-50 text-slate-700 font-bold uppercase text-[10px] tracking-widest border-b border-slate-200">
-                                        <tr>
-                                          <th className="px-4 py-3 whitespace-nowrap">S.No</th>
-                                          <th className="px-4 py-3 whitespace-nowrap">Primary Dr</th>
-                                          <th className="px-4 py-3 min-w-[150px]">Complaint</th>
-                                          <th className="px-4 py-3 whitespace-nowrap text-center">Prescription</th>
-                                          <th className="px-4 py-3 whitespace-nowrap text-center">Blood Test</th>
-                                          <th className="px-4 py-3 whitespace-nowrap text-center">CT Scan</th>
-                                          <th className="px-4 py-3 whitespace-nowrap text-center">MRI Scan</th>
-                                          <th className="px-4 py-3 whitespace-nowrap text-center">X-Ray</th>
-                                        </tr>
-                                      </thead>
-                                      <tbody className="divide-y divide-slate-100">
-                                        {lastVisitPlans.map((th, idx) => {
-                                          const renderStatus = (val, typeKey) => {
-                                            if (val !== "Yes") return <span className="text-slate-400 font-medium text-xs">not-given</span>;
-
-                                            let isAvailable = false;
-                                            if (typeKey === 'prescription') {
-                                              isAvailable = detail.prescriptionDates?.some(d => dayjs(d).format("YYYY-MM-DD") === displayDate);
-                                            } else if (typeKey === 'lab') {
-                                              isAvailable = detail.labDates?.some(d => dayjs(d).format("YYYY-MM-DD") === displayDate);
-                                            } else if (typeKey === 'xray') {
-                                              isAvailable = detail.scanData?.some(d => d.type && d.type.toLowerCase().includes('x-ray') && dayjs(d.date).format("YYYY-MM-DD") === displayDate);
-                                            } else if (typeKey === 'ctscan') {
-                                              isAvailable = detail.scanData?.some(d => d.type && d.type.toLowerCase().includes('ct') && dayjs(d.date).format("YYYY-MM-DD") === displayDate);
-                                            } else if (typeKey === 'mri') {
-                                              isAvailable = detail.scanData?.some(d => d.type && d.type.toLowerCase().includes('mri') && dayjs(d.date).format("YYYY-MM-DD") === displayDate);
-                                            }
-
-                                            if (!isAvailable) {
-                                              return <span className="text-amber-500 font-medium text-xs">pending</span>;
-                                            }
-
-                                            return (
-                                              <button 
-                                                onClick={(e) => { 
-                                                  e.stopPropagation(); 
-                                                  setModalConfig({ isOpen: true, type: typeKey, patientId: patient.patientId, filterDate: displayDate }); 
-                                                }}
-                                                className="text-blue-600 hover:text-blue-700 font-bold underline text-xs transition-colors"
-                                              >
-                                                view
-                                              </button>
-                                            );
-                                          };
-                                          return (
-                                            <tr key={idx} className="hover:bg-slate-50 transition-colors">
-                                              <td className="px-4 py-3 font-semibold text-slate-800">{idx + 1}</td>
-                                              <td className="px-4 py-3 whitespace-nowrap">{th.doctorName ? `Dr. ${th.doctorName}` : "-"}</td>
-                                              <td className="px-4 py-3 font-medium text-slate-700">{th.primaryComplaint || "-"}</td>
-                                              <td className="px-4 py-3 text-center">{renderStatus(th.prescriptionGiven, "prescription")}</td>
-                                              <td className="px-4 py-3 text-center">{renderStatus(th.bloodTestGiven, "lab")}</td>
-                                              <td className="px-4 py-3 text-center">{renderStatus(th.ctScanGiven, "ctscan")}</td>
-                                              <td className="px-4 py-3 text-center">{renderStatus(th.mriGiven, "mri")}</td>
-                                              <td className="px-4 py-3 text-center">{renderStatus(th.xrayGiven, "xray")}</td>
-                                            </tr>
-                                          );
-                                        })}
-                                      </tbody>
-                                    </table>
-                                  </div>
-                                </div>
-                              );
-                            })()}
-
                           </div>
+                          <PatientDetails patientId={patient.patientId} isNested={true} />
                         </td>
                       </tr>
                     )}
@@ -733,7 +472,7 @@ const PatientInfoTable = () => {
               })
             ) : (
               <tr>
-                <td colSpan={11} className="py-12 text-center text-slate-500">
+                <td colSpan={10} className="py-12 text-center text-slate-500">
                   <div className="flex flex-col items-center justify-center gap-2">
                     <Icon
                       icon="solar:box-minimalistic-linear"

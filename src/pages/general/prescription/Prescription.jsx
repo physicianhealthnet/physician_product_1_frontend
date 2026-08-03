@@ -12,7 +12,7 @@ import AIGaugeReport from "../../../component/ui/AIGaugeReport";
 import Input from "../../../component/ui/Input";
 import Button from "../../../component/ui/Button";
 
-function Prescription({ history, treatment_id, data }) {
+function Prescription({ history, treatment_id, data, patientId }) {
   const theme = useSelector((state) => state.theme?.theme);
   const [switchAdd, setSwitchAdd] = useState(false);
   const [patientInfo, setPatientInfo] = useState({});
@@ -95,7 +95,8 @@ function Prescription({ history, treatment_id, data }) {
   const [currentPrescriptions, setCurrentPrescriptions] = useState([]); // Local list for multi-add (medicinesData)
   const [editingRowIndex, setEditingRowIndex] = useState(null); // For editing a row in the list
   const [editingPrescription, setEditingPrescription] = useState(null); // For full prescription edit
-  const { patient_id } = useParams();
+  const { patient_id: urlPatientId } = useParams();
+  const patient_id = patientId || urlPatientId;
   const [editPresId, setEditPresId] = useState(null);
   const clinicId = JSON.parse(sessionStorage.getItem("user"))?.clinicId;
   const [formatOpen, setFormatOpen] = useState(false);

@@ -9,9 +9,10 @@ import { useRef } from "react";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 
-function BillsEntery({ outerswaper }) {
+function BillsEntery({ outerswaper, patientId }) {
   const billRef = useRef();
-  const { patient_id } = useParams();
+  const { patient_id: urlPatientId } = useParams();
+  const patient_id = patientId || urlPatientId;
   const location = useLocation();
   const navigate = useNavigate();
   const user = JSON.parse(sessionStorage.getItem("user"));

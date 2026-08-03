@@ -8,8 +8,9 @@ import Button from "../ui/Button";
 import Input from "../ui/Input";
 import Card from "../ui/Card";
 
-function SessionNotes({ session, outerswaper }) {
-  const { patient_id } = useParams();
+function SessionNotes({ session, outerswaper, patientId }) {
+  const { patient_id: urlPatientId } = useParams();
+  const patient_id = patientId || urlPatientId;
   const user = JSON.parse(sessionStorage.getItem("user"));
   const [swaper, setSwaper] = useState(false);
   const [formData, setFormData] = useState({});

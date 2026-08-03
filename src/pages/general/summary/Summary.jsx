@@ -17,13 +17,14 @@ import Button from "../../../component/ui/Button";
 import PhysicianAssessmentView from "../assessment/PhysicianAssessmentView";
 import PatientTimeline from "./PatientTimeline";
 
-function Summary() {
+function Summary({ patientId }) {
   const page1Ref = useRef();
   const page2Ref = useRef();
   const page3Ref = useRef();
   const page4Ref = useRef();
   const page5Ref = useRef();
-  const { patient_id } = useParams();
+  const { patient_id: urlPatientId } = useParams();
+  const patient_id = patientId || urlPatientId;
 
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);

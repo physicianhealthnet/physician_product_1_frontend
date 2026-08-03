@@ -10,9 +10,10 @@ import { AxiosInstance } from "../../../utilities/AxiosInstance";
 import Card from "../../../component/ui/Card";
 import Button from "../../../component/ui/Button";
 
-function Feedback() {
+function Feedback({ patientId }) {
   const user = JSON.parse(sessionStorage.getItem("user"));
-  const { patient_id } = useParams();
+  const { patient_id: urlPatientId } = useParams();
+  const patient_id = patientId || urlPatientId;
 
   const [patientDetails, setPatientDetails] = useState({});
   const [formData, setFormData] = useState({});

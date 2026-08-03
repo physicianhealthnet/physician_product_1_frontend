@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { AxiosInstance } from "../../../utilities/AxiosInstance";
 import { Icon } from "@iconify/react";
@@ -7,6 +7,7 @@ import {
   StaggerItem,
 } from "../../../component/ui/Transitions";
 import PatientDetailsTable from "../../../component/dashboard/PatientDetailsTable";
+import TodayAppointmentsTable from "../../../component/dashboard/TodayAppointmentsTable";
 import {
   mockDashboardData,
   mockPatientsList,
@@ -20,6 +21,15 @@ const DoctorDashboard = () => {
   const [isDemoMode, setIsDemoMode] = useState(() => {
     return localStorage.getItem("isDemoMode") === "true";
   });
+  const [activeAptTab, setActiveAptTab] = useState("all");
+  const todayAptsRef = useRef(null);
+
+  const handleCardClick = (slot) => {
+    setActiveAptTab(slot);
+    setTimeout(() => {
+      todayAptsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  };
 
   const toggleDemoMode = () => {
     const newVal = !isDemoMode;
@@ -93,9 +103,13 @@ const DoctorDashboard = () => {
     bgGradient,
     iconBg,
     iconColor,
+    onClick,
   }) => (
     <div
-      className={`group relative overflow-hidden bg-linear-to-br ${bgGradient} backdrop-blur-xl border border-slate-200/60 rounded-2xl hover:scale-[1.02] transition-all duration-300`}
+      onClick={onClick}
+      className={`group relative overflow-hidden bg-linear-to-br ${bgGradient} backdrop-blur-xl border border-slate-200/60 rounded-2xl hover:scale-[1.02] transition-all duration-300 ${
+        onClick ? "cursor-pointer" : ""
+      }`}
     >
       <div
         className={`absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[60px] opacity-10 transition-opacity group-hover:opacity-20 ${color}`}
@@ -131,62 +145,6 @@ const DoctorDashboard = () => {
     </div>
   );
 
-  const PatientListColumn = ({ title, appointments, icon, accentColor }) => (
-    <div className="flex flex-col h-full bg-white/60 backdrop-blur-sm rounded-3xl p-4 border-gray-200 border shadow-sm hover:shadow-md transition-shadow">
-      <div className="flex items-center gap-2 mb-4 px-1">
-        <div className={`p-1.5 rounded-lg`}>
-          <Icon
-            icon={icon}
-            className={accentColor.replace("bg-", "text-")}
-            width={18}
-          />
-        </div>
-        <h4 className="text-slate-700 font-bold text-sm">{title}</h4>
-        <span className="ml-auto bg-white px-2 py-0.5 rounded-full text-[10px] font-bold text-slate-500 border border-slate-100">
-          {appointments.length}
-        </span>
-      </div>
-      <div className="flex flex-col gap-3 overflow-y-auto pr-1 custom-scrollbar flex-1">
-        {appointments.length > 0 ? (
-          appointments.map((apt, i) => (
-            <div
-              key={apt._id || i}
-              onClick={() => navigate(`/patient-details/${apt.patientId}`)}
-              className="flex items-center gap-3 p-2.5 rounded-2xl bg-white border border-slate-50 hover:border-slate-200 hover:shadow-sm transition-all cursor-pointer group"
-            >
-              <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center border border-white shadow-sm overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
-                <Icon
-                  icon="solar:user-circle-bold-duotone"
-                  className="text-slate-300 text-3xl"
-                />
-              </div>
-              <div className="flex flex-col min-w-0 flex-1">
-                <span className="text-slate-800 text-[13px] font-bold truncate">
-                  {apt.name}
-                </span>
-                <span className="text-slate-400 text-[11px] truncate">
-                  {apt.time || "Ongoing"}
-                </span>
-              </div>
-              <div
-                className={`w-2 h-2 rounded-full ${
-                  ["Completed", "Checked-out"].includes(apt.status)
-                    ? "bg-green-400"
-                    : "bg-blue-400"
-                }`}
-              ></div>
-            </div>
-          ))
-        ) : (
-          <div className="flex flex-col items-center justify-center py-12 text-slate-300 gap-2">
-            <Icon icon="solar:calendar-minimalistic-linear" width={32} />
-            <span className="text-xs font-medium">No appointments</span>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-
   return (
     <StaggerContainer>
       <div className="flex flex-col gap-6 sm:gap-10 p-4 sm:p-6 md:p-10 bg-white/70 rounded backdrop-blur-3xl border border-slate-200 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] min-h-[500px]">
@@ -206,25 +164,6 @@ const DoctorDashboard = () => {
               </p>
             </div>
             <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 sm:gap-3 bg-slate-50/50 p-2 border border-slate-200 shadow-inner rounded w-full sm:w-auto">
-              <div className="flex items-center justify-between sm:justify-start gap-2 px-3 py-2 bg-blue-50 border border-blue-200 rounded w-full sm:w-auto">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-                </span>
-                <span className="text-[10px] font-black text-blue-700 uppercase tracking-widest">
-                  Demo Mode (Tamil Nadu)
-                </span>
-                <button
-                  onClick={toggleDemoMode}
-                  className={`ml-2 px-2 py-1 rounded text-[9px] font-black uppercase transition-all duration-200 ${
-                    isDemoMode
-                      ? "bg-blue-600 text-white hover:bg-blue-700 shadow-sm"
-                      : "bg-slate-200 text-slate-600 hover:bg-slate-300"
-                  }`}
-                >
-                  {isDemoMode ? "ON" : "OFF"}
-                </button>
-              </div>
               <h1 className="text-slate-500 text-[10px] uppercase font-black tracking-widest pl-2 pr-1 w-full sm:w-auto text-center sm:text-left">
                 Quick Links:
               </h1>
@@ -268,6 +207,7 @@ const DoctorDashboard = () => {
               bgGradient="from-blue-500/10 to-indigo-500/10"
               iconBg="bg-blue-500/10"
               iconColor="text-blue-600"
+              onClick={() => handleCardClick("all")}
             />
             <StatCard
               title="Morning Appointments"
@@ -278,7 +218,8 @@ const DoctorDashboard = () => {
               bgGradient="from-sky-500/10 to-cyan-500/10"
               iconBg="bg-sky-500/10"
               iconColor="text-sky-600"
-              />
+              onClick={() => handleCardClick("morning")}
+            />
             <StatCard
               title="Afternoon Appointments"
               subValue={patientStats?.afternoon?.completed || 0}
@@ -288,6 +229,7 @@ const DoctorDashboard = () => {
               color="bg-amber-500"
               iconBg="bg-amber-500/10"
               iconColor="text-amber-600"
+              onClick={() => handleCardClick("afternoon")}
             />
             <StatCard
               title="Evening Appointments"
@@ -298,6 +240,7 @@ const DoctorDashboard = () => {
               bgGradient="from-indigo-500/10 to-violet-500/10"
               iconBg="bg-indigo-500/10"
               iconColor="text-indigo-600"
+              onClick={() => handleCardClick("evening")}
             />
           </div>
         </StaggerItem>
@@ -502,24 +445,16 @@ const DoctorDashboard = () => {
               </div>
             </div>
 
-            <div className="xl:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-6 ">
-              <PatientListColumn
-                title="Morning"
-                appointments={morningAppointments}
-                icon="solar:sun-2-bold-duotone"
-                accentColor="bg-amber-500"
-              />
-              <PatientListColumn
-                title="Afternoon"
-                appointments={afternoonAppointments}
-                icon="solar:clouds-bold-duotone"
-                accentColor="bg-sky-500"
-              />
-              <PatientListColumn
-                title="Evening"
-                appointments={eveningAppointments}
-                icon="solar:moon-bold-duotone"
-                accentColor="bg-indigo-600"
+            <div className="xl:col-span-8" ref={todayAptsRef}>
+              <TodayAppointmentsTable
+                morningAppointments={morningAppointments}
+                afternoonAppointments={afternoonAppointments}
+                eveningAppointments={eveningAppointments}
+                isDemoMode={isDemoMode}
+                demoPatients={mockPatientsList}
+                demoPatientDetails={mockPatientDetails}
+                activeTab={activeAptTab}
+                setActiveTab={setActiveAptTab}
               />
             </div>
           </div>

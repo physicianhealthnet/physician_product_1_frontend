@@ -14,8 +14,9 @@ import PrescriptionFormatShow from "../prescription/PrescriptionFormatShow";
 import PatientDocuments from "../../../component/patientDetails/PatientDocuments";
 import chatSocketService from "../../../utilities/chatSocketService";
 
-export default function PhysicianAssessmentSheet() {
-  const { patient_id } = useParams();
+export default function PhysicianAssessmentSheet({ patientId }) {
+  const { patient_id: urlPatientId } = useParams();
+  const patient_id = patientId || urlPatientId;
 
   /* ================= PATIENT INFO ================= */
   const [patientInfo, setPatientInfo] = useState({});

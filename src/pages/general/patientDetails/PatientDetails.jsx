@@ -21,14 +21,16 @@ import Card from "../../../component/ui/Card";
 import { Skeleton } from "../../../component/ui/Skeleton";
 
 import { StaggerContainer, StaggerItem } from "../../../component/ui/Transitions";
+import PhysicianAssessmentSheet from "../assessment/PhysicianAssessmentSheet";
 
-const PatientDetails = () => {
+const PatientDetails = ({ patientId, isNested }) => {
   const usertype = JSON.parse(sessionStorage.getItem("user"));
   const [patientInfo, setPatientInfo] = useState([]);
   const [patientMedicalData, setPatientMedicalData] = useState([]);
   const [activeTab, setActiveTab] = useState("1");
   const [loading, setLoading] = useState(true);
-  const { patient_id } = useParams();
+  const { patient_id: urlPatientId } = useParams();
+  const patient_id = patientId || urlPatientId;
   const navigate = useNavigate();
 
   // Vibrant colors for active tabs with modern gradients
@@ -42,6 +44,7 @@ const PatientDetails = () => {
     8: { bg: "#2971ff", gradient: "from-blue-600 to-indigo-600" },
     10: { bg: "#f13636", gradient: "from-red-500 to-rose-600" },
     11: { bg: "#a929ff", gradient: "from-purple-600 to-violet-600" },
+    12: { bg: "#23b8ff", gradient: "from-cyan-500 to-blue-500" },
   };
 
   const getPatientDetails = async () => {
@@ -119,61 +122,63 @@ const PatientDetails = () => {
 
   return (
     <StaggerContainer>
-      <div className="flex flex-col gap-10 p-10 bg-white/70 rounded backdrop-blur-3xl border border-slate-200 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] min-h-[900px]">
+      <div className={isNested ? "flex flex-col gap-6" : "flex flex-col gap-10 p-10 bg-white/70 rounded backdrop-blur-3xl border border-slate-200 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] min-h-[900px]"}>
         {/* Modern Header */}
-        <StaggerItem>
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div className="flex flex-col gap-1">
-              <h1 className="font-black text-slate-800  text-4xl tracking-tight">
-                Patient <span className="text-blue-500">Details</span>
-              </h1>
-              <p className="text-slate-500  font-medium">
-                Comprehensive medical records and treatment history
-              </p>
-            </div>
-            <div className="flex flex-row flex-wrap gap-3">
-              <Button
-                onClick={() => navigate(-1)}
-                variant="secondary"
-                className="rounded-xl px-4 py-2 flex items-center gap-2"
-              >
-                <Icon icon="tabler:arrow-left" />
-                Back
-              </Button>
+        {!isNested && (
+          <StaggerItem>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div className="flex flex-col gap-1">
+                <h1 className="font-black text-slate-800  text-4xl tracking-tight">
+                  Patient <span className="text-blue-500">Details</span>
+                </h1>
+                <p className="text-slate-500  font-medium">
+                  Comprehensive medical records and treatment history
+                </p>
+              </div>
+              <div className="flex flex-row flex-wrap gap-3">
+                <Button
+                  onClick={() => navigate(-1)}
+                  variant="secondary"
+                  className="rounded-xl px-4 py-2 flex items-center gap-2"
+                >
+                  <Icon icon="tabler:arrow-left" />
+                  Back
+                </Button>
 
-              <Button
-                onClick={handleShareEmail}
-                loading={sharing}
-                disabled={sharing}
-                variant="secondary"
-                className="rounded-xl px-4 py-2 flex items-center gap-2 border-emerald-500/50 text-emerald-600 hover:bg-emerald-50 :bg-emerald-500/10"
-              >
-                <Icon icon="tabler:share" />
-                Share Records
-              </Button>
+                <Button
+                  onClick={handleShareEmail}
+                  loading={sharing}
+                  disabled={sharing}
+                  variant="secondary"
+                  className="rounded-xl px-4 py-2 flex items-center gap-2 border-emerald-500/50 text-emerald-600 hover:bg-emerald-50 :bg-emerald-500/10"
+                >
+                  <Icon icon="tabler:share" />
+                  Share Records
+                </Button>
 
-              <Button
-                onClick={() => {
-                  if (
-                    usertype?.userType === "accountant" ||
-                    usertype?.userType === "generalManager" ||
-                    usertype?.userType === "receptionist"
-                  ) {
-                    message.warning(
-                      "Doctor & CEO Only Able Access This Assessment"
-                    );
-                    return;
-                  }
-                  navigate(`/assessment/${patient_id}`);
-                }}
-                className="rounded-xl px-4 py-2 flex items-center gap-2"
-              >
-                <MdOutlineAddChart />
-                Assessment
-              </Button>
+                <Button
+                  onClick={() => {
+                    if (
+                      usertype?.userType === "accountant" ||
+                      usertype?.userType === "generalManager" ||
+                      usertype?.userType === "receptionist"
+                    ) {
+                      message.warning(
+                        "Doctor & CEO Only Able Access This Assessment"
+                      );
+                      return;
+                    }
+                    navigate(`/assessment/${patient_id}`);
+                  }}
+                  className="rounded-xl px-4 py-2 flex items-center gap-2"
+                >
+                  <MdOutlineAddChart />
+                  Assessment
+                </Button>
+              </div>
             </div>
-          </div>
-        </StaggerItem>
+          </StaggerItem>
+        )}
 
         {/* Patient Info Card with Glassmorphism */}
         <StaggerItem>
@@ -298,15 +303,35 @@ const PatientDetails = () => {
         {/* Modern Tabs Section */}
         <StaggerItem>
           <div className="w-full">
+            <style>{`
+              .custom-tabs .ant-tabs-nav-wrap {
+                flex-wrap: wrap !important;
+              }
+              .custom-tabs .ant-tabs-nav-list {
+                flex-wrap: wrap !important;
+                width: 100% !important;
+                gap: 8px !important;
+              }
+              .custom-tabs .ant-tabs-tab {
+                margin: 0 !important;
+                padding: 0 !important;
+              }
+              .custom-tabs .ant-tabs-ink-bar {
+                display: none !important;
+              }
+              .custom-tabs .ant-tabs-nav-operations {
+                display: none !important;
+              }
+            `}</style>
             <Tabs
               activeKey={activeTab}
               onChange={setActiveTab}
               destroyInactiveTabPane={true}
               animated={{ inkBar: true, tabPane: true }}
               tabBarStyle={{ borderBottom: 'none' }}
-              className="custom-tabs "
+              className="custom-tabs"
               renderTabBar={(props, DefaultTabBar) => (
-                <div className="bg-slate-100/50  backdrop-blur-xl p-2 rounded-2xl overflow-x-auto border border-slate-200/50 ">
+                <div className="bg-slate-100/50 backdrop-blur-xl p-2 rounded-2xl border border-slate-200/50 overflow-visible">
                   <DefaultTabBar {...props} style={{ background: "transparent", border: "none" }} />
                 </div>
               )}
@@ -329,6 +354,7 @@ const PatientDetails = () => {
                     <div className="bg-white/40  backdrop-blur-md border border-slate-200  p-6 rounded-2xl min-h-[400px] mt-2">
                       <PatientMedicalDetails
                         patientMedicalData={patientMedicalData}
+                        patientId={patient_id}
                       />
                     </div>
                   </TabPane>
@@ -349,7 +375,7 @@ const PatientDetails = () => {
                   key="2"
                 >
                   <div className="bg-white/40  backdrop-blur-md border border-slate-200  p-6 rounded-2xl min-h-[400px] mt-2">
-                    <PatientDocuments />
+                    <PatientDocuments patientId={patient_id} />
                   </div>
                 </TabPane>
               )}
@@ -367,7 +393,7 @@ const PatientDetails = () => {
                 key="4"
               >
                 <div className="bg-white/40  backdrop-blur-md border border-slate-200  p-6 rounded-2xl min-h-[400px] mt-2">
-                  <TreatmentTracker />
+                  <TreatmentTracker patientId={patient_id} />
                 </div>
               </TabPane>
               <TabPane
@@ -384,7 +410,7 @@ const PatientDetails = () => {
                 key="11"
               >
                 <div className="bg-white/40  backdrop-blur-md border border-slate-200  p-6 rounded-2xl min-h-[400px] mt-2">
-                  <Prescription />
+                  <Prescription patientId={patient_id} />
                 </div>
               </TabPane>
               <TabPane
@@ -401,7 +427,7 @@ const PatientDetails = () => {
                 key="3"
               >
                 <div className="bg-white/40  backdrop-blur-md border border-slate-200  p-6 rounded-2xl min-h-[400px] mt-2">
-                  <BillsEntery />
+                  <BillsEntery patientId={patient_id} />
                 </div>
               </TabPane>
               {usertype?.userType !== "generalManager" && (
@@ -419,7 +445,7 @@ const PatientDetails = () => {
                   key="5"
                 >
                   <div className="bg-white/40  backdrop-blur-md border border-slate-200  p-6 rounded-2xl min-h-[400px] mt-2">
-                    <SessionNotes />
+                    <SessionNotes patientId={patient_id} />
                   </div>
                 </TabPane>
               )}
@@ -439,7 +465,7 @@ const PatientDetails = () => {
                   key="8"
                 >
                   <div className="bg-white/40  backdrop-blur-md border border-slate-200  p-6 rounded-2xl min-h-[400px] mt-2">
-                    <Feedback />
+                    <Feedback patientId={patient_id} />
                   </div>
                 </TabPane>
               )}
@@ -458,7 +484,7 @@ const PatientDetails = () => {
                   key="7"
                 >
                   <div className="bg-white/40  backdrop-blur-md border border-slate-200  p-6 rounded-2xl min-h-[400px] mt-2">
-                    <ConsentForm />
+                    <ConsentForm patientId={patient_id} />
                   </div>
                 </TabPane>
               )}
@@ -476,9 +502,30 @@ const PatientDetails = () => {
                 key="10"
               >
                 <div className="bg-white/40  backdrop-blur-md border border-slate-200  p-6 rounded-2xl min-h-[400px] mt-2">
-                  <Summary />
+                  <Summary patientId={patient_id} />
                 </div>
               </TabPane>
+              {usertype?.userType !== "accountant" &&
+                usertype?.userType !== "generalManager" &&
+                usertype?.userType !== "receptionist" && (
+                  <TabPane
+                    tab={
+                      <div
+                        className={`px-4 py-2.5 rounded-xl text-sm font-black transition-all duration-300 uppercase tracking-widest ${activeTab === "12"
+                          ? `bg-gradient-to-r ${tabColors[12].gradient} text-white shadow-lg`
+                          : "bg-slate-200  text-slate-600  hover:bg-slate-300 :bg-slate-600"
+                          }`}
+                      >
+                        Assessment
+                      </div>
+                    }
+                    key="12"
+                  >
+                    <div className="bg-white/40  backdrop-blur-md border border-slate-200  p-6 rounded-2xl min-h-[400px] mt-2">
+                      <PhysicianAssessmentSheet patientId={patient_id} />
+                    </div>
+                  </TabPane>
+                )}
             </Tabs>
           </div>
         </StaggerItem>

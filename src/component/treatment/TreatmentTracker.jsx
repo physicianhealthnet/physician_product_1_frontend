@@ -12,8 +12,9 @@ import Button from "../ui/Button";
 
 const { Panel } = Collapse;
 
-const TreatmentTracker = ({ tracker }) => {
-  const { patient_id: patientId } = useParams();
+const TreatmentTracker = ({ tracker, patientId: propPatientId }) => {
+  const { patient_id: urlPatientId } = useParams();
+  const patientId = propPatientId || urlPatientId;
   const clinicId = JSON?.parse(sessionStorage?.getItem("user"))?.clinicId;
   const [patientDetails, setPatientDetails] = useState({});
   const [sessions, setSessions] = useState([1]);

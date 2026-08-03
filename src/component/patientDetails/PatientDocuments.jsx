@@ -10,8 +10,9 @@ import { CardSkeleton } from "../ui/Skeleton";
 import FileViewerModal from "../scan/FileViewerModal";
 import formatDateToDDMMYYYY from "../../utilities/formatter";
 
-function PatientDocuments({ documents, swaper, topics, title, readOnly }) {
-  const { patient_id } = useParams();
+function PatientDocuments({ documents, swaper, topics, title, readOnly, patientId }) {
+  const { patient_id: urlPatientId } = useParams();
+  const patient_id = patientId || urlPatientId;
   const [docUploaderOpener, setDocUploaderOpener] = useState(false);
   const [viewerFileUrl, setViewerFileUrl] = useState(null);
   const [formData, setFormData] = useState({

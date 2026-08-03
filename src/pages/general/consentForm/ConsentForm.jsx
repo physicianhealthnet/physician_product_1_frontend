@@ -70,8 +70,9 @@ const SignaturePad = forwardRef(({ label }, ref) => {
 });
 
 // ---------------- Consent Form ----------------
-const ConsentForm = () => {
-  const { patient_id } = useParams();
+const ConsentForm = ({ patientId }) => {
+  const { patient_id: urlPatientId } = useParams();
+  const patient_id = patientId || urlPatientId;
 
   const guardianSignRef = useRef();
   const doctorSignRef = useRef();

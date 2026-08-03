@@ -9,11 +9,13 @@ function PatientMedicalDetails({
   patientMedicalData,
   swaper,
   showTitle,
+  patientId,
 }) {
   console.log(patientMedicalData);
 
   const navigate = useNavigate();
-  const { patient_id } = useParams();
+  const { patient_id: urlPatientId } = useParams();
+  const patient_id = patientId || urlPatientId;
 
   const [time, setTime] = useState(new Date().toLocaleTimeString());
 
