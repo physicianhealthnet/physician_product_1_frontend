@@ -22,7 +22,7 @@ const doctors = [
   { username: "Raja", color: "blue" },
 ];
 
-const categories = ["Consultation", "Treatment", "Rehab Training"];
+// Prebuilt reasons list is managed inside the component state
 
 const BookAppointment = ({
   visible,
@@ -50,6 +50,19 @@ const BookAppointment = ({
   const [searchResults, setSearchResults] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [allDoctors, setAllDoctors] = useState([]);
+  const [reasons, setReasons] = useState([
+    "Consultation",
+    "Treatment",
+    "Rehab Training",
+    "Follow-up Visit",
+    "Routine Check-up",
+    "Diagnostic Scan",
+    "Lab Test / Blood Work",
+    "Prescription Refill",
+    "Vaccination / Immunization",
+    "Emergency / Urgent Care"
+  ]);
+  const [searchValue, setSearchValue] = useState("");
   const user = JSON.parse(
     sessionStorage.getItem("user") || sessionStorage.getItem("master"),
   );
@@ -295,22 +308,35 @@ const BookAppointment = ({
         </div>
         <div className="flex flex-col">
           <label className="text-sm font-medium text-slate-700  mb-1.5 block">
-            Select Category
+            Select Reason
           </label>
           <Select
-            placeholder="Select Category"
-            value={formData.category}
-            onChange={(val) =>
-              setFormData((prev) => ({ ...prev, category: val }))
-            }
+            showSearch
+            placeholder="Select or type reason"
+            value={formData.category || undefined}
+            onChange={(val) => {
+              if (val && !reasons.includes(val)) {
+                setReasons((prev) => [...prev, val]);
+              }
+              setFormData((prev) => ({ ...prev, category: val }));
+            }}
+            onSearch={(val) => setSearchValue(val)}
             className="w-full h-10 rounded-sm"
             popupClassName="rounded-sm"
+            filterOption={(input, option) =>
+              (option?.value ?? "").toLowerCase().includes(input.toLowerCase())
+            }
           >
-            {categories.map((cat) => (
-              <Option key={cat} value={cat} className="">
-                {cat}
+            {reasons.map((res) => (
+              <Option key={res} value={res} className="">
+                {res}
               </Option>
             ))}
+            {searchValue && !reasons.includes(searchValue) && (
+              <Option key={searchValue} value={searchValue}>
+                Create "{searchValue}"
+              </Option>
+            )}
           </Select>
         </div>
         <div>

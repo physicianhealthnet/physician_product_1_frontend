@@ -2,9 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AxiosInstance } from "../../../utilities/AxiosInstance";
 import { Icon } from "@iconify/react";
-import { StaggerContainer, StaggerItem } from "../../../component/ui/Transitions";
+import {
+  StaggerContainer,
+  StaggerItem,
+} from "../../../component/ui/Transitions";
 import PatientDetailsTable from "../../../component/dashboard/PatientDetailsTable";
-import { mockDashboardData, mockPatientsList, mockPatientDetails } from "./mockDashboardData";
+import {
+  mockDashboardData,
+  mockPatientsList,
+  mockPatientDetails,
+} from "./mockDashboardData";
 
 const DoctorDashboard = () => {
   const navigate = useNavigate();
@@ -77,41 +84,57 @@ const DoctorDashboard = () => {
     );
   }
 
-  const StatCard = ({ title, subValue, total, icon, color, bgGradient, iconBg, iconColor }) => (
+  const StatCard = ({
+    title,
+    subValue,
+    total,
+    icon,
+    color,
+    bgGradient,
+    iconBg,
+    iconColor,
+  }) => (
     <div
       className={`group relative overflow-hidden bg-linear-to-br ${bgGradient} backdrop-blur-xl border border-slate-200/60 rounded-2xl hover:scale-[1.02] transition-all duration-300`}
     >
-      <div className={`absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[60px] opacity-10 transition-opacity group-hover:opacity-20 ${color}`} />
+      <div
+        className={`absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[60px] opacity-10 transition-opacity group-hover:opacity-20 ${color}`}
+      />
 
-      <div className="p-6 flex items-center justify-between z-10 relative">
+      <div className="p-6 flex items-center justify-between gap-3 z-10 relative">
+        <div
+          className={`w-20 h-20 shrink-0 rounded-2xl shadow-gray-100 shadow ${iconBg} flex items-center justify-center ${iconColor} group-hover:scale-110 transition-transform`}
+        >
+          <Icon icon={icon} className="text-3xl" />
+        </div>
         <div className="flex flex-col gap-2 flex-1">
-          <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">
-            {title}
-          </span>
           <div className="flex items-baseline gap-1">
-            <span className="text-4xl font-black text-slate-800">{subValue}</span>
-            <span className="text-sm font-medium text-slate-400 opacity-80">
+            <span className="text-4xl font-black text-slate-800">
+              {subValue}
+            </span>
+            <span className="text-sm font-medium text-slate-600">
               / {total}
             </span>
           </div>
+          <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">
+            {title}
+          </span>
+
           <div className="w-full bg-slate-200/50 h-1.5 rounded-full mt-1 overflow-hidden shadow-inner">
             <div
-              className={`h-full ${color.replace('bg-', 'bg-')} bg-opacity-80 rounded-full transition-all duration-1000`}
+              className={`h-full ${color.replace("bg-", "bg-")} bg-opacity-80 rounded-full transition-all duration-1000`}
               style={{ width: `${total > 0 ? (subValue / total) * 100 : 0}%` }}
             ></div>
           </div>
-        </div>
-        <div className={`w-16 h-16 ml-4 shrink-0 rounded-2xl ${iconBg} flex items-center justify-center ${iconColor} group-hover:scale-110 transition-transform`}>
-          <Icon icon={icon} className="text-3xl" />
         </div>
       </div>
     </div>
   );
 
   const PatientListColumn = ({ title, appointments, icon, accentColor }) => (
-    <div className="flex flex-col h-full bg-white/60 backdrop-blur-sm rounded-3xl p-4 border border-white shadow-sm hover:shadow-md transition-shadow">
+    <div className="flex flex-col h-full bg-white/60 backdrop-blur-sm rounded-3xl p-4 border-gray-200 border shadow-sm hover:shadow-md transition-shadow">
       <div className="flex items-center gap-2 mb-4 px-1">
-        <div className={`p-1.5 rounded-lg ${accentColor} bg-opacity-10`}>
+        <div className={`p-1.5 rounded-lg`}>
           <Icon
             icon={icon}
             className={accentColor.replace("bg-", "text-")}
@@ -123,7 +146,7 @@ const DoctorDashboard = () => {
           {appointments.length}
         </span>
       </div>
-      <div className="flex flex-col gap-3 overflow-y-auto pr-1 custom-scrollbar max-h-80">
+      <div className="flex flex-col gap-3 overflow-y-auto pr-1 custom-scrollbar flex-1">
         {appointments.length > 0 ? (
           appointments.map((apt, i) => (
             <div
@@ -250,27 +273,27 @@ const DoctorDashboard = () => {
               title="Morning Appointments"
               subValue={patientStats?.morning?.completed || 0}
               total={patientStats?.morning?.total || 0}
-              icon="solar:sun-2-bold-duotone"
-              color="bg-amber-500"
-              bgGradient="from-amber-500/10 to-orange-500/10"
-              iconBg="bg-amber-500/10"
-              iconColor="text-amber-600"
-            />
-            <StatCard
-              title="Afternoon Appointments"
-              subValue={patientStats?.afternoon?.completed || 0}
-              total={patientStats?.afternoon?.total || 0}
-              icon="solar:clouds-bold-duotone"
+              icon="fluent:weather-partly-cloudy-day-16-filled"
               color="bg-sky-500"
               bgGradient="from-sky-500/10 to-cyan-500/10"
               iconBg="bg-sky-500/10"
               iconColor="text-sky-600"
+              />
+            <StatCard
+              title="Afternoon Appointments"
+              subValue={patientStats?.afternoon?.completed || 0}
+              total={patientStats?.afternoon?.total || 0}
+              icon="fluent:weather-sunny-16-filled"
+              bgGradient="from-amber-500/10 to-orange-500/10"
+              color="bg-amber-500"
+              iconBg="bg-amber-500/10"
+              iconColor="text-amber-600"
             />
             <StatCard
               title="Evening Appointments"
               subValue={patientStats?.evening?.completed || 0}
               total={patientStats?.evening?.total || 0}
-              icon="solar:moon-bold-duotone"
+              icon="fluent:weather-partly-cloudy-night-20-filled"
               color="bg-indigo-500"
               bgGradient="from-indigo-500/10 to-violet-500/10"
               iconBg="bg-indigo-500/10"
@@ -281,20 +304,63 @@ const DoctorDashboard = () => {
         <StaggerItem>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6 mt-4">
             {[
-              { label: "Tomorrow", count: patientStats?.tomorrowCount || 0, icon: "solar:calendar-mark-linear", color: "bg-blue-500", bgGradient: "from-blue-500/10 to-indigo-500/10", iconBg: "bg-blue-500/10", iconColor: "text-blue-600" },
-              { label: "This Week", count: patientStats?.thisWeekCount || 0, icon: "solar:calendar-bold-duotone", color: "bg-amber-500", bgGradient: "from-amber-500/10 to-orange-500/10", iconBg: "bg-amber-500/10", iconColor: "text-amber-600" },
-              { label: "Next Week", count: patientStats?.nextWeekCount || 0, icon: "solar:calendar-line-duotone", color: "bg-sky-500", bgGradient: "from-sky-500/10 to-cyan-500/10", iconBg: "bg-sky-500/10", iconColor: "text-sky-600" },
-              { label: "This Month", count: patientStats?.thisMonthCount || 0, icon: "solar:chart-square-bold-duotone", color: "bg-indigo-500", bgGradient: "from-indigo-500/10 to-violet-500/10", iconBg: "bg-indigo-500/10", iconColor: "text-indigo-600" },
+              {
+                label: "Tomorrow",
+                count: patientStats?.tomorrowCount || 0,
+                icon: "solar:calendar-mark-linear",
+                color: "bg-blue-500",
+                bgGradient: "from-blue-500/10 to-indigo-500/10",
+                iconBg: "bg-blue-500/10",
+                iconColor: "text-blue-600",
+              },
+              {
+                label: "This Week",
+                count: patientStats?.thisWeekCount || 0,
+                icon: "solar:calendar-bold-duotone",
+                color: "bg-sky-500",
+                bgGradient: "from-sky-500/10 to-cyan-500/10",
+                iconBg: "bg-sky-500/10",
+                iconColor: "text-sky-600",
+              },
+              {
+                label: "Next Week",
+                count: patientStats?.nextWeekCount || 0,
+                icon: "solar:calendar-line-duotone",
+                color: "bg-amber-500",
+                bgGradient: "from-amber-500/10 to-orange-500/10",
+                iconBg: "bg-amber-500/10",
+                iconColor: "text-amber-600",
+              },
+              {
+                label: "This Month",
+                count: patientStats?.thisMonthCount || 0,
+                icon: "solar:chart-square-bold-duotone",
+                color: "bg-indigo-500",
+                bgGradient: "from-indigo-500/10 to-violet-500/10",
+                iconBg: "bg-indigo-500/10",
+                iconColor: "text-indigo-600",
+              },
             ].map((c, i) => (
-              <div key={i} className={`group relative overflow-hidden bg-linear-to-br ${c.bgGradient} backdrop-blur-xl border border-slate-200/60 rounded-xl hover:scale-[1.02] transition-all duration-300`}>
-                <div className={`absolute -top-12 -right-12 w-32 h-32 rounded-full blur-2xl opacity-10 transition-opacity group-hover:opacity-20 ${c.color}`} />
-                <div className="p-5 flex items-center justify-between z-10 relative">
-                  <div className="flex flex-col gap-1">
-                    <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">{c.label}</span>
-                    <span className="text-3xl font-black text-slate-800">{c.count}</span>
-                  </div>
-                  <div className={`w-12 h-12 rounded-xl ${c.iconBg} flex items-center justify-center ${c.iconColor} group-hover:scale-110 transition-transform`}>
+              <div
+                key={i}
+                className={`group relative overflow-hidden bg-linear-to-br ${c.bgGradient} backdrop-blur-xl border border-slate-200/60 rounded-xl hover:scale-[1.02] transition-all duration-300`}
+              >
+                <div
+                  className={`absolute -top-12 -right-12 w-32 h-32 rounded-full blur-2xl opacity-10 transition-opacity group-hover:opacity-20 ${c.color}`}
+                />
+                <div className="p-5 flex items-center gap-3 z-10 relative">
+                  <div
+                    className={`w-12 h-12 rounded-xl ${c.iconBg} flex items-center justify-center ${c.iconColor} group-hover:scale-110 transition-transform`}
+                  >
                     <Icon icon={c.icon} className="text-2xl" />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-3xl font-black text-slate-800">
+                      {c.count}
+                    </span>
+                    <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">
+                      {c.label}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -305,7 +371,7 @@ const DoctorDashboard = () => {
         <StaggerItem>
           <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
             <div className="xl:col-span-4 flex flex-col gap-6">
-              <div className="bg-white rounded-[40px] p-8 text-slate-800 border border-slate-100 shadow-xl shadow-slate-200/40 relative overflow-hidden h-full min-h-112.5">
+              <div className="bg-white rounded p-8 text-slate-800 border border-slate-200 shadow shadow-gray-300 relative overflow-hidden h-full min-h-112.5">
                 <div className="absolute -top-12 -right-12 w-48 h-48 bg-blue-50/50 rounded-full blur-3xl"></div>
                 <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-indigo-50/50 rounded-full blur-2xl"></div>
 
@@ -398,7 +464,9 @@ const DoctorDashboard = () => {
                       <div className="mt-auto grid grid-cols-2 gap-4">
                         <button
                           onClick={() =>
-                            navigate(`/patient-details/${nextPatient?.patientId}`)
+                            navigate(
+                              `/patient-details/${nextPatient?.patientId}`,
+                            )
                           }
                           className="bg-white text-slate-700 border border-slate-200 py-4 rounded-2xl font-bold text-sm hover:bg-slate-50 transition-all shadow-sm active:scale-95"
                         >
@@ -434,7 +502,7 @@ const DoctorDashboard = () => {
               </div>
             </div>
 
-            <div className="xl:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-6 h-full min-h-100">
+            <div className="xl:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-6 ">
               <PatientListColumn
                 title="Morning"
                 appointments={morningAppointments}
@@ -457,28 +525,79 @@ const DoctorDashboard = () => {
           </div>
         </StaggerItem>
 
-
-
         <StaggerItem>
           <div className="mt-8">
-            <h2 className="text-xl font-black text-slate-800 mb-4">Web Appointments</h2>
+            <h2 className="text-xl font-black text-slate-800 mb-4">
+              Web Appointments
+            </h2>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4 lg:gap-6">
               {[
-                { label: "Today", count: patientStats?.webTodayCount || 0, icon: "solar:calendar-date-bold-duotone", color: "bg-purple-500", bgGradient: "from-purple-500/10 to-fuchsia-500/10", iconBg: "bg-purple-500/10", iconColor: "text-purple-600" },
-                { label: "Tomorrow", count: patientStats?.webTomorrowCount || 0, icon: "solar:calendar-mark-linear", color: "bg-blue-500", bgGradient: "from-blue-500/10 to-indigo-500/10", iconBg: "bg-blue-500/10", iconColor: "text-blue-600" },
-                { label: "This Week", count: patientStats?.webThisWeekCount || 0, icon: "solar:calendar-bold-duotone", color: "bg-emerald-500", bgGradient: "from-emerald-500/10 to-teal-500/10", iconBg: "bg-emerald-500/10", iconColor: "text-emerald-600" },
-                { label: "Next Week", count: patientStats?.webNextWeekCount || 0, icon: "solar:calendar-line-duotone", color: "bg-orange-500", bgGradient: "from-orange-500/10 to-amber-500/10", iconBg: "bg-orange-500/10", iconColor: "text-orange-600" },
-                { label: "This Month", count: patientStats?.webThisMonthCount || 0, icon: "solar:chart-square-bold-duotone", color: "bg-rose-500", bgGradient: "from-rose-500/10 to-pink-500/10", iconBg: "bg-rose-500/10", iconColor: "text-rose-600" },
+                {
+                  label: "Today",
+                  count: patientStats?.webTodayCount || 0,
+                  icon: "solar:calendar-date-bold-duotone",
+                  color: "bg-purple-500",
+                  bgGradient: "from-purple-500/10 to-fuchsia-500/10",
+                  iconBg: "bg-purple-500/10",
+                  iconColor: "text-purple-600",
+                },
+                {
+                  label: "Tomorrow",
+                  count: patientStats?.webTomorrowCount || 0,
+                  icon: "solar:calendar-mark-linear",
+                  color: "bg-blue-500",
+                  bgGradient: "from-blue-500/10 to-indigo-500/10",
+                  iconBg: "bg-blue-500/10",
+                  iconColor: "text-blue-600",
+                },
+                {
+                  label: "This Week",
+                  count: patientStats?.webThisWeekCount || 0,
+                  icon: "solar:calendar-bold-duotone",
+                  color: "bg-emerald-500",
+                  bgGradient: "from-emerald-500/10 to-teal-500/10",
+                  iconBg: "bg-emerald-500/10",
+                  iconColor: "text-emerald-600",
+                },
+                {
+                  label: "Next Week",
+                  count: patientStats?.webNextWeekCount || 0,
+                  icon: "solar:calendar-line-duotone",
+                  color: "bg-orange-500",
+                  bgGradient: "from-orange-500/10 to-amber-500/10",
+                  iconBg: "bg-orange-500/10",
+                  iconColor: "text-orange-600",
+                },
+                {
+                  label: "This Month",
+                  count: patientStats?.webThisMonthCount || 0,
+                  icon: "solar:chart-square-bold-duotone",
+                  color: "bg-rose-500",
+                  bgGradient: "from-rose-500/10 to-pink-500/10",
+                  iconBg: "bg-rose-500/10",
+                  iconColor: "text-rose-600",
+                },
               ].map((c, i) => (
-                <div key={i} className={`group relative overflow-hidden bg-linear-to-br ${c.bgGradient} backdrop-blur-xl border border-slate-200/60 rounded-xl hover:scale-[1.02] transition-all duration-300`}>
-                  <div className={`absolute -top-12 -right-12 w-32 h-32 rounded-full blur-2xl opacity-10 transition-opacity group-hover:opacity-20 ${c.color}`} />
-                  <div className="p-4 flex items-center justify-between z-10 relative">
-                    <div className="flex flex-col gap-1">
-                      <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest">{c.label}</span>
-                      <span className="text-2xl font-black text-slate-800">{c.count}</span>
-                    </div>
-                    <div className={`w-10 h-10 rounded-xl ${c.iconBg} flex items-center justify-center ${c.iconColor} group-hover:scale-110 transition-transform`}>
+                <div
+                  key={i}
+                  className={`group relative overflow-hidden bg-linear-to-br ${c.bgGradient} backdrop-blur-xl border border-slate-200/60 rounded-xl hover:scale-[1.02] transition-all duration-300`}
+                >
+                  <div
+                    className={`absolute -top-12 -right-12 w-32 h-32 rounded-full blur-2xl opacity-10 transition-opacity group-hover:opacity-20 ${c.color}`}
+                  />
+                  <div className="p-4 flex items-center gap-3 z-10 relative">
+                    <div
+                      className={`w-10 h-10 rounded-xl ${c.iconBg} flex items-center justify-center ${c.iconColor} group-hover:scale-110 transition-transform`}
+                    >
                       <Icon icon={c.icon} className="text-xl" />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <span className="text-2xl font-black text-slate-800">
+                        {c.count}
+                      </span>
+                      <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest">
+                        {c.label}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -489,18 +608,17 @@ const DoctorDashboard = () => {
 
         {/* ROW 4: PATIENT DETAILS TABLE */}
         <StaggerItem>
-           <PatientDetailsTable 
-             todayAppointments={activeData?.todayAppointments || []} 
-             futureAppointments={activeData?.futureAppointments || []} 
-             isDemoMode={isDemoMode}
-             demoPatients={mockPatientsList}
-             demoPatientDetails={mockPatientDetails}
-           />
+          <PatientDetailsTable
+            todayAppointments={activeData?.todayAppointments || []}
+            futureAppointments={activeData?.futureAppointments || []}
+            isDemoMode={isDemoMode}
+            demoPatients={mockPatientsList}
+            demoPatientDetails={mockPatientDetails}
+          />
         </StaggerItem>
       </div>
     </StaggerContainer>
   );
 };
-
 
 export default DoctorDashboard;
