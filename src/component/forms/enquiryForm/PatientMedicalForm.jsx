@@ -6,8 +6,9 @@ import Input from "../../ui/Input";
 import Textarea from "../../ui/Textarea";
 import Button from "../../ui/Button";
 
-export default function PatientMedicalForm({ fetchPatientMedical }) {
-  const { patient_id } = useParams();
+export default function PatientMedicalForm({ fetchPatientMedical, patientId, hideSubmitButton, onSaveSuccess }) {
+  const { patient_id: urlPatientId } = useParams();
+  const patient_id = patientId || urlPatientId;
   const navigate = useNavigate();
 
   const physicianFields = [
@@ -210,8 +211,8 @@ export default function PatientMedicalForm({ fetchPatientMedical }) {
         await AxiosInstance.post(`/patientregistration/create`, form);
         message.success("Created Successfully");
       }
-      // navigate(-1); // Don't navigate away, let user confirm treatment
-      fetchPatientMedical();
+      if (fetchPatientMedical) fetchPatientMedical();
+      if (onSaveSuccess) onSaveSuccess();
     } catch (err) {
       message.error("Error saving data");
     } finally {
@@ -378,8 +379,9 @@ export default function PatientMedicalForm({ fetchPatientMedical }) {
           </div>
         </section>
 
-        <div className="flex justify-end pt-4">
+         <div className="flex justify-end pt-4" style={hideSubmitButton ? { display: "none" } : {}}>
           <Button
+            id="hidden-medical-submit-btn"
             type="submit"
             loading={loading}
             size="lg"

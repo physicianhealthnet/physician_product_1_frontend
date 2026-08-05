@@ -45,6 +45,7 @@ const PatientDetails = ({ patientId, isNested }) => {
     10: { bg: "#f13636", gradient: "from-red-500 to-rose-600" },
     11: { bg: "#a929ff", gradient: "from-purple-600 to-violet-600" },
     12: { bg: "#23b8ff", gradient: "from-cyan-500 to-blue-500" },
+    13: { bg: "#059669", gradient: "from-teal-500 to-emerald-600" },
   };
 
   const getPatientDetails = async () => {
@@ -180,124 +181,194 @@ const PatientDetails = ({ patientId, isNested }) => {
           </StaggerItem>
         )}
 
-        {/* Patient Info Card with Glassmorphism */}
+        {/* Patient Info Card with Glassmorphism and Quick Actions Column */}
         <StaggerItem>
-          <Card className="group relative overflow-hidden bg-gradient-to-br from-blue-500/10 to-indigo-500/10 backdrop-blur-xl border-slate-200/60 ">
-            {/* Glow Effect */}
-            <div className="absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[60px] opacity-10 transition-opacity group-hover:opacity-20 bg-blue-500" />
+          <div className="flex flex-col xl:flex-row gap-6 items-stretch">
+            {/* Left: Patient Info Card (Reduced width on XL screen) */}
+            <div className="flex-1 min-w-0">
+              <Card className="h-full group relative overflow-hidden bg-gradient-to-br from-blue-500/10 to-indigo-500/10 backdrop-blur-xl border-slate-200/60 ">
+                {/* Glow Effect */}
+                <div className="absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[60px] opacity-10 transition-opacity group-hover:opacity-20 bg-blue-500" />
 
-            <div className="p-8 z-10">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-20 h-20 rounded-full bg-blue-500/20 flex items-center justify-center overflow-hidden shrink-0 shadow-sm border border-slate-200/50">
-                  {patientInfo?.profileImg || patientInfo?.photo ? (
-                    <img
-                      src={getImageUrl(patientInfo.profileImg || patientInfo.photo)}
-                      alt={patientInfo.patientName}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <Icon icon="tabler:user-circle" className="text-5xl text-blue-600 " />
-                  )}
-                </div>
-                <div className="flex-1">
-                  <p className="text-xs font-black text-slate-400  uppercase tracking-widest m-0">
-                    {loading ? <Skeleton className="h-4 w-20" /> : patientInfo.patientId}
-                  </p>
-                  <h2 className="font-black text-3xl md:text-4xl uppercase text-slate-800  tracking-tight m-0 mt-1">
-                    {loading ? <Skeleton className="h-10 w-48" /> : patientInfo.patientName}
-                  </h2>
-                </div>
-              </div>
+                <div className="p-8 z-10 flex flex-col h-full justify-between">
+                  <div>
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="w-20 h-20 rounded-full bg-blue-500/20 flex items-center justify-center overflow-hidden shrink-0 shadow-sm border border-slate-200/50">
+                        {patientInfo?.profileImg || patientInfo?.photo ? (
+                          <img
+                            src={getImageUrl(patientInfo.profileImg || patientInfo.photo)}
+                            alt={patientInfo.patientName}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <Icon icon="tabler:user-circle" className="text-5xl text-blue-600 " />
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-xs font-black text-slate-400  uppercase tracking-widest m-0">
+                          {loading ? <Skeleton className="h-4 w-20" /> : patientInfo.patientId}
+                        </p>
+                        <h2 className="font-black text-3xl md:text-4xl uppercase text-slate-800  tracking-tight m-0 mt-1">
+                          {loading ? <Skeleton className="h-10 w-48" /> : patientInfo.patientName}
+                        </h2>
+                      </div>
+                    </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-                <div className="flex items-center gap-3 bg-slate-50/50  rounded-xl p-3 border border-slate-100 ">
-                  <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0">
-                    <Icon icon="tabler:info-circle" className="text-xl text-blue-600 " />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[10px] font-black text-slate-400  uppercase tracking-widest m-0">Info</p>
-                    <div className="font-black text-slate-800  m-0 truncate">
-                      {loading ? (
-                        <Skeleton className="h-4 w-20" />
-                      ) : (
-                        `${patientInfo.patientAge} Y / ${patientInfo.patientGender}`
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+                      <div className="flex items-center gap-3 bg-slate-50/50  rounded-xl p-3 border border-slate-100 ">
+                        <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0">
+                          <Icon icon="tabler:info-circle" className="text-xl text-blue-600 " />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[10px] font-black text-slate-400  uppercase tracking-widest m-0">Info</p>
+                          <div className="font-black text-slate-800  m-0 truncate">
+                            {loading ? (
+                              <Skeleton className="h-4 w-20" />
+                            ) : (
+                              `${patientInfo.patientAge} Y / ${patientInfo.patientGender}`
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3 bg-slate-50/50  rounded-xl p-3 border border-slate-100 ">
+                        <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
+                          <Icon icon="tabler:calendar" className="text-xl text-emerald-600 " />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[10px] font-black text-slate-400  uppercase tracking-widest m-0">DOB</p>
+                          <div className="font-black text-slate-800  m-0 truncate">
+                            {loading ? (
+                              <Skeleton className="h-4 w-24" />
+                            ) : (
+                              formatDate(patientInfo.patientDOB)
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {(loading || patientInfo.patientPhone) && (
+                        <div className="flex items-center gap-3 bg-slate-50/50  rounded-xl p-3 border border-slate-100 ">
+                          <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center flex-shrink-0">
+                            <Icon icon="tabler:phone" className="text-xl text-purple-600 " />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[10px] font-black text-slate-400  uppercase tracking-widest m-0">Phone</p>
+                            <div className="font-black text-slate-800  m-0 truncate">
+                              {loading ? (
+                                <Skeleton className="h-4 w-32" />
+                              ) : (
+                                patientInfo.patientPhone
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {(loading || patientInfo.patientEmail) && (
+                        <div className="flex items-center gap-3 bg-slate-50/50  rounded-xl p-3 border border-slate-100 ">
+                          <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center flex-shrink-0">
+                            <Icon icon="tabler:mail" className="text-xl text-amber-600 " />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[10px] font-black text-slate-400  uppercase tracking-widest m-0">Email</p>
+                            <div className="font-black text-slate-800  m-0 truncate">
+                              {loading ? (
+                                <Skeleton className="h-4 w-40" />
+                              ) : (
+                                patientInfo.patientEmail
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {(loading || patientInfo.patientAddress) && (
+                        <div className="flex items-center gap-3 bg-slate-50/50  rounded-xl p-3 border border-slate-100  md:col-span-2 lg:col-span-3">
+                          <div className="w-10 h-10 rounded-lg bg-rose-500/10 flex items-center justify-center flex-shrink-0">
+                            <Icon icon="tabler:map-pin" className="text-xl text-rose-600 " />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[10px] font-black text-slate-400  uppercase tracking-widest m-0">Address</p>
+                            <div className="font-black text-slate-800  m-0 capitalize">
+                              {loading ? (
+                                <Skeleton className="h-4 w-3/4" />
+                              ) : (
+                                patientInfo.patientAddress
+                              )}
+                            </div>
+                          </div>
+                        </div>
                       )}
                     </div>
                   </div>
                 </div>
-
-                <div className="flex items-center gap-3 bg-slate-50/50  rounded-xl p-3 border border-slate-100 ">
-                  <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
-                    <Icon icon="tabler:calendar" className="text-xl text-emerald-600 " />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[10px] font-black text-slate-400  uppercase tracking-widest m-0">DOB</p>
-                    <div className="font-black text-slate-800  m-0 truncate">
-                      {loading ? (
-                        <Skeleton className="h-4 w-24" />
-                      ) : (
-                        formatDate(patientInfo.patientDOB)
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {(loading || patientInfo.patientPhone) && (
-                  <div className="flex items-center gap-3 bg-slate-50/50  rounded-xl p-3 border border-slate-100 ">
-                    <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center flex-shrink-0">
-                      <Icon icon="tabler:phone" className="text-xl text-purple-600 " />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[10px] font-black text-slate-400  uppercase tracking-widest m-0">Phone</p>
-                      <div className="font-black text-slate-800  m-0 truncate">
-                        {loading ? (
-                          <Skeleton className="h-4 w-32" />
-                        ) : (
-                          patientInfo.patientPhone
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {(loading || patientInfo.patientEmail) && (
-                  <div className="flex items-center gap-3 bg-slate-50/50  rounded-xl p-3 border border-slate-100 ">
-                    <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center flex-shrink-0">
-                      <Icon icon="tabler:mail" className="text-xl text-amber-600 " />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[10px] font-black text-slate-400  uppercase tracking-widest m-0">Email</p>
-                      <div className="font-black text-slate-800  m-0 truncate">
-                        {loading ? (
-                          <Skeleton className="h-4 w-40" />
-                        ) : (
-                          patientInfo.patientEmail
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {(loading || patientInfo.patientAddress) && (
-                  <div className="flex items-center gap-3 bg-slate-50/50  rounded-xl p-3 border border-slate-100  md:col-span-2 lg:col-span-3">
-                    <div className="w-10 h-10 rounded-lg bg-rose-500/10 flex items-center justify-center flex-shrink-0">
-                      <Icon icon="tabler:map-pin" className="text-xl text-rose-600 " />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[10px] font-black text-slate-400  uppercase tracking-widest m-0">Address</p>
-                      <div className="font-black text-slate-800  m-0 capitalize">
-                        {loading ? (
-                          <Skeleton className="h-4 w-3/4" />
-                        ) : (
-                          patientInfo.patientAddress
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
+              </Card>
             </div>
-          </Card>
+
+            {/* Right: 3 buttons in 3 rows */}
+            <div className="w-full xl:w-96 flex flex-col gap-4 justify-between">
+              <button
+                onClick={() => {
+                  const targetKey = (usertype?.userType !== "accountant" &&
+                    usertype?.userType !== "generalManager" &&
+                    usertype?.userType !== "receptionist") ? "12" : "10";
+                  setActiveTab(targetKey);
+                  document.querySelector(".custom-tabs")?.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="flex-1 flex items-center justify-between p-5 bg-white hover:bg-slate-50 border border-slate-200 hover:border-blue-400 rounded-2xl shadow-sm hover:shadow-md transition-all group text-left cursor-pointer"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Icon icon="solar:document-text-bold-duotone" className="text-2xl" />
+                  </div>
+                  <div>
+                    <h3 className="font-extrabold text-slate-800 text-sm tracking-tight m-0">Patient History & Assessment</h3>
+                    <p className="text-[11px] text-slate-400 font-medium m-0 mt-0.5">Clinical notes & doctor assessment</p>
+                  </div>
+                </div>
+                <Icon icon="solar:alt-arrow-right-bold" className="text-slate-400 group-hover:text-blue-500 group-hover:translate-x-1 transition-all" />
+              </button>
+
+              <button
+                onClick={() => {
+                  setActiveTab("1");
+                  document.querySelector(".custom-tabs")?.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="flex-1 flex items-center justify-between p-5 bg-white hover:bg-slate-50 border border-slate-200 hover:border-emerald-400 rounded-2xl shadow-sm hover:shadow-md transition-all group text-left cursor-pointer"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Icon icon="solar:user-id-bold-duotone" className="text-2xl" />
+                  </div>
+                  <div>
+                    <h3 className="font-extrabold text-slate-800 text-sm tracking-tight m-0">Patient Medical Data</h3>
+                    <p className="text-[11px] text-slate-400 font-medium m-0 mt-0.5">Personal details & demographics</p>
+                  </div>
+                </div>
+                <Icon icon="solar:alt-arrow-right-bold" className="text-slate-400 group-hover:text-emerald-500 group-hover:translate-x-1 transition-all" />
+              </button>
+
+              <button
+                onClick={() => {
+                  setActiveTab("4");
+                  document.querySelector(".custom-tabs")?.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="flex-1 flex items-center justify-between p-5 bg-white hover:bg-slate-50 border border-slate-200 hover:border-orange-400 rounded-2xl shadow-sm hover:shadow-md transition-all group text-left cursor-pointer"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-orange-500/10 text-orange-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Icon icon="solar:heart-pulse-bold-duotone" className="text-2xl" />
+                  </div>
+                  <div>
+                    <h3 className="font-extrabold text-slate-800 text-sm tracking-tight m-0">Current Treatment Data</h3>
+                    <p className="text-[11px] text-slate-400 font-medium m-0 mt-0.5">Active treatment tracking & progress</p>
+                  </div>
+                </div>
+                <Icon icon="solar:alt-arrow-right-bold" className="text-slate-400 group-hover:text-orange-500 group-hover:translate-x-1 transition-all" />
+              </button>
+            </div>
+          </div>
         </StaggerItem>
 
         {/* Modern Tabs Section */}
@@ -359,6 +430,73 @@ const PatientDetails = ({ patientId, isNested }) => {
                     </div>
                   </TabPane>
                 )}
+
+              <TabPane
+                tab={
+                  <div
+                    className={`px-4 py-2.5 rounded-xl text-sm font-black transition-all duration-300 uppercase tracking-widest ${activeTab === "13"
+                      ? `bg-gradient-to-r ${tabColors[13].gradient} text-white shadow-lg`
+                      : "bg-slate-200  text-slate-600  hover:bg-slate-300 :bg-slate-600"
+                      }`}
+                  >
+                    Attender Details
+                  </div>
+                }
+                key="13"
+              >
+                <div className="bg-white/40 backdrop-blur-md border border-slate-200 p-8 rounded-2xl min-h-[400px] mt-2">
+                  <div className="max-w-2xl mx-auto">
+                    <div className="flex items-center gap-3 mb-8">
+                      <div className="p-3 bg-teal-500/10 text-teal-600 rounded-2xl">
+                        <Icon icon="solar:users-group-two-rounded-bold-duotone" width={28} />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-black text-slate-800 m-0">Patient Attender Details</h3>
+                        <p className="text-xs text-slate-400 font-semibold m-0 mt-0.5">Primary caregiver and emergency contact information</p>
+                      </div>
+                    </div>
+
+                    <div className="bg-slate-50/50 border border-slate-100 rounded-3xl p-6 md:p-8 space-y-6">
+                      <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                        <div className="flex items-center gap-3">
+                          <Icon icon="solar:user-bold" className="text-slate-400 text-lg" />
+                          <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">Attender Name</span>
+                        </div>
+                        <span className="text-base font-black text-slate-800">{patientInfo?.guardianName || "—"}</span>
+                      </div>
+
+                      <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                        <div className="flex items-center gap-3">
+                          <Icon icon="solar:phone-bold" className="text-slate-400 text-lg" />
+                          <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">Phone Number</span>
+                        </div>
+                        {patientInfo?.attenderPhone ? (
+                          <div className="flex items-center gap-3">
+                            <span className="text-base font-black text-slate-800">{patientInfo.attenderPhone}</span>
+                            <button
+                              onClick={() => window.open(`https://wa.me/${patientInfo.attenderPhone}`, "_blank")}
+                              className="w-8 h-8 rounded-xl bg-emerald-50 border border-emerald-100 hover:bg-emerald-600 hover:text-white text-emerald-600 flex items-center justify-center transition-all active:scale-95"
+                              title="Chat on WhatsApp"
+                            >
+                              <Icon icon="ic:baseline-whatsapp" width={18} />
+                            </button>
+                          </div>
+                        ) : (
+                          <span className="text-base font-black text-slate-800">—</span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center justify-between pt-2">
+                        <div className="flex items-center gap-3">
+                          <Icon icon="solar:heart-bold" className="text-slate-400 text-lg" />
+                          <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">Relationship</span>
+                        </div>
+                        <span className="text-base font-black text-slate-800 capitalize">{patientInfo?.attenderRelationship || "—"}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </TabPane>
 
               {usertype?.userType !== "generalManager" && (
                 <TabPane

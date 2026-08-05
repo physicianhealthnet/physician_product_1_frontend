@@ -35,6 +35,11 @@ function Expenditure({ targetedData, setSwaper, swaper, refresh }) {
   const [billFile, setBillFile] = useState(null);
   const [allSuppliers, setAllSuppliers] = useState([]);
   const [discountType, setDiscountType] = useState("percentage");
+  const [activeStep, setActiveStep] = useState("basic"); // "basic" or "details"
+
+  useEffect(() => {
+    setActiveStep("basic");
+  }, [swaper]);
   const [formData, setFormData] = useState({
     billInvoiceNo: "",
     billDate: "",
@@ -290,182 +295,209 @@ function Expenditure({ targetedData, setSwaper, swaper, refresh }) {
         </div>
       </div>
 
-      <form onSubmit={formData?._id ? handleUpdate : handleSubmit} className="space-y-6">
-        {/* Bill Info Card */}
-        <Card className="bg-white/40  backdrop-blur-md border-slate-200/60 ">
-          <div className="p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Icon icon="tabler:file-invoice" className="text-xl text-blue-600 " />
-              <h3 className="text-lg font-black text-slate-800 ">Bill Information</h3>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
-                  Invoice No
-                </label>
-                <Input
-                  type="text"
-                  name="billInvoiceNo"
-                  className="rounded-xl"
-                  value={formData.billInvoiceNo}
-                  onChange={handleChange}
-                  placeholder="Enter invoice number"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
-                  Bill Date
-                </label>
-                <Input
-                  type="date"
-                  name="billDate"
-                  className="rounded-xl"
-                  value={formData.billDate}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
+      {/* Step Progress Indicator */}
+      <div className="flex items-center justify-between px-2 bg-white/50 p-4 rounded-2xl border border-slate-100 shadow-sm max-w-4xl">
+        <div className="flex items-center gap-3">
+          <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs ${activeStep === "basic" ? "bg-blue-500/10 text-blue-600" : "bg-emerald-500/10 text-emerald-600"}`}>
+            {activeStep === "basic" ? "1" : "2"}
           </div>
-        </Card>
+          <div>
+            <h3 className="text-sm font-black text-slate-800 m-0 leading-none">
+              {activeStep === "basic" ? "Invoice & Supplier Info" : "Purchased Products & Financials"}
+            </h3>
+            <p className="text-[10px] text-slate-400 font-semibold m-0 mt-1 leading-none">
+              {activeStep === "basic" ? "Step 1 of 2: Set invoice numbers and supplier details" : "Step 2 of 2: Add purchased products, taxes & payment info"}
+            </p>
+          </div>
+        </div>
+        <div className="w-32 bg-slate-100 h-1.5 rounded-full overflow-hidden">
+          <div className={`h-full transition-all duration-500 ${activeStep === "basic" ? "w-1/2 bg-blue-500" : "w-full bg-emerald-500"}`} />
+        </div>
+      </div>
 
-        {/* Supplier Card */}
-        <Card className="bg-white/40  backdrop-blur-md border-slate-200/60 ">
-          <div className="p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Icon icon="tabler:building-store" className="text-xl text-emerald-600 " />
-              <h3 className="text-lg font-black text-slate-800 ">Supplier Details</h3>
-            </div>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
-                  Supplier Name
-                </label>
-                <select
-                  name="supplier.name"
-                  className="w-full rounded-xl border border-slate-300  bg-white  text-slate-800  px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={formData.supplier.name}
-                  onChange={handleChange}
-                >
-                  <option value="">Select Supplier</option>
-                  {allSuppliers.map((data) => (
-                    <option key={data._id} value={data.name}>
-                      {data.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {["contact", "email", "address", "gstin"].map((field) => (
-                  <div key={field}>
+      <form onSubmit={formData?._id ? handleUpdate : handleSubmit} className="space-y-6 max-w-4xl">
+        {activeStep === "basic" ? (
+          <div className="space-y-6 animate-in fade-in slide-in-from-left-4 duration-300">
+            {/* Bill Info Card */}
+            <Card className="bg-white/40  backdrop-blur-md border-slate-200/60 ">
+              <div className="p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Icon icon="tabler:file-invoice" className="text-xl text-blue-600 " />
+                  <h3 className="text-lg font-black text-slate-800 ">Bill Information</h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
                     <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
-                      {field.charAt(0).toUpperCase() + field.slice(1)}
+                      Invoice No *
                     </label>
                     <Input
                       type="text"
-                      name={`supplier.${field}`}
-                      className="rounded-xl bg-slate-100 "
-                      value={formData.supplier[field] || ""}
+                      name="billInvoiceNo"
+                      className="rounded-xl"
+                      value={formData.billInvoiceNo}
                       onChange={handleChange}
-                      disabled
+                      placeholder="Enter invoice number"
                     />
                   </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </Card>
-
-        {/* Products Card */}
-        <Card className="bg-white/40  backdrop-blur-md border-slate-200/60 ">
-          <div className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <Icon icon="tabler:package" className="text-xl text-purple-600 " />
-                <h3 className="text-lg font-black text-slate-800 ">Products</h3>
-              </div>
-              <Button
-                type="button"
-                onClick={addProduct}
-                className="flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-semibold transition-all shadow-lg shadow-emerald-500/30"
-              >
-                <Icon icon="tabler:plus" className="text-lg" />
-                Add Product
-              </Button>
-            </div>
-            <div className="space-y-4">
-              {formData.products.map((item, index) => (
-                <div key={index} className="border border-slate-200  rounded-xl p-4 bg-slate-50/50 ">
-                  <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-black text-slate-700 ">Product {index + 1}</h4>
-                    {formData.products.length > 1 && (
-                      <button
-                        type="button"
-                        onClick={() => removeProduct(index)}
-                        className="text-red-600 hover:text-red-700  :text-red-300 font-semibold text-sm flex items-center gap-1"
-                      >
-                        <Icon icon="tabler:trash" className="text-base" />
-                        Remove
-                      </button>
-                    )}
+                  <div>
+                    <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
+                      Bill Date *
+                    </label>
+                    <Input
+                      type="date"
+                      name="billDate"
+                      className="rounded-xl"
+                      value={formData.billDate}
+                      onChange={handleChange}
+                    />
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
-                        Type
-                      </label>
-                      <select
-                        name={`products.${index}.type`}
-                        className="w-full rounded-xl border border-slate-300  bg-white  text-slate-800  px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value={item.type}
-                        onChange={handleChange}
-                      >
-                        <option value="consumable">Consumable</option>
-                        <option value="equipment">Equipment</option>
-                      </select>
-                    </div>
-                    {["productName", "quantity", "purchaseDate", "amount"].map((field) => (
+                </div>
+              </div>
+            </Card>
+
+            {/* Supplier Card */}
+            <Card className="bg-white/40  backdrop-blur-md border-slate-200/60 ">
+              <div className="p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Icon icon="tabler:building-store" className="text-xl text-emerald-600 " />
+                  <h3 className="text-lg font-black text-slate-800 ">Supplier Details</h3>
+                </div>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
+                      Supplier Name *
+                    </label>
+                    <select
+                      name="supplier.name"
+                      className="w-full rounded-xl border border-slate-300  bg-white  text-slate-800  px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      value={formData.supplier.name}
+                      onChange={handleChange}
+                    >
+                      <option value="">Select Supplier</option>
+                      {allSuppliers.map((data) => (
+                        <option key={data._id} value={data.name}>
+                          {data.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {["contact", "email", "address", "gstin"].map((field) => (
                       <div key={field}>
                         <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
-                          {field.replace(/([A-Z])/g, " $1")}
+                          {field.charAt(0).toUpperCase() + field.slice(1)}
                         </label>
                         <Input
-                          type={
-                            field === "purchaseDate"
-                              ? "date"
-                              : field === "productName"
-                                ? "text"
-                                : "number"
-                          }
-                          name={`products.${index}.${field}`}
-                          className="rounded-xl"
-                          value={item[field] || ""}
+                          type="text"
+                          name={`supplier.${field}`}
+                          className="rounded-xl bg-slate-100 "
+                          value={formData.supplier[field] || ""}
                           onChange={handleChange}
+                          disabled
                         />
                       </div>
                     ))}
-                    {item.type === "consumable" && (
-                      <div>
-                        <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
-                          Expiry Date
-                        </label>
-                        <Input
-                          type="date"
-                          name={`products.${index}.expiryDate`}
-                          className="rounded-xl"
-                          value={item.expiryDate || ""}
-                          onChange={handleChange}
-                        />
+                  </div>
+                </div>
+              </div>
+            </Card>
+
+            {/* Bill File Upload Card */}
+            <Card className="bg-white/40  backdrop-blur-md border-slate-200/60 ">
+              <div className="p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Icon icon="tabler:file-upload" className="text-xl text-cyan-600 " />
+                  <h3 className="text-lg font-black text-slate-800 ">Bill File</h3>
+                </div>
+                <input
+                  type="file"
+                  className="w-full rounded-xl border border-slate-300  bg-white  text-slate-800  px-4 py-2.5 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-500 file:text-white file:font-semibold hover:file:bg-blue-600 cursor-pointer"
+                  onChange={handleFileChange}
+                  accept=".pdf,.jpg,.jpeg,.png"
+                />
+                {billFile &&
+                  (typeof billFile === "string" ? (
+                    <a
+                      href={billFile}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 mt-3 text-blue-600  font-semibold hover:underline"
+                    >
+                      <Icon icon="tabler:external-link" />
+                      View Current File
+                    </a>
+                  ) : (
+                    <p className="text-sm text-slate-600  mt-3 flex items-center gap-2">
+                      <Icon icon="tabler:file-check" className="text-emerald-600" />
+                      Selected: {billFile.name}
+                    </p>
+                  ))}
+              </div>
+            </Card>
+          </div>
+        ) : (
+          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+            {/* Products Card */}
+            <Card className="bg-white/40  backdrop-blur-md border-slate-200/60 ">
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <Icon icon="tabler:package" className="text-xl text-purple-600 " />
+                    <h3 className="text-lg font-black text-slate-800 ">Products</h3>
+                  </div>
+                  <Button
+                    type="button"
+                    onClick={addProduct}
+                    className="flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-semibold transition-all shadow-lg shadow-emerald-500/30"
+                  >
+                    <Icon icon="tabler:plus" className="text-lg" />
+                    Add Product
+                  </Button>
+                </div>
+                <div className="space-y-4">
+                  {formData.products.map((item, index) => (
+                    <div key={index} className="border border-slate-200  rounded-xl p-4 bg-slate-50/50 ">
+                      <div className="flex items-center justify-between mb-3">
+                        <h4 className="font-black text-slate-700 ">Product {index + 1}</h4>
+                        {formData.products.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => removeProduct(index)}
+                            className="text-red-600 hover:text-red-700  :text-red-300 font-semibold text-sm flex items-center gap-1 border-0 bg-transparent cursor-pointer"
+                          >
+                            <Icon icon="tabler:trash" className="text-base" />
+                            Remove
+                          </button>
+                        )}
                       </div>
-                    )}
-                    {item.type === "equipment" && (
-                      <>
-                        {["brand", "model", "serialNumber"].map((field) => (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
+                            Type
+                          </label>
+                          <select
+                            name={`products.${index}.type`}
+                            className="w-full rounded-xl border border-slate-300  bg-white  text-slate-800  px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            value={item.type}
+                            onChange={handleChange}
+                          >
+                            <option value="consumable">Consumable</option>
+                            <option value="equipment">Equipment</option>
+                          </select>
+                        </div>
+                        {["productName", "quantity", "purchaseDate", "amount"].map((field) => (
                           <div key={field}>
                             <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
-                              {field.charAt(0).toUpperCase() + field.slice(1)}
+                              {field.replace(/([A-Z])/g, " $1")}
                             </label>
                             <Input
-                              type="text"
+                              type={
+                                field === "purchaseDate"
+                                  ? "date"
+                                  : field === "productName"
+                                    ? "text"
+                                    : "number"
+                              }
                               name={`products.${index}.${field}`}
                               className="rounded-xl"
                               value={item[field] || ""}
@@ -473,245 +505,284 @@ function Expenditure({ targetedData, setSwaper, swaper, refresh }) {
                             />
                           </div>
                         ))}
-                        <div>
-                          <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
-                            Warranty Expiry
-                          </label>
-                          <Input
-                            type="date"
-                            name={`products.${index}.warrantyExpiryDate`}
-                            className="rounded-xl"
-                            value={item.warrantyExpiryDate || ""}
-                            onChange={handleChange}
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
-                            Calibration Due
-                          </label>
-                          <Input
-                            type="date"
-                            name={`products.${index}.calibrationDueDate`}
-                            className="rounded-xl"
-                            value={item.calibrationDueDate || ""}
-                            onChange={handleChange}
-                          />
-                        </div>
-                      </>
-                    )}
+                        {item.type === "consumable" && (
+                          <div>
+                            <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
+                              Expiry Date
+                            </label>
+                            <Input
+                              type="date"
+                              name={`products.${index}.expiryDate`}
+                              className="rounded-xl"
+                              value={item.expiryDate || ""}
+                              onChange={handleChange}
+                            />
+                          </div>
+                        )}
+                        {item.type === "equipment" && (
+                          <>
+                            {["brand", "model", "serialNumber"].map((field) => (
+                              <div key={field}>
+                                <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
+                                  {field.charAt(0).toUpperCase() + field.slice(1)}
+                                </label>
+                                <Input
+                                  type="text"
+                                  name={`products.${index}.${field}`}
+                                  className="rounded-xl"
+                                  value={item[field] || ""}
+                                  onChange={handleChange}
+                                />
+                              </div>
+                            ))}
+                            <div>
+                              <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
+                                Warranty Expiry
+                              </label>
+                              <Input
+                                type="date"
+                                name={`products.${index}.warrantyExpiryDate`}
+                                className="rounded-xl"
+                                value={item.warrantyExpiryDate || ""}
+                                onChange={handleChange}
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
+                                Calibration Due
+                              </label>
+                              <Input
+                                type="date"
+                                name={`products.${index}.calibrationDueDate`}
+                                className="rounded-xl"
+                                value={item.calibrationDueDate || ""}
+                                onChange={handleChange}
+                              />
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Card>
+
+            {/* Financials Card */}
+            <Card className="bg-white/40  backdrop-blur-md border-slate-200/60 ">
+              <div className="p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Icon icon="tabler:calculator" className="text-xl text-amber-600 " />
+                  <h3 className="text-lg font-black text-slate-800 ">Financials</h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
+                      Subtotal
+                    </label>
+                    <Input
+                      type="number"
+                      name="financials.subtotal"
+                      className="rounded-xl bg-slate-100  font-bold text-slate-800 "
+                      value={formData.financials.subtotal || ""}
+                      readOnly
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
+                      Discount %
+                    </label>
+                    <Input
+                      type="number"
+                      name="financials.discount.percentage"
+                      className="rounded-xl"
+                      value={formData.financials.discount?.percentage || ""}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
+                      Discount Amount
+                    </label>
+                    <Input
+                      type="number"
+                      name="financials.discount.amount"
+                      className="rounded-xl"
+                      value={formData.financials.discount?.amount || ""}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
+                      GST %
+                    </label>
+                    <Input
+                      type="number"
+                      name="financials.gst.percentage"
+                      className="rounded-xl"
+                      value={formData.financials.gst?.percentage || ""}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
+                      Total Amount
+                    </label>
+                    <Input
+                      type="number"
+                      name="financials.totalAmount"
+                      className="rounded-xl bg-blue-50  font-black text-blue-600  text-xl"
+                      value={formData.financials.totalAmount || ""}
+                      readOnly
+                    />
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        </Card>
+              </div>
+            </Card>
 
-        {/* Financials Card */}
-        <Card className="bg-white/40  backdrop-blur-md border-slate-200/60 ">
-          <div className="p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Icon icon="tabler:calculator" className="text-xl text-amber-600 " />
-              <h3 className="text-lg font-black text-slate-800 ">Financials</h3>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
-                  Subtotal
-                </label>
-                <Input
-                  type="number"
-                  name="financials.subtotal"
-                  className="rounded-xl bg-slate-100  font-bold text-slate-800 "
-                  value={formData.financials.subtotal || ""}
-                  readOnly
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
-                  Discount %
-                </label>
-                <Input
-                  type="number"
-                  name="financials.discount.percentage"
-                  className="rounded-xl"
-                  value={formData.financials.discount?.percentage || ""}
-                  onChange={handleChange}
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
-                  Discount Amount
-                </label>
-                <Input
-                  type="number"
-                  name="financials.discount.amount"
-                  className="rounded-xl"
-                  value={formData.financials.discount?.amount || ""}
-                  onChange={handleChange}
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
-                  GST %
-                </label>
-                <Input
-                  type="number"
-                  name="financials.gst.percentage"
-                  className="rounded-xl"
-                  value={formData.financials.gst?.percentage || ""}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
-                  Total Amount
-                </label>
-                <Input
-                  type="number"
-                  name="financials.totalAmount"
-                  className="rounded-xl bg-blue-50  font-black text-blue-600  text-xl"
-                  value={formData.financials.totalAmount || ""}
-                  readOnly
-                />
-              </div>
-            </div>
-          </div>
-        </Card>
-
-        {/* Payment Card */}
-        <Card className="bg-white/40  backdrop-blur-md border-slate-200/60 ">
-          <div className="p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Icon icon="tabler:credit-card" className="text-xl text-rose-600 " />
-              <h3 className="text-lg font-black text-slate-800 ">Payment</h3>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
-                  Payment Mode
-                </label>
-                <select
-                  name="payment.mode"
-                  className="w-full rounded-xl border border-slate-300  bg-white  text-slate-800  px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={formData.payment.mode}
-                  onChange={handleChange}
-                >
-                  {["cash", "card", "upi", "bank"].map((opt) => (
-                    <option key={opt} value={opt}>
-                      {opt.charAt(0).toUpperCase() + opt.slice(1)}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              {formData.payment.mode !== "cash" && (
-                <div>
-                  <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
-                    Transaction ID
-                  </label>
-                  <Input
-                    type="text"
-                    name="payment.transactionId"
-                    className="rounded-xl"
-                    value={formData.payment.transactionId}
-                    onChange={handleChange}
-                    placeholder="Enter transaction ID"
-                  />
+            {/* Payment Card */}
+            <Card className="bg-white/40  backdrop-blur-md border-slate-200/60 ">
+              <div className="p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Icon icon="tabler:credit-card" className="text-xl text-rose-600 " />
+                  <h3 className="text-lg font-black text-slate-800 ">Payment</h3>
                 </div>
-              )}
-              <div>
-                <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
-                  Payment Status
-                </label>
-                <select
-                  name="payment.status"
-                  className="w-full rounded-xl border border-slate-300  bg-white  text-slate-800  px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={formData.payment.status}
-                  onChange={handleChange}
-                >
-                  {["pending", "completed", "failed"].map((status) => (
-                    <option key={status} value={status}>
-                      {status.charAt(0).toUpperCase() + status.slice(1)}
-                    </option>
-                  ))}
-                </select>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
+                      Payment Mode
+                    </label>
+                    <select
+                      name="payment.mode"
+                      className="w-full rounded-xl border border-slate-300  bg-white  text-slate-800  px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      value={formData.payment.mode}
+                      onChange={handleChange}
+                    >
+                      {["cash", "card", "upi", "bank"].map((opt) => (
+                        <option key={opt} value={opt}>
+                          {opt.charAt(0).toUpperCase() + opt.slice(1)}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  {formData.payment.mode !== "cash" && (
+                    <div>
+                      <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
+                        Transaction ID
+                      </label>
+                      <Input
+                        type="text"
+                        name="payment.transactionId"
+                        className="rounded-xl"
+                        value={formData.payment.transactionId}
+                        onChange={handleChange}
+                        placeholder="Enter transaction ID"
+                      />
+                    </div>
+                  )}
+                  <div>
+                    <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
+                      Payment Status
+                    </label>
+                    <select
+                      name="payment.status"
+                      className="w-full rounded-xl border border-slate-300  bg-white  text-slate-800  px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      value={formData.payment.status}
+                      onChange={handleChange}
+                    >
+                      {["pending", "completed", "failed"].map((status) => (
+                        <option key={status} value={status}>
+                          {status.charAt(0).toUpperCase() + status.slice(1)}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
+                      Paid Amount
+                    </label>
+                    <Input
+                      type="number"
+                      name="payment.paidAmount"
+                      className="rounded-xl"
+                      value={formData.payment.paidAmount}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
+                      Due Amount
+                    </label>
+                    <Input
+                      type="number"
+                      name="payment.dueAmount"
+                      className="rounded-xl bg-slate-100  font-bold text-red-600 "
+                      value={formData.payment.dueAmount}
+                      readOnly
+                    />
+                  </div>
+                </div>
               </div>
-              <div>
-                <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
-                  Paid Amount
-                </label>
-                <Input
-                  type="number"
-                  name="payment.paidAmount"
-                  className="rounded-xl"
-                  value={formData.payment.paidAmount}
-                  onChange={handleChange}
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-black text-slate-500  uppercase tracking-widest mb-2">
-                  Due Amount
-                </label>
-                <Input
-                  type="number"
-                  name="payment.dueAmount"
-                  className="rounded-xl bg-slate-100  font-bold text-red-600 "
-                  value={formData.payment.dueAmount}
-                  readOnly
-                />
-              </div>
-            </div>
+            </Card>
           </div>
-        </Card>
+        )}
 
-        {/* Bill File Upload Card */}
-        <Card className="bg-white/40  backdrop-blur-md border-slate-200/60 ">
-          <div className="p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Icon icon="tabler:file-upload" className="text-xl text-cyan-600 " />
-              <h3 className="text-lg font-black text-slate-800 ">Bill File</h3>
-            </div>
-            <input
-              type="file"
-              className="w-full rounded-xl border border-slate-300  bg-white  text-slate-800  px-4 py-2.5 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-500 file:text-white file:font-semibold hover:file:bg-blue-600 cursor-pointer"
-              onChange={handleFileChange}
-              accept=".pdf,.jpg,.jpeg,.png"
-            />
-            {billFile &&
-              (typeof billFile === "string" ? (
-                <a
-                  href={billFile}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 mt-3 text-blue-600  font-semibold hover:underline"
-                >
-                  <Icon icon="tabler:external-link" />
-                  View Current File
-                </a>
-              ) : (
-                <p className="text-sm text-slate-600  mt-3 flex items-center gap-2">
-                  <Icon icon="tabler:file-check" className="text-emerald-600" />
-                  Selected: {billFile.name}
-                </p>
-              ))}
+        {/* Action Buttons */}
+        <div className="flex gap-3 pt-4 border-t border-slate-100 bg-white/50 p-4 rounded-2xl shadow-sm">
+          <div>
+            {activeStep === "details" ? (
+              <Button
+                type="button"
+                onClick={() => setActiveStep("basic")}
+                variant="secondary"
+                className="px-6 py-3 text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 cursor-pointer"
+              >
+                Previous Step
+              </Button>
+            ) : (
+              <Button
+                type="button"
+                onClick={() => setSwaper((prev) => !prev)}
+                variant="secondary"
+                className="px-6 py-3 cursor-pointer"
+              >
+                Cancel
+              </Button>
+            )}
           </div>
-        </Card>
-
-        {/* Submit Button */}
-        <div className="flex gap-3">
-          <Button
-            type="button"
-            onClick={() => setSwaper((prev) => !prev)}
-            className="flex-1 px-6 py-3 bg-slate-200 hover:bg-slate-300  :bg-slate-600 text-slate-700  rounded-xl font-semibold transition-all"
-          >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            className="flex-1 px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-semibold transition-all shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2"
-          >
-            <Icon icon={formData?._id ? "tabler:device-floppy" : "tabler:check"} className="text-xl" />
-            {formData?._id ? "Update Bill" : "Submit Bill"}
-          </Button>
+          <div className="flex-1 text-right">
+            {activeStep === "basic" ? (
+              <Button
+                type="button"
+                onClick={() => {
+                  if (!formData.billInvoiceNo?.trim()) {
+                    message.error("Invoice number is required");
+                    return;
+                  }
+                  if (!formData.billDate) {
+                    message.error("Bill date is required");
+                    return;
+                  }
+                  if (!formData.supplier?.name) {
+                    message.error("Supplier selection is required");
+                    return;
+                  }
+                  setActiveStep("details");
+                }}
+                className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold cursor-pointer border-none"
+              >
+                Next Step
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                className="px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-lg shadow-emerald-500/20 cursor-pointer border-none flex items-center gap-2 inline-flex"
+              >
+                <Icon icon={formData?._id ? "tabler:device-floppy" : "tabler:check"} className="text-xl" />
+                {formData?._id ? "Update Purchase" : "Submit Purchase"}
+              </Button>
+            )}
+          </div>
         </div>
       </form>
     </div>

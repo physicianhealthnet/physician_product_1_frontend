@@ -115,28 +115,28 @@ const DoctorDashboard = () => {
         className={`absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[60px] opacity-10 transition-opacity group-hover:opacity-20 ${color}`}
       />
 
-      <div className="p-6 flex items-center justify-between gap-3 z-10 relative">
+      <div className="p-4 sm:p-6 flex items-center justify-between gap-2 sm:gap-4 z-10 relative">
         <div
-          className={`w-20 h-20 shrink-0 rounded-2xl shadow-gray-100 shadow ${iconBg} flex items-center justify-center ${iconColor} group-hover:scale-110 transition-transform`}
+          className={`w-14 h-14 sm:w-18 sm:h-18 shrink-0 rounded-2xl shadow-gray-100 shadow ${iconBg} flex items-center justify-center ${iconColor} group-hover:scale-110 transition-transform`}
         >
-          <Icon icon={icon} className="text-3xl" />
+          <Icon icon={icon} className="text-2xl sm:text-3xl" />
         </div>
-        <div className="flex flex-col gap-2 flex-1">
+        <div className="flex flex-col gap-1 sm:gap-2 flex-1 min-w-0">
           <div className="flex items-baseline gap-1">
-            <span className="text-4xl font-black text-slate-800">
+            <span className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-800 leading-none">
               {subValue}
             </span>
-            <span className="text-sm font-medium text-slate-600">
+            <span className="text-xs sm:text-sm font-medium text-slate-600">
               / {total}
             </span>
           </div>
-          <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">
+          <span className="text-[9px] sm:text-[10px] font-black text-slate-600 uppercase tracking-widest truncate" title={title}>
             {title}
           </span>
 
           <div className="w-full bg-slate-200/50 h-1.5 rounded-full mt-1 overflow-hidden shadow-inner">
             <div
-              className={`h-full ${color.replace("bg-", "bg-")} bg-opacity-80 rounded-full transition-all duration-1000`}
+              className={`h-full ${color} bg-opacity-80 rounded-full transition-all duration-1000`}
               style={{ width: `${total > 0 ? (subValue / total) * 100 : 0}%` }}
             ></div>
           </div>
@@ -147,7 +147,7 @@ const DoctorDashboard = () => {
 
   return (
     <StaggerContainer>
-      <div className="flex flex-col gap-6 sm:gap-10 p-4 sm:p-6 md:p-10 bg-white/70 rounded backdrop-blur-3xl border border-slate-200 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] min-h-[500px]">
+      <div className="flex flex-col gap-6 sm:gap-8 p-4 sm:p-6 lg:p-8 bg-white/70 rounded backdrop-blur-3xl border border-slate-200 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] min-h-[500px] w-full max-w-full min-w-0 overflow-hidden">
         {/* HEADER SECTION */}
         <StaggerItem>
           <div className="flex flex-col lg:flex-row justify-between rounded items-start lg:items-center gap-8">
@@ -197,7 +197,7 @@ const DoctorDashboard = () => {
 
         {/* ROW 1: PERFORMANCE CARDS */}
         <StaggerItem>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-6">
             <StatCard
               title="Today's Appointment Total"
               subValue={patientStats?.todayCompletedAppointments || 0}
@@ -245,7 +245,7 @@ const DoctorDashboard = () => {
           </div>
         </StaggerItem>
         <StaggerItem>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6 mt-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mt-4">
             {[
               {
                 label: "Tomorrow",
@@ -312,8 +312,8 @@ const DoctorDashboard = () => {
         </StaggerItem>
         {/* ROW 3: MAIN WORKSPACE */}
         <StaggerItem>
-          <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
-            <div className="xl:col-span-4 flex flex-col gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div className="lg:col-span-4 flex flex-col gap-6 min-w-0">
               <div className="bg-white rounded p-8 text-slate-800 border border-slate-200 shadow shadow-gray-300 relative overflow-hidden h-full min-h-112.5">
                 <div className="absolute -top-12 -right-12 w-48 h-48 bg-blue-50/50 rounded-full blur-3xl"></div>
                 <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-indigo-50/50 rounded-full blur-2xl"></div>
@@ -445,7 +445,7 @@ const DoctorDashboard = () => {
               </div>
             </div>
 
-            <div className="xl:col-span-8" ref={todayAptsRef}>
+            <div className="lg:col-span-8 min-w-0" ref={todayAptsRef}>
               <TodayAppointmentsTable
                 morningAppointments={morningAppointments}
                 afternoonAppointments={afternoonAppointments}
@@ -465,7 +465,7 @@ const DoctorDashboard = () => {
             <h2 className="text-xl font-black text-slate-800 mb-4">
               Web Appointments
             </h2>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 lg:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-6">
               {[
                 {
                   label: "Today",

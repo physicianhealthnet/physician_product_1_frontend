@@ -13,6 +13,13 @@ function Inventory() {
   const [addSwaper, setAddSwaper] = useState(false);
   const [formData, setFormData] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
+  const [activeStep, setActiveStep] = useState("basic"); // "basic" or "stock"
+
+  useEffect(() => {
+    if (addSwaper) {
+      setActiveStep("basic");
+    }
+  }, [addSwaper]);
   const [selected, setSelected] = useState(null); // 🔹 fixed "seleted" issue
   const [loading, setLoading] = useState(true);
 
@@ -350,76 +357,150 @@ function Inventory() {
         {/* Modern Add / Update Modal */}
         {addSwaper && (
           <div className="fixed inset-0 flex items-center justify-center bg-slate-900/50 z-100 backdrop-blur-md animate-in fade-in duration-300 p-8">
-            <div className="bg-white w-full max-w-[600px] rounded p-10 border border-slate-200 shadow-[0_32px_128px_-16px_rgba(0,0,0,0.5)] relative">
-              <button
-                onClick={() => {
-                  setFormData({});
-                  setAddSwaper(false);
-                }}
-                className="absolute top-6 right-6 w-10 h-10 bg-slate-100 hover:bg-rose-500 hover:text-white rounded-xl flex items-center justify-center transition-all active:scale-90"
-              >
-                <Icon icon="solar:close-circle-bold-duotone" width="20" />
-              </button>
-              <div className="flex items-center gap-4 mb-10">
-                <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center">
-                  <Icon icon={formData?._id ? "solar:pen-bold-duotone" : "solar:add-circle-bold-duotone"} width="24" />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-black text-slate-800 tracking-tight leading-none uppercase">
-                    {formData?._id ? "Update Supply" : "Register Item"}
-                  </h2>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">Inventory Ledger Update</p>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-8">
-                <div className="flex flex-col gap-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Product Description</label>
-                  <input
-                    type="text"
-                    name="productName"
-                    className="w-full h-12 px-4 bg-white rounded border border-slate-200 font-bold text-slate-800 focus:border-blue-500 shadow-sm outline-none transition-all"
-                    placeholder="e.g. Disposable Masks (Box of 50)"
-                    onChange={handleInputChange}
-                    value={formData?.productName || ""}
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-8">
-                  <div className="flex flex-col gap-2">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Total Capacity</label>
-                    <input
-                      type="number"
-                      name="productTotalCount"
-                      className="w-full h-12 px-4 bg-white rounded border border-slate-200 text-center font-bold text-slate-800 focus:border-blue-500 shadow-sm outline-none transition-all"
-                      placeholder="0"
-                      onChange={handleInputChange}
-                      value={formData?.productTotalCount || ""}
+            <div className="bg-white w-full max-w-[600px] rounded-[32px] overflow-hidden shadow-2xl relative flex flex-col border border-slate-200">
+              {/* Modal Header */}
+              <div className="flex items-center justify-between px-8 py-6 border-b border-slate-100 bg-slate-50/50">
+                <div className="flex items-center gap-4">
+                  <div className={`p-2.5 rounded-xl ${activeStep === "basic" ? "bg-blue-500/10 text-blue-600" : "bg-emerald-500/10 text-emerald-600"}`}>
+                    <Icon
+                      icon={activeStep === "basic" ? (formData?._id ? "solar:pen-bold-duotone" : "solar:add-circle-bold-duotone") : "solar:box-bold-duotone"}
+                      className="text-2xl"
                     />
                   </div>
-                  {formData?._id && (
+                  <div>
+                    <h2 className="text-xl font-black text-slate-800 m-0 leading-none">
+                      {activeStep === "basic" 
+                        ? (formData?._id ? "Update Supply Info" : "Register Item Info") 
+                        : "Stock Levels & Capacity"}
+                    </h2>
+                    <p className="text-xs text-slate-400 font-semibold m-0 mt-1 leading-none">
+                      {activeStep === "basic" 
+                        ? "Step 1 of 2: Product Name & Description" 
+                        : "Step 2 of 2: Set quantity parameters"}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFormData({});
+                    setAddSwaper(false);
+                  }}
+                  className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all cursor-pointer border-0 bg-transparent"
+                >
+                  <Icon icon="tabler:x" className="text-xl" />
+                </button>
+              </div>
+
+              {/* Step Progress Bar */}
+              <div className="w-full bg-slate-100 h-1">
+                <div 
+                  className={`h-full transition-all duration-500 ${activeStep === "basic" ? "w-1/2 bg-blue-500" : "w-full bg-emerald-500"}`}
+                />
+              </div>
+
+              {/* Modal Content Body */}
+              <div className="p-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
+                {activeStep === "basic" ? (
+                  <div className="space-y-6 pt-2 animate-in fade-in slide-in-from-left-4 duration-300">
                     <div className="flex flex-col gap-2">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Available Now</label>
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Product Description</label>
                       <input
-                        type="number"
-                        name="productCurrentCount"
-                        className="w-full h-12 px-4 bg-white rounded border border-slate-200 text-center font-bold text-blue-600 focus:border-blue-500 shadow-sm outline-none transition-all"
-                        placeholder="0"
+                        type="text"
+                        name="productName"
+                        className="w-full h-12 px-4 bg-white rounded-xl border border-slate-200 font-bold text-slate-800 focus:border-blue-500 shadow-sm outline-none transition-all focus:ring-2 focus:ring-blue-500/20"
+                        placeholder="e.g. Disposable Masks (Box of 50)"
                         onChange={handleInputChange}
-                        value={formData?.productCurrentCount || ""}
+                        value={formData?.productName || ""}
                       />
                     </div>
+                  </div>
+                ) : (
+                  <div className="space-y-6 pt-2 animate-in fade-in slide-in-from-right-4 duration-300">
+                    <div className="grid grid-cols-2 gap-6">
+                      <div className="flex flex-col gap-2">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Total Capacity</label>
+                        <input
+                          type="number"
+                          name="productTotalCount"
+                          className="w-full h-12 px-4 bg-white rounded-xl border border-slate-200 text-center font-bold text-slate-800 focus:border-blue-500 shadow-sm outline-none transition-all focus:ring-2 focus:ring-blue-500/20"
+                          placeholder="0"
+                          onChange={handleInputChange}
+                          value={formData?.productTotalCount || ""}
+                        />
+                      </div>
+                      {formData?._id && (
+                        <div className="flex flex-col gap-2">
+                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Available Now</label>
+                          <input
+                            type="number"
+                            name="productCurrentCount"
+                            className="w-full h-12 px-4 bg-white rounded-xl border border-slate-200 text-center font-bold text-blue-600 focus:border-blue-500 shadow-sm outline-none transition-all focus:ring-2 focus:ring-blue-500/20"
+                            placeholder="0"
+                            onChange={handleInputChange}
+                            value={formData?.productCurrentCount || ""}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Modal Footer */}
+              <div className="flex items-center justify-between px-8 py-5 border-t border-slate-100 bg-slate-50/50">
+                {/* Left Side Button */}
+                <div>
+                  {activeStep === "stock" ? (
+                    <button
+                      type="button"
+                      onClick={() => setActiveStep("basic")}
+                      className="px-6 py-3 rounded-xl text-sm font-black text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 transition-colors uppercase tracking-widest cursor-pointer"
+                    >
+                      Previous
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setFormData({});
+                        setAddSwaper(false);
+                      }}
+                      className="px-6 py-3 rounded-xl text-sm font-black text-slate-500 hover:bg-slate-100 transition-colors uppercase tracking-widest cursor-pointer border-none bg-transparent"
+                    >
+                      Cancel
+                    </button>
                   )}
                 </div>
 
-                <button
-                  onClick={() => {
-                    formData?._id ? handleUpdateData() : handleSubmitData();
-                  }}
-                  className="w-full py-4 bg-blue-600 text-white rounded font-black text-xs uppercase tracking-widest hover:bg-blue-700 shadow-sm transition-all duration-300 mt-2"
-                >
-                  {formData?._id ? "Commit Updates" : "Confirm Entry"}
-                </button>
+                {/* Right Side Button */}
+                <div>
+                  {activeStep === "basic" ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!formData.productName?.trim()) {
+                          message.error("Product name is required");
+                          return;
+                        }
+                        setActiveStep("stock");
+                      }}
+                      className="px-8 py-3 rounded-xl text-sm font-black text-white bg-blue-600 hover:bg-blue-700 transition-all uppercase tracking-widest cursor-pointer border-none"
+                    >
+                      Next
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        formData?._id ? handleUpdateData() : handleSubmitData();
+                      }}
+                      className="px-8 py-3 rounded-xl text-sm font-black text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-500/20 transition-all uppercase tracking-widest cursor-pointer border-none"
+                    >
+                      {formData?._id ? "Commit Updates" : "Confirm Entry"}
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>

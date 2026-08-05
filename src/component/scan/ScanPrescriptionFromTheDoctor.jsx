@@ -94,6 +94,25 @@ function ScanPrescriptionFromTheDoctor() {
   // Modal Hooks
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [activeStep, setActiveStep] = useState("basic"); // "basic" or "details"
+
+  useEffect(() => {
+    if (isModalOpen) {
+      setActiveStep("basic");
+    }
+  }, [isModalOpen]);
+
+  const handleNextStep = () => {
+    if (!formData.patientId) {
+      message.error("Please select a patient");
+      return;
+    }
+    if (!formData.doctorId) {
+      message.error("Please select a doctor");
+      return;
+    }
+    setActiveStep("details");
+  };
   const [previewUrl, setPreviewUrl] = useState(null);
   const [patients, setPatients] = useState([]);
   console.log(patients);
@@ -677,118 +696,169 @@ function ScanPrescriptionFromTheDoctor() {
       </div>
 
       {/* Modal Dialog */}
+      {/* Modal Dialog */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md transition-all duration-300">
-          <div className="bg-white/90 backdrop-blur-3xl rounded-3xl shadow-2xl border border-slate-200 w-full max-w-xl overflow-hidden">
-            <div className="flex justify-between items-center p-6 border-b border-slate-100 bg-white/50">
-              <h2 className="text-2xl font-black text-slate-800 tracking-tight">
-                New <span className="text-blue-600">Scan Prescription</span>
-              </h2>
+          <form
+            onSubmit={handleCreatePrescription}
+            className="bg-white/95 backdrop-blur-3xl rounded-[32px] shadow-2xl border border-slate-200 w-full max-w-2xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col"
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-8 py-6 border-b border-slate-100 bg-slate-50/50">
+              <div className="flex items-center gap-4">
+                <div className={`p-2.5 rounded-xl ${activeStep === "basic" ? "bg-blue-500/10 text-blue-600" : "bg-emerald-500/10 text-emerald-600"}`}>
+                  <Icon
+                    icon={activeStep === "basic" ? "solar:user-bold" : "solar:calendar-add-bold"}
+                    className="text-2xl"
+                  />
+                </div>
+                <div>
+                  <h2 className="text-xl font-black text-slate-800 m-0 leading-none">
+                    {activeStep === "basic" ? "Prescription Parties" : "Prescription Details"}
+                  </h2>
+                  <p className="text-xs text-slate-400 font-semibold m-0 mt-1 leading-none">
+                    {activeStep === "basic" ? "Step 1 of 2: Select Patient & Requesting Doctor" : "Step 2 of 2: Set Scan Type & Priority"}
+                  </p>
+                </div>
+              </div>
               <button
+                type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="text-slate-400 hover:text-red-500 transition-colors p-2 rounded-xl hover:bg-red-50"
+                className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all cursor-pointer border-0 bg-transparent"
               >
-                <Icon
-                  icon="solar:close-circle-bold-duotone"
-                  className="text-2xl"
-                />
+                <Icon icon="tabler:x" className="text-xl" />
               </button>
             </div>
 
-            <form
-              onSubmit={handleCreatePrescription}
-              className="p-8 flex flex-col gap-6"
-            >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 z-20 relative">
-                <SearchPicker
-                  label="Select Patient"
-                  options={patients}
-                  value={formData.patientId}
-                  placeholder="Search Patient..."
-                  onChange={(opt) =>
-                    setFormData({
-                      ...formData,
-                      patientId: opt.value,
-                      ptrName: opt.name,
-                      ptNo: opt.ptNo,
-                      PHN_ID:opt.PHN_ID
-                    })
-                  }
-                />
+            {/* Step Progress Bar */}
+            <div className="w-full bg-slate-100 h-1">
+              <div 
+                className={`h-full transition-all duration-500 ${activeStep === "basic" ? "w-1/2 bg-blue-500" : "w-full bg-emerald-500"}`}
+              />
+            </div>
 
-                <SearchPicker
-                  label="Select Requesting Doctor"
-                  options={doctors}
-                  value={formData.doctorId}
-                  placeholder="Search Doctor..."
-                  onChange={(opt) =>
-                    setFormData({
-                      ...formData,
-                      doctorId: opt.value,
-                      drName: opt.name,
-                    })
-                  }
-                />
-              </div>
+            {/* Modal Content Body */}
+            <div className="p-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
+              {activeStep === "basic" ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 z-20 relative animate-in fade-in slide-in-from-left-4 duration-300">
+                  <SearchPicker
+                    label="Select Patient *"
+                    options={patients}
+                    value={formData.patientId}
+                    placeholder="Search Patient..."
+                    onChange={(opt) =>
+                      setFormData({
+                        ...formData,
+                        patientId: opt.value,
+                        ptrName: opt.name,
+                        ptNo: opt.ptNo,
+                        PHN_ID: opt.PHN_ID
+                      })
+                    }
+                  />
 
-              <div className="grid grid-cols-2 gap-6">
-                <div className="flex flex-col gap-2">
-                  <label className="text-[10px] font-black tracking-widest uppercase text-slate-500 pl-1">
-                    Scan Type
-                  </label>
-                  <select
-                    name="scanType"
-                    value={formData.scanType}
-                    onChange={handleInputChange}
-                    className="px-5 py-3 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 text-sm font-black text-blue-600 transition-all shadow-inner tracking-tight"
-                  >
-                    <option value="MRI Brain">MRI Brain</option>
-                    <option value="MRI Spine">MRI Spine</option>
-                    <option value="CT Scan">CT Scan</option>
-                    <option value="CT Abdomen">CT Abdomen</option>
-                    <option value="X-Ray Chest">X-Ray Chest</option>
-                    <option value="Ultrasound">Ultrasound</option>
-                  </select>
+                  <SearchPicker
+                    label="Select Requesting Doctor *"
+                    options={doctors}
+                    value={formData.doctorId}
+                    placeholder="Search Doctor..."
+                    onChange={(opt) =>
+                      setFormData({
+                        ...formData,
+                        doctorId: opt.value,
+                        drName: opt.name,
+                      })
+                    }
+                  />
                 </div>
-                <div className="flex flex-col gap-2">
-                  <label className="text-[10px] font-black tracking-widest uppercase text-slate-500 pl-1">
-                    Priority
-                  </label>
-                  <select
-                    name="priority"
-                    value={formData.priority}
-                    onChange={handleInputChange}
-                    className="px-5 py-3 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 text-sm font-black text-rose-500 transition-all shadow-inner tracking-tight"
-                  >
-                    <option value="High">High</option>
-                    <option value="Medium" className="text-amber-500">
-                      Medium
-                    </option>
-                    <option value="Low" className="text-emerald-500">
-                      Low
-                    </option>
-                  </select>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-in fade-in slide-in-from-right-4 duration-300">
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-black tracking-widest uppercase text-slate-500 pl-1">
+                      Scan Type
+                    </label>
+                    <select
+                      name="scanType"
+                      value={formData.scanType}
+                      onChange={handleInputChange}
+                      className="px-5 py-3 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 text-sm font-black text-blue-600 transition-all shadow-inner tracking-tight"
+                    >
+                      <option value="MRI Brain">MRI Brain</option>
+                      <option value="MRI Spine">MRI Spine</option>
+                      <option value="CT Scan">CT Scan</option>
+                      <option value="CT Abdomen">CT Abdomen</option>
+                      <option value="X-Ray Chest">X-Ray Chest</option>
+                      <option value="Ultrasound">Ultrasound</option>
+                    </select>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-black tracking-widest uppercase text-slate-500 pl-1">
+                      Priority
+                    </label>
+                    <select
+                      name="priority"
+                      value={formData.priority}
+                      onChange={handleInputChange}
+                      className="px-5 py-3 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 text-sm font-black text-rose-500 transition-all shadow-inner tracking-tight"
+                    >
+                      <option value="High">High</option>
+                      <option value="Medium" className="text-amber-500">
+                        Medium
+                      </option>
+                      <option value="Low" className="text-emerald-500">
+                        Low
+                      </option>
+                    </select>
+                  </div>
                 </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex items-center justify-between px-8 py-5 border-t border-slate-100 bg-slate-50/50">
+              {/* Left Side Button */}
+              <div>
+                {activeStep === "details" ? (
+                  <button
+                    type="button"
+                    onClick={() => setActiveStep("basic")}
+                    className="px-6 py-3 rounded-xl text-sm font-black text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 transition-colors uppercase tracking-widest cursor-pointer"
+                  >
+                    Previous
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
+                    className="px-6 py-3 rounded-xl text-sm font-black text-slate-500 hover:bg-slate-100 transition-colors uppercase tracking-widest cursor-pointer border-none bg-transparent"
+                  >
+                    Cancel
+                  </button>
+                )}
               </div>
 
-              <div className="pt-6 border-t border-slate-100 flex justify-end gap-4 mt-2">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-6 py-3 rounded-xl text-sm font-black text-slate-500 hover:bg-slate-100 transition-colors uppercase tracking-widest"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="flex items-center gap-2 px-8 py-3 rounded-xl text-sm font-black text-white bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-500/30 transition-all hover:scale-105 uppercase tracking-widest disabled:opacity-50 disabled:hover:scale-100"
-                >
-                  {isSubmitting ? "Creating..." : "Confirm Request"}
-                </button>
+              {/* Right Side Button */}
+              <div>
+                {activeStep === "basic" ? (
+                  <button
+                    type="button"
+                    onClick={handleNextStep}
+                    className="px-8 py-3 rounded-xl text-sm font-black text-white bg-blue-600 hover:bg-blue-700 transition-all uppercase tracking-widest cursor-pointer border-none"
+                  >
+                    Next
+                  </button>
+                ) : (
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="flex items-center gap-2 px-8 py-3 rounded-xl text-sm font-black text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-500/20 transition-all uppercase tracking-widest disabled:opacity-50 disabled:hover:scale-100 cursor-pointer border-none"
+                  >
+                    {isSubmitting ? "Creating..." : "Confirm Request"}
+                  </button>
+                )}
               </div>
-            </form>
-          </div>
+            </div>
+          </form>
         </div>
       )}
 

@@ -27,6 +27,7 @@ const VideoConsult = () => {
   const [submitting, setSubmitting] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
+  const [activeStep, setActiveStep] = useState("basic"); // "basic" or "schedule"
   
   const initialFormState = {
     patientId: "",
@@ -82,6 +83,12 @@ const VideoConsult = () => {
       setRoomName("");
     }
   }, [location.state]);
+
+  useEffect(() => {
+    if (isModalOpen) {
+      setActiveStep("basic");
+    }
+  }, [isModalOpen]);
 
   const handleStartMeet = async (customRoomName = null) => {
     let targetRoom = customRoomName || roomName;
@@ -550,141 +557,210 @@ const VideoConsult = () => {
 
       {/* Schedule Consultation Modal */}
       <Modal
-        title={
-          <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
-            <div className="w-8 h-8 rounded-lg bg-primary-50 flex items-center justify-center text-primary-500">
-              <Icon icon="solar:calendar-add-bold" className="text-lg" />
-            </div>
-            <span className="text-base font-black text-slate-800">Schedule Video Consultation</span>
-          </div>
-        }
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
-        footer={[
-          <Button key="cancel" variant="secondary" onClick={() => setIsModalOpen(false)} className="mr-2">
-            Cancel
-          </Button>,
-          <Button key="submit" onClick={handleScheduleSubmit} disabled={submitting}>
-            {submitting ? "Scheduling..." : "Schedule Meeting"}
-          </Button>,
-        ]}
-        width={650}
+        footer={null}
+        title={null}
+        closeIcon={null}
+        width={800}
         centered
-        className="rounded-2xl overflow-hidden shadow-xl"
+        className="rounded-[32px] overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200"
         styles={{
           mask: { backdropFilter: "blur(4px)" },
-          content: { padding: "24px", borderRadius: "16px" },
+          content: { padding: "0px", borderRadius: "32px" },
         }}
       >
-        <div className="space-y-4 pt-4 text-slate-700">
-          {/* Patient Autocomplete Search */}
-          <div className="space-y-1">
-            <label className="text-xs font-black text-slate-500 uppercase tracking-wider block mb-1">
-              Search Registered Patient (Optional)
-            </label>
-            <AutoComplete
-              style={{ width: "100%" }}
-              options={searchResults}
-              onSearch={handlePatientSearch}
-              onSelect={handleSelectPatient}
-              placeholder="🔍 Search Patient by Name, Phone, Email or ID..."
-              allowClear
-              loading={searchLoading}
-              className="h-10 border border-slate-200 rounded-lg hover:border-slate-300 focus:border-primary-500 transition-colors"
-              popupClassName="rounded-xl shadow-lg border border-slate-100"
-            />
-            <p className="text-[10px] text-slate-400 italic">
-              Type to search from database. Selecting auto-fills the patient details.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3 py-1">
-            <div className="h-px flex-1 bg-slate-200"></div>
-            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Patient Details</span>
-            <div className="h-px flex-1 bg-slate-200"></div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="text-xs font-black text-slate-500 uppercase tracking-wider block mb-1">Patient Name *</label>
-              <Input
-                placeholder="Enter patient full name"
-                value={formData.patientName}
-                onChange={(e) => setFormData((prev) => ({ ...prev, patientName: e.target.value }))}
-                className="h-10 rounded-lg border-slate-200 focus:border-primary-500 text-sm font-semibold"
-              />
+        {/* Modal Header */}
+        <div className="flex items-center justify-between px-8 py-6 border-b border-slate-100 bg-slate-50/50">
+          <div className="flex items-center gap-4">
+            <div className={`p-2.5 rounded-xl ${activeStep === "basic" ? "bg-blue-500/10 text-blue-600" : "bg-emerald-500/10 text-emerald-600"}`}>
+              <Icon icon={activeStep === "basic" ? "solar:user-bold" : "solar:calendar-add-bold"} className="text-2xl" />
             </div>
             <div>
-              <label className="text-xs font-black text-slate-500 uppercase tracking-wider block mb-1">Phone Number</label>
-              <Input
-                placeholder="Enter 10-digit number"
-                value={formData.patientPhone}
-                onChange={(e) => setFormData((prev) => ({ ...prev, patientPhone: e.target.value.replace(/[^0-9]/g, "") }))}
-                className="h-10 rounded-lg border-slate-200 focus:border-primary-500 text-sm font-semibold"
-              />
-            </div>
-            <div className="col-span-1 md:col-span-2">
-              <label className="text-xs font-black text-slate-500 uppercase tracking-wider block mb-1">Email ID</label>
-              <Input
-                placeholder="patient@example.com"
-                value={formData.patientEmail}
-                onChange={(e) => setFormData((prev) => ({ ...prev, patientEmail: e.target.value }))}
-                className="h-10 rounded-lg border-slate-200 focus:border-primary-500 text-sm font-semibold"
-              />
+              <h2 className="text-xl font-black text-slate-800 m-0 leading-none">
+                {activeStep === "basic" ? "Patient Details" : "Date & Schedule"}
+              </h2>
+              <p className="text-xs text-slate-400 font-semibold m-0 mt-1 leading-none">
+                {activeStep === "basic" ? "Step 1 of 2: Search & Demographics" : "Step 2 of 2: Set Meeting Schedule"}
+              </p>
             </div>
           </div>
+          <button
+            onClick={() => setIsModalOpen(false)}
+            className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all cursor-pointer border-0 bg-transparent"
+          >
+            <Icon icon="tabler:x" className="text-xl" />
+          </button>
+        </div>
 
-          <div className="flex items-center gap-3 py-1">
-            <div className="h-px flex-1 bg-slate-200"></div>
-            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Date & Schedule</span>
-            <div className="h-px flex-1 bg-slate-200"></div>
-          </div>
+        {/* Step Progress Bar */}
+        <div className="w-full bg-slate-100 h-1">
+          <div 
+            className={`h-full transition-all duration-500 ${activeStep === "basic" ? "w-1/2 bg-blue-500" : "w-full bg-emerald-500"}`}
+          />
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="text-xs font-black text-slate-500 uppercase tracking-wider block mb-1">Date *</label>
-              <DatePicker
-                style={{ width: "100%" }}
-                format="YYYY-MM-DD"
-                disabledDate={(current) => current && current < dayjs().startOf("day")}
-                onChange={(date, dateString) => setFormData((prev) => ({ ...prev, date: dateString }))}
-                className="h-10 rounded-lg border-slate-200 focus:border-primary-500"
-              />
-            </div>
-            <div>
-              <label className="text-xs font-black text-slate-500 uppercase tracking-wider block mb-1">Start Time *</label>
-              <TimePicker
-                style={{ width: "100%" }}
-                format="hh:mm A"
-                use12Hours
-                onChange={(time, timeString) => setFormData((prev) => ({ ...prev, time: timeString }))}
-                className="h-10 rounded-lg border-slate-200 focus:border-primary-500"
-              />
-            </div>
-            <div>
-              <label className="text-xs font-black text-slate-500 uppercase tracking-wider block mb-1">Duration (Min)</label>
-              <select
-                value={formData.duration}
-                onChange={(e) => setFormData((prev) => ({ ...prev, duration: Number(e.target.value) }))}
-                className="w-full h-10 border border-slate-200 rounded-lg focus:outline-none focus:border-primary-500 px-3 text-sm font-semibold bg-white"
-              >
-                <option value={15}>15 Minutes</option>
-                <option value={30}>30 Minutes</option>
-                <option value={45}>45 Minutes</option>
-                <option value={60}>60 Minutes</option>
-              </select>
-            </div>
-          </div>
+        {/* Modal Content Body */}
+        <div className="p-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
+          {activeStep === "basic" ? (
+            <div className="space-y-6 pt-2 text-slate-700 animate-in fade-in slide-in-from-left-4 duration-300">
+              {/* Patient Autocomplete Search */}
+              <div className="space-y-1 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                <label className="text-xs font-black text-slate-500 uppercase tracking-wider block mb-1">
+                  Search Registered Patient (Optional)
+                </label>
+                <AutoComplete
+                  style={{ width: "100%" }}
+                  options={searchResults}
+                  onSearch={handlePatientSearch}
+                  onSelect={handleSelectPatient}
+                  placeholder="Search Patient by Name, Phone, Email or ID..."
+                  allowClear
+                  loading={searchLoading}
+                  className="h-10 border border-slate-200 rounded-lg hover:border-slate-300 focus:border-primary-500 transition-colors"
+                  popupClassName="rounded-xl shadow-lg border border-slate-100"
+                />
+                <p className="text-[10px] text-slate-400 italic m-0">
+                  Type to search from database. Selecting auto-fills the patient details.
+                </p>
+              </div>
 
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-black text-slate-500 uppercase tracking-wider block mb-1">Patient Name *</label>
+                  <Input
+                    placeholder="Enter patient full name"
+                    value={formData.patientName}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, patientName: e.target.value }))}
+                    className="h-10 rounded-lg border-slate-200 focus:border-primary-500 text-sm font-semibold"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-black text-slate-500 uppercase tracking-wider block mb-1">Phone Number</label>
+                  <Input
+                    placeholder="Enter 10-digit number"
+                    value={formData.patientPhone}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, patientPhone: e.target.value.replace(/[^0-9]/g, "") }))}
+                    className="h-10 rounded-lg border-slate-200 focus:border-primary-500 text-sm font-semibold"
+                  />
+                </div>
+                <div className="col-span-1 md:col-span-2">
+                  <label className="text-xs font-black text-slate-500 uppercase tracking-wider block mb-1">Email ID</label>
+                  <Input
+                    placeholder="patient@example.com"
+                    value={formData.patientEmail}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, patientEmail: e.target.value }))}
+                    className="h-10 rounded-lg border-slate-200 focus:border-primary-500 text-sm font-semibold"
+                  />
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-6 pt-2 text-slate-700 animate-in fade-in slide-in-from-right-4 duration-300">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="text-xs font-black text-slate-500 uppercase tracking-wider block mb-1">Date *</label>
+                  <DatePicker
+                    style={{ width: "100%" }}
+                    format="YYYY-MM-DD"
+                    value={formData.date ? dayjs(formData.date, "YYYY-MM-DD") : null}
+                    disabledDate={(current) => current && current < dayjs().startOf("day")}
+                    onChange={(date, dateString) => setFormData((prev) => ({ ...prev, date: dateString }))}
+                    className="h-10 rounded-lg border-slate-200 focus:border-primary-500"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-black text-slate-500 uppercase tracking-wider block mb-1">Start Time *</label>
+                  <TimePicker
+                    style={{ width: "100%" }}
+                    format="hh:mm A"
+                    use12Hours
+                    value={formData.time ? dayjs(formData.time, "hh:mm A") : null}
+                    onChange={(time, timeString) => setFormData((prev) => ({ ...prev, time: timeString }))}
+                    className="h-10 rounded-lg border-slate-200 focus:border-primary-500"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-black text-slate-500 uppercase tracking-wider block mb-1">Duration (Min)</label>
+                  <select
+                    value={formData.duration}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, duration: Number(e.target.value) }))}
+                    className="w-full h-10 border border-slate-200 rounded-lg focus:outline-none focus:border-primary-500 px-3 text-sm font-semibold bg-white"
+                  >
+                    <option value={15}>15 Minutes</option>
+                    <option value={30}>30 Minutes</option>
+                    <option value={45}>45 Minutes</option>
+                    <option value={60}>60 Minutes</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-black text-slate-500 uppercase tracking-wider block mb-1">Consultation Notes / Reason</label>
+                <Input.TextArea
+                  placeholder="Provide a brief summary or symptoms description..."
+                  value={formData.notes}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, notes: e.target.value }))}
+                  rows={3}
+                  className="rounded-lg border-slate-200 focus:border-primary-500 text-sm font-semibold"
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Modal Footer */}
+        <div className="flex items-center justify-between px-8 py-5 border-t border-slate-100 bg-slate-50/50">
+          {/* Left Side Button */}
           <div>
-            <label className="text-xs font-black text-slate-500 uppercase tracking-wider block mb-1">Consultation Notes / Reason</label>
-            <Input.TextArea
-              placeholder="Provide a brief summary or symptoms description..."
-              value={formData.notes}
-              onChange={(e) => setFormData((prev) => ({ ...prev, notes: e.target.value }))}
-              rows={3}
-              className="rounded-lg border-slate-200 focus:border-primary-500 text-sm font-semibold"
-            />
+            {activeStep === "schedule" ? (
+              <Button
+                onClick={() => setActiveStep("basic")}
+                variant="secondary"
+                className="rounded-xl px-5 py-2.5 flex items-center gap-2 border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 cursor-pointer"
+              >
+                <Icon icon="tabler:arrow-left" />
+                Previous
+              </Button>
+            ) : (
+              <Button
+                onClick={() => setIsModalOpen(false)}
+                variant="secondary"
+                className="rounded-xl px-5 py-2.5 border border-slate-200 text-slate-500 bg-white hover:bg-slate-50 cursor-pointer"
+              >
+                Cancel
+              </Button>
+            )}
+          </div>
+
+          {/* Right Side Button */}
+          <div>
+            {activeStep === "basic" ? (
+              <Button
+                onClick={() => {
+                  if (!formData.patientName?.trim()) {
+                    message.error("Patient Name is required");
+                    return;
+                  }
+                  setActiveStep("schedule");
+                }}
+                variant="primary"
+                className="rounded-xl px-6 py-2.5 flex items-center gap-2 cursor-pointer"
+              >
+                Next
+                <Icon icon="tabler:arrow-right" />
+              </Button>
+            ) : (
+              <Button
+                onClick={handleScheduleSubmit}
+                loading={submitting}
+                variant="primary"
+                className="rounded-xl px-8 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-500/20 flex items-center gap-2 cursor-pointer border-0"
+              >
+                <Icon icon="tabler:circle-check" />
+                {submitting ? "Scheduling..." : "Schedule Meeting"}
+              </Button>
+            )}
           </div>
         </div>
       </Modal>

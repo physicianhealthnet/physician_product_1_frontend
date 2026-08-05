@@ -86,6 +86,7 @@ function Identicards({ isPublic }) {
   const [layout, setLayout] = useState("vertical"); // 'vertical' | 'horizontal'
   const [isFlipped, setIsFlipped] = useState(false);
   const [isScannerOpen, setIsScannerOpen] = useState(false);
+  const [activeStep, setActiveStep] = useState("basic"); // "basic" or "customize"
 
   // Form states for manual customization or auto-populated fields
   const [formData, setFormData] = useState({
@@ -231,6 +232,7 @@ function Identicards({ isPublic }) {
       });
       message.success(`Loaded patient details: ${entity.patientName}`);
     }
+    setActiveStep("customize");
   };
 
   // Switch card type (Staff <-> Patient) and reset some variables
@@ -633,207 +635,265 @@ function Identicards({ isPublic }) {
           <div className="flex flex-col lg:flex-row gap-8 items-start w-full">
             
             {/* Left Side: Directory and Configuration Panels (58.3%) */}
-            <div className="w-full lg:w-7/12 flex flex-col gap-8">
-          
-          {/* Card Category Selection & Directory */}
-          <Card title="1. Select User from Directory" className="bg-white/70 backdrop-blur border-slate-200">
-            <div className="flex gap-4 mb-6 p-1 bg-slate-100 rounded-xl">
-              <button
-                onClick={() => handleCardTypeChange("staff")}
-                className={`flex-1 py-3 px-4 rounded-lg font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2
-                  ${cardType === "staff" ? "bg-white text-slate-900 shadow-md" : "text-slate-500 hover:text-slate-700"}`}
-              >
-                <Icon icon="solar:stethoscope-bold" className="text-lg text-blue-500" />
-                Hospital Staff Directory ({users.length})
-              </button>
-              <button
-                onClick={() => handleCardTypeChange("patient")}
-                className={`flex-1 py-3 px-4 rounded-lg font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2
-                  ${cardType === "patient" ? "bg-white text-slate-900 shadow-md" : "text-slate-500 hover:text-slate-700"}`}
-              >
-                <Icon icon="solar:users-group-two-rounded-bold" className="text-lg text-rose-500" />
-                Active Patients ({patients.length})
-              </button>
-            </div>
-
-            {/* Live Search Directory */}
-            <div className="flex gap-3 mb-4">
-              <Button onClick={() => setIsScannerOpen(true)} variant="secondary" className="px-3 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-600 shadow-none">
-                <Icon icon="solar:scanner-bold-duotone" className="text-xl" />
-              </Button>
-              <div className="relative flex-1">
-                <Icon icon="solar:magnifer-linear" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg" />
-                <input
-                  type="text"
-                  placeholder={`Search ${cardType === "staff" ? "staff members (Dr, nurse, admin)..." : "patients by name or ID..."}`}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/50 text-slate-700 font-medium"
-                />
-              </div>
-              <Button onClick={fetchData} variant="secondary" className="px-3 bg-slate-100 hover:bg-slate-200 border border-slate-200 shadow-none">
-                <Icon icon="solar:restart-bold" className={`text-xl text-slate-600 ${loading ? "animate-spin" : ""}`} />
-              </Button>
-            </div>
-
-            {/* Quick Choice Dropdown Grid */}
-            <div className="max-h-48 overflow-y-auto border border-slate-100 rounded-xl divide-y divide-slate-100">
-              {loading ? (
-                <div className="py-8 text-center text-slate-400 font-medium flex items-center justify-center gap-2">
-                  <Icon icon="solar:spinner-linear" className="animate-spin text-lg" /> Loading directory...
+            <div className="w-full lg:w-7/12 flex flex-col gap-6">
+              {/* Step Progress Indicator Header */}
+              <div className="flex items-center justify-between px-2 bg-white/50 p-4 rounded-2xl border border-slate-100 shadow-sm">
+                <div className="flex items-center gap-3">
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs ${activeStep === "basic" ? "bg-blue-500/10 text-blue-600" : "bg-emerald-500/10 text-emerald-600"}`}>
+                    {activeStep === "basic" ? "1" : "2"}
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-black text-slate-800 m-0 leading-none">
+                      {activeStep === "basic" ? "Select Directory User" : "Customize Card Information"}
+                    </h3>
+                    <p className="text-[10px] text-slate-400 font-semibold m-0 mt-1 leading-none">
+                      {activeStep === "basic" ? "Step 1 of 2: Search and select a user" : "Step 2 of 2: Adjust profile details & contact info"}
+                    </p>
+                  </div>
                 </div>
-              ) : filteredEntities.length > 0 ? (
-                filteredEntities.map((entity, idx) => {
-                  const name = cardType === "staff" ? entity.userName : entity.patientName;
-                  const id = cardType === "staff" ? entity.userId : entity.patientId;
-                  const tag = cardType === "staff" ? entity.userType : "PATIENT";
-                  
-                  return (
-                    <div
-                      key={idx}
-                      onClick={() => handleSelectEntity(entity)}
-                      className="flex justify-between items-center px-4 py-3 hover:bg-slate-50 cursor-pointer transition-colors"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-700 text-xs">
-                          {name?.charAt(0)}
+                <div className="w-32 bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                  <div className={`h-full transition-all duration-500 ${activeStep === "basic" ? "w-1/2 bg-blue-500" : "w-full bg-emerald-500"}`} />
+                </div>
+              </div>
+
+              {activeStep === "basic" ? (
+                <div className="animate-in fade-in slide-in-from-left-4 duration-300">
+                  <Card title="1. Select User from Directory" className="bg-white/70 backdrop-blur border-slate-200">
+                    <div className="flex gap-4 mb-6 p-1 bg-slate-100 rounded-xl">
+                      <button
+                        type="button"
+                        onClick={() => handleCardTypeChange("staff")}
+                        className={`flex-1 py-3 px-4 rounded-lg font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 border-0 cursor-pointer
+                          ${cardType === "staff" ? "bg-white text-slate-900 shadow-md" : "text-slate-500 hover:text-slate-700 bg-transparent"}`}
+                      >
+                        <Icon icon="solar:stethoscope-bold" className="text-lg text-blue-500" />
+                        Hospital Staff Directory ({users.length})
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleCardTypeChange("patient")}
+                        className={`flex-1 py-3 px-4 rounded-lg font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 border-0 cursor-pointer
+                          ${cardType === "patient" ? "bg-white text-slate-900 shadow-md" : "text-slate-500 hover:text-slate-700 bg-transparent"}`}
+                      >
+                        <Icon icon="solar:users-group-two-rounded-bold" className="text-lg text-rose-500" />
+                        Active Patients ({patients.length})
+                      </button>
+                    </div>
+
+                    {/* Live Search Directory */}
+                    <div className="flex gap-3 mb-4">
+                      <Button type="button" onClick={() => setIsScannerOpen(true)} variant="secondary" className="px-3 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-600 shadow-none">
+                        <Icon icon="solar:scanner-bold-duotone" className="text-xl" />
+                      </Button>
+                      <div className="relative flex-1">
+                        <Icon icon="solar:magnifer-linear" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg" />
+                        <input
+                          type="text"
+                          placeholder={`Search ${cardType === "staff" ? "staff members (Dr, nurse, admin)..." : "patients by name or ID..."}`}
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/50 text-slate-700 font-medium"
+                        />
+                      </div>
+                      <Button type="button" onClick={fetchData} variant="secondary" className="px-3 bg-slate-100 hover:bg-slate-200 border border-slate-200 shadow-none">
+                        <Icon icon="solar:restart-bold" className={`text-xl text-slate-600 ${loading ? "animate-spin" : ""}`} />
+                      </Button>
+                    </div>
+
+                    {/* Quick Choice Dropdown Grid */}
+                    <div className="max-h-48 overflow-y-auto border border-slate-100 rounded-xl divide-y divide-slate-100">
+                      {loading ? (
+                        <div className="py-8 text-center text-slate-400 font-medium flex items-center justify-center gap-2">
+                          <Icon icon="solar:spinner-linear" className="animate-spin text-lg" /> Loading directory...
                         </div>
-                        <div>
-                          <p className="font-bold text-slate-800 text-sm leading-none mb-1">{name}</p>
-                          <p className="text-xs text-slate-400 font-medium">{id}</p>
+                      ) : filteredEntities.length > 0 ? (
+                        filteredEntities.map((entity, idx) => {
+                          const name = cardType === "staff" ? entity.userName : entity.patientName;
+                          const id = cardType === "staff" ? entity.userId : entity.patientId;
+                          const tag = cardType === "staff" ? entity.userType : "PATIENT";
+                          
+                          return (
+                            <div
+                              key={idx}
+                              onClick={() => handleSelectEntity(entity)}
+                              className="flex justify-between items-center px-4 py-3 hover:bg-slate-50 cursor-pointer transition-colors"
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-700 text-xs">
+                                  {name?.charAt(0)}
+                                </div>
+                                <div>
+                                  <p className="font-bold text-slate-800 text-sm leading-none mb-1">{name}</p>
+                                  <p className="text-xs text-slate-400 font-medium">{id}</p>
+                                </div>
+                              </div>
+                              <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider
+                                ${tag === "doctor" || tag === "DOCTOR" ? "bg-blue-100 text-blue-600" :
+                                  tag === "receptionist" ? "bg-purple-100 text-purple-600" :
+                                  tag === "PATIENT" ? "bg-rose-100 text-rose-600" :
+                                  "bg-emerald-100 text-emerald-600"}`}
+                              >
+                                {tag}
+                              </span>
+                            </div>
+                          );
+                        })
+                      ) : (
+                        <div className="py-8 text-center text-slate-400 font-semibold">
+                          No records matching search query.
+                        </div>
+                      )}
+                    </div>
+                  </Card>
+                </div>
+              ) : (
+                <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+                  {/* Form Editor */}
+                  <Card title="2. Customize Card Information" className="bg-white/70 backdrop-blur border-slate-200">
+                    <form className="flex flex-col gap-6" onSubmit={(e) => e.preventDefault()}>
+                      
+                      {/* Photo Options */}
+                      <div>
+                        <label className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2.5 block">
+                          Profile Photo Source
+                        </label>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {/* Preset Avatar Selection */}
+                          <div className="flex flex-col gap-2">
+                            <span className="text-xs font-semibold text-slate-400">Choose Preset avatar:</span>
+                            <div className="flex flex-wrap gap-2">
+                              {PRESET_AVATARS.map((p) => (
+                                <button
+                                  key={p.id}
+                                  type="button"
+                                  onClick={() => setFormData((prev) => ({ ...prev, avatarPreset: p.id, photo: "" }))}
+                                  className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all border-0 cursor-pointer ${
+                                    formData.avatarPreset === p.id && !formData.photo
+                                      ? "ring-2 ring-blue-500 ring-offset-2 scale-105"
+                                      : "hover:bg-slate-100 bg-transparent"
+                                  } ${p.color}`}
+                                  title={p.label}
+                                >
+                                  <Icon icon={p.icon} className="text-xl" />
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Manual File Upload */}
+                          <div className="flex flex-col gap-2">
+                            <span className="text-xs font-semibold text-slate-400">Or Upload Profile Image:</span>
+                            <div className="relative">
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handlePhotoUpload}
+                                className="hidden"
+                                id="avatar-file-input"
+                              />
+                              <label
+                                htmlFor="avatar-file-input"
+                                className="w-full py-2 px-3 border border-dashed border-slate-300 hover:border-blue-500 hover:bg-blue-50/20 rounded-xl cursor-pointer flex items-center justify-center gap-2 text-xs font-bold text-slate-600 transition-all"
+                              >
+                                <Icon icon="solar:upload-bold" className="text-lg text-blue-500" />
+                                {formData.photo ? "Replace Photo" : "Upload Custom JPG/PNG"}
+                              </label>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider
-                        ${tag === "doctor" || tag === "DOCTOR" ? "bg-blue-100 text-blue-600" :
-                          tag === "receptionist" ? "bg-purple-100 text-purple-600" :
-                          tag === "PATIENT" ? "bg-rose-100 text-rose-600" :
-                          "bg-emerald-100 text-emerald-600"}`}
-                      >
-                        {tag}
-                      </span>
-                    </div>
-                  );
-                })
-              ) : (
-                <div className="py-8 text-center text-slate-400 font-semibold">
-                  No records matching search query.
+
+                      <hr className="border-slate-100" />
+
+                      {/* Text Fields */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="flex flex-col gap-1">
+                          <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Full Name</label>
+                          <Input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Full Name" />
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Designation / Role</label>
+                          <Input type="text" name="role" value={formData.role} onChange={handleChange} placeholder="Designation" />
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Department / Division</label>
+                          <Input type="text" name="dept" value={formData.dept} onChange={handleChange} placeholder="Department" />
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">ID Identifier</label>
+                          <Input type="text" name="idNumber" value={formData.idNumber} onChange={handleChange} placeholder="ID Identification" />
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Phone</label>
+                          <Input type="text" name="phone" value={formData.phone} onChange={handleChange} placeholder="Phone" />
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Email Address</label>
+                          <Input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" />
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Blood Group</label>
+                          <select
+                            name="bloodGroup"
+                            value={formData.bloodGroup}
+                            onChange={handleChange}
+                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/50 text-slate-700 font-semibold text-sm"
+                          >
+                            {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-", "Not Selected"].map((bg) => (
+                              <option key={bg} value={bg}>{bg}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Hospital Location</label>
+                          <Input type="text" name="clinicLocation" value={formData.clinicLocation} onChange={handleChange} placeholder="Clinic Location" />
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Issue Date</label>
+                          <input type="date" name="issueDate" value={formData.issueDate} onChange={handleChange} className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-medium" />
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Expiry Date</label>
+                          <input type="date" name="expiryDate" value={formData.expiryDate} onChange={handleChange} className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-medium" />
+                        </div>
+                      </div>
+                    </form>
+                  </Card>
                 </div>
               )}
+
+              {/* Stepper Navigation Actions */}
+              <div className="flex justify-between items-center bg-white/75 backdrop-blur-md p-4 rounded-2xl border border-slate-200 shadow-sm mt-4">
+                <div>
+                  {activeStep === "customize" && (
+                    <Button
+                      onClick={() => setActiveStep("basic")}
+                      variant="secondary"
+                      className="rounded-xl px-5 py-2.5 flex items-center gap-2 border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 cursor-pointer text-xs uppercase tracking-widest font-black"
+                    >
+                      <Icon icon="tabler:arrow-left" />
+                      Back to Directory
+                    </Button>
+                  )}
+                </div>
+                <div>
+                  {activeStep === "basic" ? (
+                    <Button
+                      onClick={() => setActiveStep("customize")}
+                      variant="primary"
+                      className="rounded-xl px-6 py-2.5 flex items-center gap-2 cursor-pointer text-xs uppercase tracking-widest font-black"
+                    >
+                      Customize Details
+                      <Icon icon="tabler:arrow-right" />
+                    </Button>
+                  ) : (
+                    <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider pr-4">
+                      Ready for Export & Preview
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
-          </Card>
-
-          {/* Form Editor */}
-          <Card title="2. Customize Card Information" className="bg-white/70 backdrop-blur border-slate-200">
-            <form className="flex flex-col gap-6">
-              
-              {/* Photo Options */}
-              <div>
-                <label className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2.5 block">
-                  Profile Photo Source
-                </label>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Preset Avatar Selection */}
-                  <div className="flex flex-col gap-2">
-                    <span className="text-xs font-semibold text-slate-400">Choose Preset avatar:</span>
-                    <div className="flex flex-wrap gap-2">
-                      {PRESET_AVATARS.map((p) => (
-                        <button
-                          key={p.id}
-                          type="button"
-                          onClick={() => setFormData((prev) => ({ ...prev, avatarPreset: p.id, photo: "" }))}
-                          className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
-                            formData.avatarPreset === p.id && !formData.photo
-                              ? "ring-2 ring-blue-500 ring-offset-2 scale-105"
-                              : "hover:bg-slate-100"
-                          } ${p.color}`}
-                          title={p.label}
-                        >
-                          <Icon icon={p.icon} className="text-xl" />
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Manual File Upload */}
-                  <div className="flex flex-col gap-2">
-                    <span className="text-xs font-semibold text-slate-400">Or Upload Profile Image:</span>
-                    <div className="relative">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handlePhotoUpload}
-                        className="hidden"
-                        id="avatar-file-input"
-                      />
-                      <label
-                        htmlFor="avatar-file-input"
-                        className="w-full py-2 px-3 border border-dashed border-slate-300 hover:border-blue-500 hover:bg-blue-50/20 rounded-xl cursor-pointer flex items-center justify-center gap-2 text-xs font-bold text-slate-600 transition-all"
-                      >
-                        <Icon icon="solar:upload-bold" className="text-lg text-blue-500" />
-                        {formData.photo ? "Replace Photo" : "Upload Custom JPG/PNG"}
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <hr className="border-slate-100" />
-
-              {/* Text Fields */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Full Name</label>
-                  <Input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Full Name" />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Designation / Role</label>
-                  <Input type="text" name="role" value={formData.role} onChange={handleChange} placeholder="Designation" />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Department / Division</label>
-                  <Input type="text" name="dept" value={formData.dept} onChange={handleChange} placeholder="Department" />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">ID Identifier</label>
-                  <Input type="text" name="idNumber" value={formData.idNumber} onChange={handleChange} placeholder="ID Identification" />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Phone</label>
-                  <Input type="text" name="phone" value={formData.phone} onChange={handleChange} placeholder="Phone" />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Email Address</label>
-                  <Input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Blood Group</label>
-                  <select
-                    name="bloodGroup"
-                    value={formData.bloodGroup}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/50 text-slate-700 font-semibold text-sm"
-                  >
-                    {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-", "Not Selected"].map((bg) => (
-                      <option key={bg} value={bg}>{bg}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Hospital Location</label>
-                  <Input type="text" name="clinicLocation" value={formData.clinicLocation} onChange={handleChange} placeholder="Clinic Location" />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Issue Date</label>
-                  <input type="date" name="issueDate" value={formData.issueDate} onChange={handleChange} className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-medium" />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Expiry Date</label>
-                  <input type="date" name="expiryDate" value={formData.expiryDate} onChange={handleChange} className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-medium" />
-                </div>
-              </div>
-            </form>
-          </Card>
-        </div>
 
         {/* Right Side: Interactive Real-time Dual-Sided Card Preview (41.6%) */}
         <div className="w-full lg:w-5/12 flex flex-col gap-6 sticky top-6">

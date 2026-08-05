@@ -37,6 +37,8 @@ function EnquiryRegistraionForm() {
   const [assessmentId, setAssmentId] = useState();
   const [prescriptionId, setPrescriptionId] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeStep, setActiveStep] = useState("basic"); // "basic" or "medical"
 
   const patientSessionDetails = React.useMemo(() => {
     try {
@@ -87,14 +89,14 @@ function EnquiryRegistraionForm() {
   }, [patient_id]);
 
   // Create or update basic patient details
-  const saveBasicDetails = async () => {
+  const saveBasicDetails = async (skipRedirect = false) => {
     if (!patientBasic.patientName?.trim()) {
       message.error("Patient Name is required");
-      return;
+      return false;
     }
     if (!patientBasic.patientPhone?.trim()) {
       message.error("Patient Phone is required");
-      return;
+      return false;
     }
     setLoading(true);
 
@@ -134,19 +136,25 @@ function EnquiryRegistraionForm() {
         );
 
         message.success("Patient details updated successfully");
+        return true;
       } else {
         const response = await AxiosInstance.post("/patient/create", formDataPayload);
-        setPatientBasic(response.data.patient);
+        const savedPatient = response.data.patient;
+        setPatientBasic(savedPatient);
         sessionStorage.setItem(
           "patientDetails",
-          JSON.stringify(response.data.patient)
+          JSON.stringify(savedPatient)
         );
-        navigate(`/administration/identicards?patientId=${response?.data?.patient?.patientId}&autostart=true`);
         message.success("Patient registered successfully");
+        if (!skipRedirect) {
+          navigate(`/administration/identicards?patientId=${savedPatient.patientId}&autostart=true`);
+        }
+        return savedPatient;
       }
     } catch (error) {
       console.error(error);
       message.error("Failed to save patient details");
+      return false;
     } finally {
       setLoading(false);
     }
@@ -260,7 +268,7 @@ function EnquiryRegistraionForm() {
   const conformationToTreatmentHistory = async () => {
     const payload = {
       clinicId: user.clinicId,
-      patientId: patient_id,
+      patientId: patient_id || patientBasic.patientId,
       treatmentId: formData?._id,
       date: Date(),
       medicalInformationId: formData?._id,
@@ -322,87 +330,171 @@ function EnquiryRegistraionForm() {
         )}
       </div>
 
-      {/* Form Sections */}
-      <div className="space-y-6">
-        {/* Basic Details Card */}
-        <Card className="group relative overflow-hidden bg-white/40  backdrop-blur-md border-slate-200/60  transition-all duration-300">
-          {/* Glow Effect */}
-          <div className="absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[60px] opacity-10 transition-opacity group-hover:opacity-20 bg-blue-500" />
-
-          <div className="p-8 z-10">
-            <SectionHeader
-              title="Basic Details"
-              icon="tabler:user-circle"
-            />
-            <PatientBasicDetails
-              patientFormData={patientBasic}
-              setPatientFormData={setPatientBasic}
-            />
-            <div className="flex justify-end mt-8 pt-6 border-t border-slate-200">
-              {patientBasic._id ? (
-                <div className="flex gap-4">
-                  <Button
-                    onClick={() => {
-                      delete patientBasic._id;
-                      delete patientBasic.patientId;
-                      saveBasicDetails();
-                    }}
-                    variant="secondary"
-                    className="bg-slate-100 hover:bg-slate-200 text-slate-700"
-                  >
-                    <Icon icon="tabler:user-plus" className="mr-2" />
-                    Save as New Patient
-                  </Button>
-                  <Button
-                    onClick={saveBasicDetails}
-                    loading={loading}
-                    variant="primary"
-                  >
-                    <Icon icon="tabler:device-floppy" className="mr-2" />
-                    Update Details
-                  </Button>
-                </div>
-              ) : (
-                <Button
-                  onClick={saveBasicDetails}
-                  loading={loading}
-                  variant="primary"
-                >
-                  <Icon icon="tabler:arrow-right" className="mr-2" />
-                  Save & Continue
-                </Button>
-              )}
+      {/* Tab Cards for Full Width Flex Col */}
+      <div className="flex flex-col gap-6">
+        {/* Basic Details Card Tab */}
+        <div
+          onClick={() => {
+            setActiveStep("basic");
+            setIsOpen(true);
+          }}
+          className="group relative overflow-hidden bg-white/40 hover:bg-white/60 backdrop-blur-md border border-slate-200 hover:border-blue-400 p-8 rounded-3xl shadow-sm hover:shadow-md transition-all cursor-pointer flex items-center justify-between"
+        >
+          <div className="flex items-center gap-6">
+            <div className="w-16 h-16 rounded-2xl bg-blue-500/10 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Icon icon="tabler:user-circle" width={36} />
+            </div>
+            <div>
+              <h2 className="text-xl font-black text-slate-800 m-0">1) Basic Details</h2>
+              <p className="text-sm text-slate-500 font-medium m-0 mt-1">Patient registration, contact info, photo, and emergency attender info</p>
             </div>
           </div>
-        </Card>
+          <Icon icon="solar:alt-arrow-right-bold" className="text-slate-400 group-hover:text-blue-500 group-hover:translate-x-2 transition-all text-xl" />
+        </div>
 
-        {/* Medical Form Card */}
-        {user?.userType !== "receptionist" && (
-          <Card className="group relative overflow-hidden bg-white/40  backdrop-blur-md border-slate-200/60  transition-all duration-300">
-            {/* Glow Effect */}
-            <div className="absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[60px] opacity-10 transition-opacity group-hover:opacity-20 bg-emerald-500" />
-
-            <div className="p-8 z-10">
-              <SectionHeader
-                title="Medical Information"
-                icon="tabler:file-medical"
-              />
-              <PatientMedicalForm fetchPatientMedical={fetchPatientMedical} />
-              {formData._id && (
-                <div className="flex justify-end mt-8 pt-6 border-t border-slate-200 ">
-                  <Button
-                    onClick={conformationToTreatmentHistory}
-                    className="bg-emerald-600 hover:bg-emerald-700 rounded-xl px-8 py-3 font-black uppercase tracking-widest text-xs shadow-lg shadow-emerald-500/20 flex items-center gap-2"
-                  >
-                    <Icon icon="tabler:circle-check" className="text-lg" />
-                    Confirm Treatment Complete
-                  </Button>
-                </div>
-              )}
+        {/* Medical Details Card Tab */}
+        {user?.userType !== "receptionist" && (patientBasic?.patientId || patient_id) && (
+          <div
+            onClick={() => {
+              setActiveStep("medical");
+              setIsOpen(true);
+            }}
+            className="group relative overflow-hidden bg-white/40 hover:bg-white/60 backdrop-blur-md border border-slate-200 hover:border-emerald-400 p-8 rounded-3xl shadow-sm hover:shadow-md transition-all cursor-pointer flex items-center justify-between animate-in fade-in slide-in-from-bottom-2 duration-300"
+          >
+            <div className="flex items-center gap-6">
+              <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Icon icon="tabler:file-medical" width={36} />
+              </div>
+              <div>
+                <h2 className="text-xl font-black text-slate-800 m-0">2) Medical Details</h2>
+                <p className="text-sm text-slate-500 font-medium m-0 mt-1">Physician history, chief complaints, symptoms, and medical habits</p>
+              </div>
             </div>
-          </Card>
+            <Icon icon="solar:alt-arrow-right-bold" className="text-slate-400 group-hover:text-emerald-500 group-hover:translate-x-2 transition-all text-xl" />
+          </div>
         )}
       </div>
+
+      {/* Pop-up Dialog Window */}
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 md:p-6 transition-all duration-300 animate-in fade-in">
+          <div className="relative bg-white rounded-[32px] border border-slate-200 shadow-2xl flex flex-col w-full max-w-5xl max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-200">
+            
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-8 py-6 border-b border-slate-100 bg-slate-50/50">
+              <div className="flex items-center gap-4">
+                <div className={`p-2.5 rounded-xl ${activeStep === "basic" ? "bg-blue-500/10 text-blue-600" : "bg-emerald-500/10 text-emerald-600"}`}>
+                  <Icon icon={activeStep === "basic" ? "tabler:user-circle" : "tabler:file-medical"} className="text-2xl" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-black text-slate-800 m-0">
+                    {activeStep === "basic" ? "Patient Basic Details" : "Physician & Medical History"}
+                  </h2>
+                  <p className="text-xs text-slate-400 font-semibold m-0 mt-0.5">
+                    {activeStep === "basic" ? "Step 1 of 2: Demographics & Contact Info" : "Step 2 of 2: Health Profile & History"}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all cursor-pointer"
+              >
+                <Icon icon="tabler:x" className="text-xl" />
+              </button>
+            </div>
+
+            {/* Step Progress Bar */}
+            <div className="w-full bg-slate-100 h-1">
+              <div 
+                className={`h-full transition-all duration-500 ${activeStep === "basic" ? "w-1/2 bg-blue-500" : "w-full bg-emerald-500"}`}
+              />
+            </div>
+
+            {/* Modal Content Body */}
+            <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+              {activeStep === "basic" ? (
+                <PatientBasicDetails
+                  patientFormData={patientBasic}
+                  setPatientFormData={setPatientBasic}
+                />
+              ) : (
+                <PatientMedicalForm 
+                  fetchPatientMedical={fetchPatientMedical}
+                  patientId={patientBasic.patientId || patient_id}
+                  hideSubmitButton={true}
+                  onSaveSuccess={() => {
+                    // If it was a new registration, redirect to card preview page, else go to home
+                    if (!patient_id && patientBasic.patientId) {
+                      navigate(`/administration/identicards?patientId=${patientBasic.patientId}&autostart=true`);
+                    } else {
+                      conformationToTreatmentHistory();
+                    }
+                    setIsOpen(false);
+                  }}
+                />
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex items-center justify-between px-8 py-5 border-t border-slate-100 bg-slate-50/50">
+              {/* Left Side Button */}
+              <div>
+                {activeStep === "medical" ? (
+                  <Button
+                    onClick={() => setActiveStep("basic")}
+                    variant="secondary"
+                    className="rounded-xl px-5 py-2.5 flex items-center gap-2 border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 cursor-pointer"
+                  >
+                    <Icon icon="tabler:arrow-left" />
+                    Previous
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => setIsOpen(false)}
+                    variant="secondary"
+                    className="rounded-xl px-5 py-2.5 border border-slate-200 text-slate-500 bg-white hover:bg-slate-50 cursor-pointer"
+                  >
+                    Cancel
+                  </Button>
+                )}
+              </div>
+
+              {/* Right Side Button */}
+              <div>
+                {activeStep === "basic" ? (
+                  <Button
+                    onClick={async () => {
+                      const res = await saveBasicDetails(true);
+                      if (res) {
+                        setActiveStep("medical");
+                      }
+                    }}
+                    loading={loading}
+                    variant="primary"
+                    className="rounded-xl px-6 py-2.5 flex items-center gap-2 cursor-pointer"
+                  >
+                    Save & Next
+                    <Icon icon="tabler:arrow-right" />
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => {
+                      // Trigger submit of the medical details form
+                      document.getElementById("hidden-medical-submit-btn")?.click();
+                    }}
+                    variant="primary"
+                    className="rounded-xl px-8 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-500/20 flex items-center gap-2 cursor-pointer"
+                  >
+                    <Icon icon="tabler:circle-check" />
+                    Finish
+                  </Button>
+                )}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
     </div>
   );
 }
