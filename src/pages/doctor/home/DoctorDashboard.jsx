@@ -27,7 +27,10 @@ const DoctorDashboard = () => {
   const handleCardClick = (slot) => {
     setActiveAptTab(slot);
     setTimeout(() => {
-      todayAptsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      todayAptsRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     }, 100);
   };
 
@@ -130,7 +133,10 @@ const DoctorDashboard = () => {
               / {total}
             </span>
           </div>
-          <span className="text-[9px] sm:text-[10px] font-black text-slate-600 uppercase tracking-widest truncate" title={title}>
+          <span
+            className="text-[9px] sm:text-[10px] font-black text-slate-600 uppercase tracking-widest truncate"
+            title={title}
+          >
             {title}
           </span>
 

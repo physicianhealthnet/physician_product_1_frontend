@@ -167,39 +167,39 @@ const TodayAppointmentsTable = ({
   };
 
   return (
-    <div className="flex flex-col h-full bg-white/60 backdrop-blur-sm rounded-3xl p-6 border-gray-200 border shadow-sm hover:shadow-md transition-shadow">
+    <div className="flex flex-col h-full bg-white/60 backdrop-blur-sm rounded-3xl p-4 xl:p-5 border-gray-200 border shadow-sm hover:shadow-md transition-shadow">
       {/* Table Header Section */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 xl:mb-5">
         <div className="flex items-center gap-2">
-          <div className="p-2 bg-blue-50 text-blue-600 rounded-xl">
-            <Icon icon="solar:calendar-date-bold-duotone" width={22} />
+          <div className="p-1.5 bg-blue-50 text-blue-600 rounded-xl shrink-0">
+            <Icon icon="solar:calendar-date-bold-duotone" width={18} />
           </div>
           <div>
-            <h3 className="text-slate-800 font-black text-lg leading-tight">Today's Appointments</h3>
-            <p className="text-slate-400 text-xs font-semibold">Morning, Afternoon & Evening Schedule</p>
+            <h3 className="text-slate-800 font-black text-base leading-tight">Today's Appointments</h3>
+            <p className="text-slate-400 text-[10px] font-bold">Morning, Afternoon & Evening Schedule</p>
           </div>
         </div>
 
         {/* Search Bar */}
-        <div className="relative w-full sm:w-64">
-          <Icon icon="solar:magnifer-linear" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg" />
+        <div className="relative w-full sm:w-56 shrink-0">
+          <Icon icon="solar:magnifer-linear" className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm" />
           <input
             type="text"
             placeholder="Search patient, ID, phone..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-700 bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+            className="w-full pl-8 pr-4 py-1.5 border border-slate-200 rounded-xl text-[11px] font-semibold text-slate-700 bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
           />
           {searchQuery && (
-            <button onClick={() => setSearchQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
-              <Icon icon="solar:close-circle-bold" className="text-lg" />
+            <button onClick={() => setSearchQuery("")} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+              <Icon icon="solar:close-circle-bold" className="text-base" />
             </button>
           )}
         </div>
       </div>
 
       {/* Tabs Row */}
-      <div className="flex flex-wrap gap-2 mb-6 border-b border-slate-100 pb-4">
+      <div className="flex flex-nowrap items-center overflow-x-auto whitespace-nowrap gap-1.5 mb-4 xl:mb-5 border-b border-slate-100 pb-3 custom-scrollbar shrink-0">
         {[
           { id: "all", label: "All Today", count: allTodayAppointments.length, icon: "solar:users-group-two-rounded-bold-duotone", activeBg: "bg-blue-600 text-white" },
           { id: "morning", label: "Morning", count: morningAppointments.length, icon: "solar:sun-2-bold-duotone", activeBg: "bg-amber-500 text-white" },
@@ -209,13 +209,13 @@ const TodayAppointmentsTable = ({
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-1.5 px-4 py-2 rounded-2xl text-xs font-bold transition-all ${
+            className={`flex items-center gap-1 px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all shrink-0 ${
               activeTab === tab.id
                 ? `${tab.activeBg} shadow-sm shadow-slate-200 scale-[1.02]`
                 : "bg-white border border-slate-200 text-slate-500 hover:bg-slate-50"
             }`}
           >
-            <Icon icon={tab.icon} className="text-sm" />
+            <Icon icon={tab.icon} className="text-xs" />
             <span>{tab.label}</span>
             <span className={`px-1.5 py-0.5 rounded-full text-[9px] font-black ${activeTab === tab.id ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500"}`}>
               {tab.count}
@@ -223,8 +223,8 @@ const TodayAppointmentsTable = ({
           </button>
         ))}
         {loadingDetails && (
-          <div className="flex items-center gap-1.5 ml-auto text-blue-500 text-xs font-bold animate-pulse">
-            <Icon icon="solar:spinner-linear" className="animate-spin text-sm" />
+          <div className="flex items-center gap-1.5 ml-auto text-blue-500 text-[11px] font-bold animate-pulse shrink-0">
+            <Icon icon="solar:spinner-linear" className="animate-spin text-xs" />
             <span>Updating Details...</span>
           </div>
         )}
@@ -235,14 +235,14 @@ const TodayAppointmentsTable = ({
         <table className="w-full text-left border-collapse whitespace-nowrap min-w-max">
           <thead>
             <tr className="bg-slate-50/50 text-[10px] uppercase font-black text-slate-500 tracking-widest border-b border-slate-100">
-              <th className="p-4 pl-6 w-16 text-center">#</th>
-              <th className="p-4">Patient</th>
-              <th className="p-4">Gender & Age</th>
-              <th className="p-4">Slot & Time</th>
-              <th className="p-4">Primary Complaint</th>
-              <th className="p-4">Mobile</th>
-              <th className="p-4">Status</th>
-              <th className="p-4 text-center">Actions</th>
+              <th className="p-2.5 xl:p-3 pl-4 xl:pl-5 w-16 text-center">#</th>
+              <th className="p-2.5 xl:p-3">Patient</th>
+              <th className="p-2.5 xl:p-3">Gender & Age</th>
+              <th className="p-2.5 xl:p-3">Slot & Time</th>
+              <th className="p-2.5 xl:p-3">Primary Complaint</th>
+              <th className="p-2.5 xl:p-3">Mobile</th>
+              <th className="p-2.5 xl:p-3">Status</th>
+              <th className="p-2.5 xl:p-3 text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -261,7 +261,7 @@ const TodayAppointmentsTable = ({
                         isExpanded ? "bg-slate-50/85" : ""
                       }`}
                     >
-                      <td className="p-4 pl-6 text-center text-slate-500 font-medium relative">
+                      <td className="p-2.5 xl:p-3 pl-4 xl:pl-5 text-center text-slate-500 font-medium relative">
                         <div className="flex items-center justify-center gap-2">
                           <Icon
                             icon={isExpanded ? "solar:alt-arrow-down-bold" : "solar:alt-arrow-right-bold"}
@@ -270,41 +270,41 @@ const TodayAppointmentsTable = ({
                           <span>{startIndex + index + 1}</span>
                         </div>
                       </td>
-                      <td className="p-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-slate-100 overflow-hidden shrink-0 flex items-center justify-center border border-white shadow-sm">
+                      <td className="p-2.5 xl:p-3">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-full bg-slate-100 overflow-hidden shrink-0 flex items-center justify-center border border-white shadow-sm">
                             {pInfo.photo ? (
                               <img src={pInfo.photo} alt={pInfo.name} className="w-full h-full object-cover" />
                             ) : (
-                              <Icon icon="solar:user-bold" className="text-slate-300 text-sm" />
+                              <Icon icon="solar:user-bold" className="text-slate-300 text-xs" />
                             )}
                           </div>
                           <div className="flex flex-col">
-                            <span className="font-bold text-slate-800 text-sm leading-snug">{pInfo.name}</span>
-                            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">#{pId?.slice(-6) || "ID"}</span>
+                            <span className="font-bold text-slate-800 text-xs leading-snug">{pInfo.name}</span>
+                            <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">#{pId?.slice(-6) || "ID"}</span>
                           </div>
                         </div>
                       </td>
-                      <td className="p-4 text-sm font-semibold text-slate-600 capitalize">
+                      <td className="p-2.5 xl:p-3 text-xs font-semibold text-slate-600 capitalize">
                         {pInfo.gender ? `${pInfo.gender}, ${pInfo.age} yrs` : "-"}
                       </td>
-                      <td className="p-4">
-                        <div className="flex items-center gap-2">
-                          <span className={`flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider border ${style.bg}`}>
+                      <td className="p-2.5 xl:p-3">
+                        <div className="flex items-center gap-1.5">
+                          <span className={`flex items-center gap-1 px-1.5 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider border ${style.bg}`}>
                             <Icon icon={style.icon} className="text-xs" />
                             {apt.slot}
                           </span>
-                          <span className="text-xs text-slate-400 font-bold">{apt.time}</span>
+                          <span className="text-[10px] text-slate-400 font-bold">{apt.time}</span>
                         </div>
                       </td>
-                      <td className="p-4 text-sm font-semibold text-slate-600 max-w-[180px] truncate" title={pInfo.primaryComplaint}>
+                      <td className="p-2.5 xl:p-3 text-xs font-semibold text-slate-600 max-w-[150px] truncate" title={pInfo.primaryComplaint}>
                         {pInfo.primaryComplaint}
                       </td>
-                      <td className="p-4 text-sm font-semibold text-slate-600">{pInfo.phone}</td>
-                      <td className="p-4">
-                        <div className="flex items-center gap-1.5">
+                      <td className="p-2.5 xl:p-3 text-xs font-semibold text-slate-600">{pInfo.phone}</td>
+                      <td className="p-2.5 xl:p-3">
+                        <div className="flex items-center gap-1">
                           <div
-                            className={`w-2 h-2 rounded-full ${
+                            className={`w-1.5 h-1.5 rounded-full ${
                               ["Completed", "Checked-out"].includes(apt.status)
                                 ? "bg-emerald-500"
                                 : ["Checked-in"].includes(apt.status)
@@ -312,24 +312,24 @@ const TodayAppointmentsTable = ({
                                 : "bg-blue-500"
                             }`}
                           ></div>
-                          <span className="text-xs font-bold text-slate-700 capitalize">{apt.status}</span>
+                          <span className="text-[11px] font-bold text-slate-700 capitalize">{apt.status}</span>
                         </div>
                       </td>
-                      <td className="p-4 text-center">
-                        <div className="flex items-center justify-center gap-2" onClick={(e) => e.stopPropagation()}>
+                      <td className="p-2.5 xl:p-3 text-center">
+                        <div className="flex items-center justify-center gap-1.5" onClick={(e) => e.stopPropagation()}>
                           <button
                             onClick={() => navigate(`/assessment/${pId}`)}
-                            className="bg-blue-600 text-white px-3.5 py-1.5 rounded-xl text-[10px] uppercase font-black tracking-widest hover:bg-blue-700 transition-colors shadow-sm active:scale-95 whitespace-nowrap flex items-center justify-center gap-1.5"
+                            className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-[9px] uppercase font-black tracking-widest hover:bg-blue-700 transition-colors shadow-sm active:scale-95 whitespace-nowrap flex items-center justify-center gap-1"
                           >
                             <span>Ongoing Treatment</span>
                             <Icon icon="solar:alt-arrow-right-bold" />
                           </button>
                           <button
                             onClick={() => window.open(`https://wa.me/${pInfo.phone}`, "_blank")}
-                            className="w-8 h-8 rounded-xl bg-emerald-50 border border-emerald-100 hover:bg-emerald-600 hover:text-white text-emerald-600 flex items-center justify-center transition-all active:scale-95"
+                            className="w-7 h-7 rounded-lg bg-emerald-50 border border-emerald-100 hover:bg-emerald-600 hover:text-white text-emerald-600 flex items-center justify-center transition-all active:scale-95 shrink-0"
                             title="Chat on WhatsApp"
                           >
-                            <Icon icon="ic:baseline-whatsapp" width={18} />
+                            <Icon icon="ic:baseline-whatsapp" width={14} />
                           </button>
                         </div>
                       </td>

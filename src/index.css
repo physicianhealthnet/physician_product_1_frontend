@@ -80,3 +80,39 @@ input.no-arrows::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+/* --- Responsive adjustments for 1470x956 view and other medium desktop screens --- */
+@media (min-width: 1024px) and (max-width: 1536px) {
+  /* Global sizing reduction of all rem units by ~15% */
+  html {
+    font-size: 13.5px !important;
+  }
+
+  /* Prevent text wrapping on tables, buttons, links, tag/badge elements */
+  th, td, button, a, .tag, .badge, .status-badge {
+    white-space: nowrap !important;
+  }
+
+  /* Prevent flex wrapping on toolbars, tabs, quick links, action bars */
+  .flex-wrap:not(form):not(.grid) {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    scrollbar-width: thin;
+  }
+
+  /* Prevent wrapping of children inside flex rows */
+  .flex-wrap:not(form):not(.grid) > * {
+    flex-shrink: 0 !important;
+  }
+
+  /* Clean scrollbars for horizontal scrollable containers */
+  .flex-wrap::-webkit-scrollbar {
+    height: 4px;
+  }
+  .flex-wrap::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 9999px;
+  }
+}
+
