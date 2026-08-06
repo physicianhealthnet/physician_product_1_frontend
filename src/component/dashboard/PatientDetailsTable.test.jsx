@@ -26,6 +26,15 @@ vi.mock('./PatientClinicalDataModal', () => ({
   ) : null
 }));
 
+// Mock PatientDetails
+vi.mock('../../pages/general/patientDetails/PatientDetails', () => ({
+  default: ({ patientId }) => (
+    <div data-testid="patient-details-nested">
+      Nested Patient Details for {patientId}
+    </div>
+  )
+}));
+
 describe('PatientDetailsTable Component', () => {
   const mockPatients = [
     { patientId: 'P001', patientName: 'Alice', patientGender: 'female', patientAge: 30, patientPhone: '111', createdAt: '2023-01-01' },
@@ -142,16 +151,18 @@ describe('PatientDetailsTable Component', () => {
 
     // After clicking, the expanded details should show up
     await waitFor(() => {
-      expect(screen.getByText('Additional Info')).toBeInTheDocument();
-      expect(screen.getByText('John')).toBeInTheDocument(); // Attender name
+      expect(screen.getByText('Patient Quick Actions')).toBeInTheDocument();
+      expect(screen.getByTestId('patient-details-nested')).toHaveTextContent('Nested Patient Details for P001');
     });
 
-    // Click the prescriptions View button
-    const viewButtons = screen.getAllByRole('button', { name: /View \(2\)/i });
-    fireEvent.click(viewButtons[0]);
+    // Click the AI Report button
+    const aiReportBtn = screen.getByRole('button', { name: /AI Report/i });
+    fireEvent.click(aiReportBtn);
 
-    // Modal should be open
-    expect(screen.getByTestId('clinical-modal')).toHaveTextContent('Modal Open: prescription for P001');
+    // Modal should be open or loading
+    await waitFor(() => {
+      expect(screen.getByText(/AI Health Summary/i)).toBeInTheDocument();
+    });
   });
 
   it('navigates to assessment when Ongoing Treatment is clicked', async () => {

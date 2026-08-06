@@ -161,9 +161,6 @@ const DoctorDashboard = () => {
               <h1 className="font-black text-slate-800 text-2xl sm:text-3xl md:text-4xl tracking-tight">
                 Appointment <span className="text-blue-500">Dashboard</span>
               </h1>
-              <h1 className="font-black text-slate-800 text-xl tracking-tight">
-                Doctor Dashboard
-              </h1>
               <p className="text-slate-500 font-medium mt-2 tracking-wide uppercase text-[10px]">
                 Welcome back! Here's what's happening today,{" "}
                 <span className="text-[#2040B0] font-bold">{currentDate}</span>

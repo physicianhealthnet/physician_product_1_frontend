@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import { AxiosInstance } from "../../utilities/AxiosInstance";
 import PatientClinicalDataModal from "./PatientClinicalDataModal";
+import { message } from "antd";
+import PatientDetails from "../../pages/general/patientDetails/PatientDetails";
 
 const PAGE_SIZE = 5;
 
@@ -28,6 +30,35 @@ const TodayAppointmentsTable = ({
   const [loadingDetails, setLoadingDetails] = useState(false);
   const [expandedRow, setExpandedRow] = useState(null);
   const [modalConfig, setModalConfig] = useState({ isOpen: false, type: null, patientId: null });
+
+  const [isAIModalOpen, setIsAIModalOpen] = useState(false);
+  const [aiReportContent, setAiReportContent] = useState("");
+  const [loadingAIReport, setLoadingAIReport] = useState(false);
+  const [aiReportPatientName, setAiReportPatientName] = useState("");
+
+  const handleOverallAIReport = async (patientId, patientName) => {
+    setIsAIModalOpen(true);
+    setLoadingAIReport(true);
+    setAiReportPatientName(patientName);
+    setAiReportContent("");
+    try {
+      const res = await AxiosInstance.get(`/patient/ai-report/${patientId}`);
+      if (res.data?.success) {
+        setAiReportContent(res.data.report);
+      } else {
+        message.error("Failed to generate AI report");
+        setIsAIModalOpen(false);
+      }
+    } catch (err) {
+      console.error(err);
+      message.error(err.response?.data?.message || "Error generating AI report");
+      setIsAIModalOpen(false);
+    } finally {
+      setLoadingAIReport(false);
+    }
+  };
+
+  const user = JSON.parse(sessionStorage.getItem("user") || sessionStorage.getItem("master") || "{}");
 
   // Merge today's appointments into a unified list
   const allTodayAppointments = useMemo(() => {
@@ -338,89 +369,68 @@ const TodayAppointmentsTable = ({
                     {/* Expandable detailed rows */}
                     {isExpanded && (
                       <tr className="bg-slate-50/50 border-b border-slate-200 shadow-inner">
-                        <td colSpan={8} className="p-0 whitespace-normal max-w-0">
-                          <div className="p-6">
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                              {/* General / Location info */}
-                              <div className="bg-white p-5 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col gap-4 relative overflow-hidden">
-                                <div className="absolute top-0 left-0 w-1.5 h-full bg-blue-500"></div>
-                                <h4 className="text-xs font-black uppercase tracking-widest text-slate-400">Additional Info</h4>
-                                <div className="flex flex-col gap-3 mt-auto">
-                                  <div className="flex items-center gap-2 text-sm bg-slate-50 p-2.5 rounded-xl">
-                                    <Icon icon="solar:hashtag-bold-duotone" className="text-blue-500 text-lg shrink-0" />
-                                    <span className="text-slate-500 text-xs font-semibold">Patient ID:</span>
-                                    <span className="font-bold text-slate-800 ml-auto bg-slate-200 px-2.5 py-0.5 rounded-lg text-xs">{pId}</span>
-                                  </div>
-                                  <div className="flex items-center gap-2 text-sm bg-slate-50 p-2.5 rounded-xl">
-                                    <Icon icon="solar:map-point-bold-duotone" className="text-blue-500 text-lg shrink-0" />
-                                    <span className="text-slate-500 text-xs font-semibold">Location:</span>
-                                    <span className="font-bold text-slate-800 ml-auto text-xs truncate max-w-[200px]" title={pInfo.location}>{pInfo.location}</span>
-                                  </div>
-                                </div>
-                              </div>
+                        <td colSpan={8} className="p-6 whitespace-normal">
+                          {/* Quick Actions Bar */}
+                          <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center mb-6 bg-slate-100/50 backdrop-blur-xl p-3.5 rounded-2xl border border-slate-200/50 animate-fade-in">
+                            <span className="text-slate-600 font-extrabold text-xs uppercase tracking-widest pl-2">Patient Quick Actions</span>
+                            <div className="flex flex-wrap bg-slate-200/60 rounded-xl p-1 gap-1 items-center shadow-inner">
+                              <button
+                                title="Edit"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (
+                                    user?.userType === "generalManager" ||
+                                    user?.userType === "receptionist"
+                                  ) {
+                                    message.warning("Permission denied");
+                                    return;
+                                  }
+                                  navigate(`/enquiry-registration/${pId}`);
+                                }}
+                                className="px-4 py-2 hover:bg-white rounded-lg text-slate-500 hover:text-primary-600 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider duration-300"
+                              >
+                                <Icon icon="solar:pen-bold-duotone" width="16" height="16" />
+                                <span>Edit</span>
+                              </button>
 
-                              {/* Attender details */}
-                              <div className="bg-white p-5 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col gap-4 relative overflow-hidden">
-                                <div className="absolute top-0 left-0 w-1.5 h-full bg-amber-500"></div>
-                                <h4 className="text-xs font-black uppercase tracking-widest text-slate-400">Attender Details</h4>
-                                <div className="flex flex-col gap-3 text-sm mt-auto">
-                                  <div className="flex items-center gap-2 bg-slate-50 p-2.5 rounded-xl">
-                                    <Icon icon="solar:user-rounded-bold-duotone" className="text-amber-500 text-lg shrink-0" />
-                                    <span className="text-slate-500 text-xs font-semibold">Name:</span>
-                                    <span className="font-bold text-slate-800 ml-auto text-xs truncate max-w-[180px]">{pInfo.attenderName}</span>
-                                  </div>
-                                  <div className="flex items-center gap-2 bg-slate-50 p-2.5 rounded-xl">
-                                    <Icon icon="solar:phone-bold-duotone" className="text-amber-500 text-lg shrink-0" />
-                                    <span className="text-slate-500 text-xs font-semibold">Phone:</span>
-                                    <span className="font-bold text-slate-800 ml-auto text-xs">{pInfo.attenderPhone}</span>
-                                  </div>
-                                  <div className="flex items-center gap-2 bg-slate-50 p-2.5 rounded-xl">
-                                    <Icon icon="solar:users-group-two-rounded-bold-duotone" className="text-amber-500 text-lg shrink-0" />
-                                    <span className="text-slate-500 text-xs font-semibold">Relation:</span>
-                                    <span className="font-bold text-slate-800 ml-auto text-xs capitalize">{pInfo.attenderRelationship}</span>
-                                  </div>
-                                </div>
-                              </div>
+                              <button
+                                title="View Details"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate(`/patient-details/${pId}`);
+                                }}
+                                className="px-4 py-2 hover:bg-white rounded-lg text-slate-500 hover:text-blue-500 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider duration-300"
+                              >
+                                <Icon icon="solar:document-bold-duotone" width="16" height="16" />
+                                <span>Fullscreen</span>
+                              </button>
 
-                              {/* Clinical reports status */}
-                              <div className="bg-white p-5 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col gap-4 relative overflow-hidden">
-                                <div className="absolute top-0 left-0 w-1.5 h-full bg-emerald-500"></div>
-                                <h4 className="text-xs font-black uppercase tracking-widest text-slate-400">Clinical Reports</h4>
-                                <div className="flex flex-col gap-3 mt-auto">
-                                  <div className="flex items-center gap-2 bg-slate-50 p-2 rounded-xl">
-                                    <Icon icon="solar:document-medicine-bold-duotone" className="text-blue-500 text-lg shrink-0" />
-                                    <span className="text-slate-500 text-xs font-bold">Prescriptions:</span>
-                                    <button
-                                      onClick={() => setModalConfig({ isOpen: true, type: 'prescription', patientId: pId })}
-                                      className="bg-white border border-blue-200 text-blue-600 px-3 py-1.5 rounded-xl text-[10px] hover:bg-blue-600 hover:text-white transition-colors shadow-sm active:scale-95 ml-auto font-black uppercase tracking-wider"
-                                    >
-                                      {pInfo.prescriptionsCount > 0 ? `View (${pInfo.prescriptionsCount})` : "View"}
-                                    </button>
-                                  </div>
-                                  <div className="flex items-center gap-2 bg-slate-50 p-2 rounded-xl">
-                                    <Icon icon="solar:test-tube-bold-duotone" className="text-rose-500 text-lg shrink-0" />
-                                    <span className="text-slate-500 text-xs font-bold">Lab Reports:</span>
-                                    <button
-                                      onClick={() => setModalConfig({ isOpen: true, type: 'lab', patientId: pId })}
-                                      className="bg-white border border-rose-200 text-rose-600 px-3 py-1.5 rounded-xl text-[10px] hover:bg-rose-600 hover:text-white transition-colors shadow-sm active:scale-95 ml-auto font-black uppercase tracking-wider"
-                                    >
-                                      {pInfo.labReportsCount > 0 ? `View (${pInfo.labReportsCount})` : "View"}
-                                    </button>
-                                  </div>
-                                  <div className="flex items-center gap-2 bg-slate-50 p-2 rounded-xl">
-                                    <Icon icon="solar:scanner-bold-duotone" className="text-purple-500 text-lg shrink-0" />
-                                    <span className="text-slate-500 text-xs font-bold">Scan Reports:</span>
-                                    <button
-                                      onClick={() => setModalConfig({ isOpen: true, type: 'scan', patientId: pId })}
-                                      className="bg-white border border-purple-200 text-purple-600 px-3 py-1.5 rounded-xl text-[10px] hover:bg-purple-600 hover:text-white transition-colors shadow-sm active:scale-95 ml-auto font-black uppercase tracking-wider"
-                                    >
-                                      {pInfo.scanReportsCount > 0 ? `View (${pInfo.scanReportsCount})` : "View"}
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
+                              <button
+                                title="Health Monitor"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate(`/health-dashboard/${pId}`);
+                                }}
+                                className="px-4 py-2 hover:bg-white rounded-lg text-slate-500 hover:text-rose-500 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider duration-300"
+                              >
+                                <Icon icon="solar:heart-pulse-bold-duotone" width="16" height="16" />
+                                <span>Monitor</span>
+                              </button>
+
+                              <button
+                                title="AI Report"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleOverallAIReport(pId, pInfo.name);
+                                }}
+                                className="px-4 py-2 hover:bg-white rounded-lg text-slate-500 hover:text-emerald-600 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider duration-300"
+                              >
+                                <Icon icon="solar:magic-stick-3-bold-duotone" width="16" height="16" />
+                                <span>AI Report</span>
+                              </button>
                             </div>
                           </div>
+                          <PatientDetails patientId={pId} isNested={true} />
                         </td>
                       </tr>
                     )}
@@ -478,6 +488,46 @@ const TodayAppointmentsTable = ({
           patientId={modalConfig.patientId}
           isDemoMode={isDemoMode}
         />
+      )}
+
+      {/* Overall AI Health Summary Modal */}
+      {isAIModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md transition-all duration-300 no-print">
+          <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-3xl overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div className="flex justify-between items-center p-6 border-b border-slate-100 bg-slate-50/50">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600">
+                  <Icon icon="solar:magic-stick-3-bold-duotone" className="text-xl" />
+                </div>
+                <h2 className="text-xl font-black text-slate-800 tracking-tight">AI Health Summary for <span className="text-emerald-600">{aiReportPatientName}</span></h2>
+              </div>
+              <button onClick={() => setIsAIModalOpen(false)} className="text-slate-400 hover:text-red-500 transition-colors p-2 rounded-xl hover:bg-red-50">
+                <Icon icon="solar:close-circle-bold-duotone" className="text-2xl" />
+              </button>
+            </div>
+            <div className="p-8 max-h-[70vh] overflow-y-auto custom-scrollbar bg-white">
+              {loadingAIReport ? (
+                <div className="flex flex-col items-center justify-center py-20 gap-4">
+                  <Icon icon="line-md:loading-twotone-loop" className="text-5xl text-emerald-600 animate-spin" />
+                  <span className="font-extrabold text-slate-600 text-sm uppercase tracking-widest">Aggregating records & generating AI summary...</span>
+                </div>
+              ) : (
+                <>
+                  <div className="prose prose-slate max-w-none text-slate-700 leading-relaxed text-sm">
+                    <div className="whitespace-pre-wrap font-sans bg-slate-50 p-6 rounded-2xl border border-slate-100 shadow-inner">
+                      {aiReportContent}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+            <div className="p-6 border-t border-slate-100 flex justify-end bg-slate-50/30">
+              <button onClick={() => setIsAIModalOpen(false)} className="px-8 py-3 bg-slate-800 text-white rounded-xl text-sm font-black hover:bg-slate-900 transition-all shadow-lg shadow-slate-200 uppercase tracking-widest">
+                Close Summary
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
