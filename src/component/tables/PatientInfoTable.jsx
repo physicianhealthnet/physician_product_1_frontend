@@ -152,12 +152,10 @@ const PatientInfoTable = () => {
     });
   }, [data, search, phoneSearch, nameSearch, locationIdSearch, genderFilter]);
 
-  // Pagination calculations
+  // Pagination calculations (disabled/full scroll)
   const total = filteredData.length;
-  const startIdx = (currentPage - 1) * PAGE_SIZE;
-  const currentRows = useMemo(() => {
-    return filteredData.slice(startIdx, startIdx + PAGE_SIZE);
-  }, [filteredData, startIdx]);
+  const startIdx = 0;
+  const currentRows = filteredData;
 
   const currentIdsList = useMemo(() => {
     return currentRows.map((p) => p.patientId).join(",");
@@ -260,7 +258,7 @@ const PatientInfoTable = () => {
       </div>
 
       {/* Table */}
-      <div className="overflow-auto rounded-sm border border-slate-200 shadow-sm flex-1 custom-scrollbar h-fit">
+      <div className="overflow-auto rounded-sm border border-slate-200 shadow-sm flex-1 custom-scrollbar max-h-[500px]">
         <table className="w-full text-sm text-left whitespace-nowrap min-w-max border-collapse">
           <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-medium uppercase tracking-wider sticky top-0 z-20">
             <tr>
@@ -489,28 +487,7 @@ const PatientInfoTable = () => {
         </table>
       </div>
 
-      {/* Pagination */}
-      <div className="flex justify-between items-center mt-4 text-sm text-slate-500 px-1 shrink-0 pb-4">
-        <div>
-          Showing {startIdx + 1}-{Math.min(startIdx + PAGE_SIZE, total)} of{" "}
-          {total}
-        </div>
-        <div className="flex gap-2">
-          {Array.from({ length: Math.ceil(total / PAGE_SIZE) }, (_, idx) => (
-            <button
-              key={idx}
-              className={`w-8 h-8 rounded-sm flex items-center justify-center font-medium transition-all ${
-                idx + 1 === currentPage
-                  ? "bg-primary-600 text-white shadow-md shadow-primary-500/20"
-                  : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
-              }`}
-              onClick={() => setCurrentPage(idx + 1)}
-            >
-              {idx + 1}
-            </button>
-          ))}
-        </div>
-      </div>
+
 
       {whatsAppModalVisible && (
         <CustomMessageWindow

@@ -23,6 +23,39 @@ import { Skeleton } from "../../../component/ui/Skeleton";
 import { StaggerContainer, StaggerItem } from "../../../component/ui/Transitions";
 import PhysicianAssessmentSheet from "../assessment/PhysicianAssessmentSheet";
 
+const CollapseSection = ({ id, title, description, icon, colorInfo, activeTab, setActiveTab, children }) => {
+  const isActive = activeTab === id;
+  return (
+    <div className="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden transition-all duration-300">
+      <div
+        onClick={() => setActiveTab(isActive ? null : id)}
+        className="group p-6 flex items-center justify-between cursor-pointer hover:bg-slate-50/50 transition-colors"
+      >
+        <div className="flex items-center gap-4">
+          <div className={`w-12 h-12 rounded-xl ${colorInfo?.gradient} flex items-center justify-center group-hover:scale-110 transition-transform`}>
+            <Icon icon={icon} className={`${colorInfo?.bg} text-xl`} />
+          </div>
+          <div>
+            <h3 className="font-extrabold text-slate-800 text-sm uppercase tracking-wider m-0">{title}</h3>
+            {description && (
+              <p className="text-[11px] text-slate-400 font-medium m-0 mt-0.5">{description}</p>
+            )}
+          </div>
+        </div>
+        <Icon 
+          icon="solar:alt-arrow-right-bold" 
+          className={`text-slate-400 group-hover:text-blue-500 transition-all text-lg ${isActive ? "rotate-90 text-blue-500" : ""}`} 
+        />
+      </div>
+      {isActive && (
+        <div className="p-6 border-t border-slate-100 bg-white animate-in slide-in-from-top-4 duration-300">
+          {children}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const PatientDetails = ({ patientId, isNested }) => {
   const usertype = JSON.parse(sessionStorage.getItem("user"));
   const [patientInfo, setPatientInfo] = useState([]);
@@ -35,17 +68,17 @@ const PatientDetails = ({ patientId, isNested }) => {
 
   // Vibrant colors for active tabs with modern gradients
   const tabColors = {
-    1: { bg: "#23b8ff", gradient: "from-cyan-500 to-blue-500" },
-    2: { bg: "#fe8325", gradient: "from-orange-500 to-red-500" },
-    3: { bg: "#9a3412", gradient: "from-orange-800 to-red-900" },
-    4: { bg: "#ff297f", gradient: "from-pink-500 to-rose-500" },
-    5: { bg: "#047857", gradient: "from-emerald-700 to-teal-700" },
-    7: { bg: "#ffb823", gradient: "from-yellow-500 to-amber-500" },
-    8: { bg: "#2971ff", gradient: "from-blue-600 to-indigo-600" },
-    10: { bg: "#f13636", gradient: "from-red-500 to-rose-600" },
-    11: { bg: "#a929ff", gradient: "from-purple-600 to-violet-600" },
-    12: { bg: "#23b8ff", gradient: "from-cyan-500 to-blue-500" },
-    13: { bg: "#059669", gradient: "from-teal-500 to-emerald-600" },
+    1: { bg: "text-blue-600", gradient: "bg-blue-100" },
+    2: { bg: "text-orange-600", gradient: "bg-orange-100" },
+    3: { bg: "text-orange-800", gradient: "bg-orange-100" },
+    4: { bg: "text-pink-500", gradient: "bg-pink-100" },
+    5: { bg: "text-emerald-700", gradient: "bg-emerald-100" },
+    7: { bg: "text-yellow-500", gradient: "bg-yellow-100" },
+    8: { bg: "text-blue-600", gradient: "bg-blue-100" },
+    10: { bg: "text-red-500", gradient: "bg-red-100" },
+    11: { bg: "text-purple-600", gradient: "bg-purple-100" },
+    12: { bg: "text-cyan-500", gradient: "bg-cyan-100" },
+    13: { bg: "text-teal-500", gradient: "bg-teal-100" },
   };
 
   const getPatientDetails = async () => {
@@ -181,7 +214,6 @@ const PatientDetails = ({ patientId, isNested }) => {
           </StaggerItem>
         )}
 
-        {/* Patient Info Card with Glassmorphism and Quick Actions Column */}
         <StaggerItem>
           <div className="flex flex-col xl:flex-row gap-6 items-stretch">
             {/* Left: Patient Info Card (Reduced width on XL screen) */}
@@ -371,300 +403,207 @@ const PatientDetails = ({ patientId, isNested }) => {
           </div>
         </StaggerItem>
 
-        {/* Modern Tabs Section */}
+        {/* Collapsible Sections Container */}
         <StaggerItem>
-          <div className="w-full">
-            <style>{`
-              .custom-tabs .ant-tabs-nav-wrap {
-                flex-wrap: wrap !important;
-              }
-              .custom-tabs .ant-tabs-nav-list {
-                flex-wrap: wrap !important;
-                width: 100% !important;
-                gap: 8px !important;
-              }
-              .custom-tabs .ant-tabs-tab {
-                margin: 0 !important;
-                padding: 0 !important;
-              }
-              .custom-tabs .ant-tabs-ink-bar {
-                display: none !important;
-              }
-              .custom-tabs .ant-tabs-nav-operations {
-                display: none !important;
-              }
-            `}</style>
-            <Tabs
-              activeKey={activeTab}
-              onChange={setActiveTab}
-              destroyInactiveTabPane={true}
-              animated={{ inkBar: true, tabPane: true }}
-              tabBarStyle={{ borderBottom: 'none' }}
-              className="custom-tabs"
-              renderTabBar={(props, DefaultTabBar) => (
-                <div className="bg-slate-100/50 backdrop-blur-xl p-2 rounded-2xl border border-slate-200/50 overflow-visible">
-                  <DefaultTabBar {...props} style={{ background: "transparent", border: "none" }} />
-                </div>
+          <div className="w-full flex flex-col gap-4">
+            {usertype?.userType !== "accountant" &&
+              usertype?.userType !== "generalManager" && (
+                <CollapseSection
+                  id="1"
+                  title="Patient Medical Data"
+                  description="Personal details and demographic records"
+                  icon="solar:user-id-bold-duotone"
+                  colorInfo={tabColors[1]}
+                  activeTab={activeTab}
+                  setActiveTab={setActiveTab}
+                >
+                  <PatientMedicalDetails
+                    patientMedicalData={patientMedicalData}
+                    patientId={patient_id}
+                  />
+                </CollapseSection>
               )}
+
+            <CollapseSection
+              id="13"
+              title="Attender Details"
+              description="Emergency contact and caregiver info"
+              icon="solar:users-group-two-rounded-bold-duotone"
+              colorInfo={tabColors[13]}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
             >
-              {usertype?.userType !== "accountant" &&
-                usertype?.userType !== "generalManager" && (
-                  <TabPane
-                    tab={
-                      <div
-                        className={`px-4 py-2.5 rounded-xl text-sm font-black transition-all duration-300 uppercase tracking-widest ${activeTab === "1"
-                          ? `bg-gradient-to-r ${tabColors[1].gradient} text-white shadow-lg`
-                          : "bg-slate-200  text-slate-600  hover:bg-slate-300 :bg-slate-600"
-                          }`}
-                      >
-                        Patient Medical Data
-                      </div>
-                    }
-                    key="1"
-                  >
-                    <div className="bg-white/40  backdrop-blur-md border border-slate-200  p-6 rounded-2xl min-h-[400px] mt-2">
-                      <PatientMedicalDetails
-                        patientMedicalData={patientMedicalData}
-                        patientId={patient_id}
-                      />
-                    </div>
-                  </TabPane>
-                )}
-
-              <TabPane
-                tab={
-                  <div
-                    className={`px-4 py-2.5 rounded-xl text-sm font-black transition-all duration-300 uppercase tracking-widest ${activeTab === "13"
-                      ? `bg-gradient-to-r ${tabColors[13].gradient} text-white shadow-lg`
-                      : "bg-slate-200  text-slate-600  hover:bg-slate-300 :bg-slate-600"
-                      }`}
-                  >
-                    Attender Details
+              <div className="max-w-2xl mx-auto py-4">
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="p-3 bg-teal-500/10 text-teal-600 rounded-2xl">
+                    <Icon icon="solar:users-group-two-rounded-bold-duotone" width={28} />
                   </div>
-                }
-                key="13"
-              >
-                <div className="bg-white/40 backdrop-blur-md border border-slate-200 p-8 rounded-2xl min-h-[400px] mt-2">
-                  <div className="max-w-2xl mx-auto">
-                    <div className="flex items-center gap-3 mb-8">
-                      <div className="p-3 bg-teal-500/10 text-teal-600 rounded-2xl">
-                        <Icon icon="solar:users-group-two-rounded-bold-duotone" width={28} />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-black text-slate-800 m-0">Patient Attender Details</h3>
-                        <p className="text-xs text-slate-400 font-semibold m-0 mt-0.5">Primary caregiver and emergency contact information</p>
-                      </div>
-                    </div>
-
-                    <div className="bg-slate-50/50 border border-slate-100 rounded-3xl p-6 md:p-8 space-y-6">
-                      <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-                        <div className="flex items-center gap-3">
-                          <Icon icon="solar:user-bold" className="text-slate-400 text-lg" />
-                          <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">Attender Name</span>
-                        </div>
-                        <span className="text-base font-black text-slate-800">{patientInfo?.guardianName || "—"}</span>
-                      </div>
-
-                      <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-                        <div className="flex items-center gap-3">
-                          <Icon icon="solar:phone-bold" className="text-slate-400 text-lg" />
-                          <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">Phone Number</span>
-                        </div>
-                        {patientInfo?.attenderPhone ? (
-                          <div className="flex items-center gap-3">
-                            <span className="text-base font-black text-slate-800">{patientInfo.attenderPhone}</span>
-                            <button
-                              onClick={() => window.open(`https://wa.me/${patientInfo.attenderPhone}`, "_blank")}
-                              className="w-8 h-8 rounded-xl bg-emerald-50 border border-emerald-100 hover:bg-emerald-600 hover:text-white text-emerald-600 flex items-center justify-center transition-all active:scale-95"
-                              title="Chat on WhatsApp"
-                            >
-                              <Icon icon="ic:baseline-whatsapp" width={18} />
-                            </button>
-                          </div>
-                        ) : (
-                          <span className="text-base font-black text-slate-800">—</span>
-                        )}
-                      </div>
-
-                      <div className="flex items-center justify-between pt-2">
-                        <div className="flex items-center gap-3">
-                          <Icon icon="solar:heart-bold" className="text-slate-400 text-lg" />
-                          <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">Relationship</span>
-                        </div>
-                        <span className="text-base font-black text-slate-800 capitalize">{patientInfo?.attenderRelationship || "—"}</span>
-                      </div>
-                    </div>
+                  <div>
+                    <h3 className="text-xl font-black text-slate-800 m-0">Patient Attender Details</h3>
+                    <p className="text-xs text-slate-400 font-semibold m-0 mt-0.5">Primary caregiver and emergency contact information</p>
                   </div>
                 </div>
-              </TabPane>
 
-              {usertype?.userType !== "generalManager" && (
-                <TabPane
-                  tab={
-                    <div
-                      className={`px-4 py-2.5 rounded-xl text-sm font-black transition-all duration-300 uppercase tracking-widest ${activeTab === "2"
-                        ? `bg-gradient-to-r ${tabColors[2].gradient} text-white shadow-lg`
-                        : "bg-slate-200  text-slate-600  hover:bg-slate-300 :bg-slate-600"
-                        }`}
-                    >
-                      Lab Reports
+                <div className="bg-slate-50/50 border border-slate-100 rounded-3xl p-6 md:p-8 space-y-6">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div className="flex items-center gap-3">
+                      <Icon icon="solar:user-bold" className="text-slate-400 text-lg" />
+                      <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">Attender Name</span>
                     </div>
-                  }
-                  key="2"
+                    <span className="text-base font-black text-slate-800">{patientInfo?.guardianName || "—"}</span>
+                  </div>
+
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div className="flex items-center gap-3">
+                      <Icon icon="solar:phone-bold" className="text-slate-400 text-lg" />
+                      <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">Phone Number</span>
+                    </div>
+                    {patientInfo?.attenderPhone ? (
+                      <div className="flex items-center gap-3">
+                        <span className="text-base font-black text-slate-800">{patientInfo.attenderPhone}</span>
+                        <button
+                          onClick={() => window.open(`https://wa.me/${patientInfo.attenderPhone}`, "_blank")}
+                          className="w-8 h-8 rounded-xl bg-emerald-50 border border-emerald-100 hover:bg-emerald-600 hover:text-white text-emerald-600 flex items-center justify-center transition-all active:scale-95"
+                          title="Chat on WhatsApp"
+                        >
+                          <Icon icon="ic:baseline-whatsapp" width={18} />
+                        </button>
+                      </div>
+                    ) : (
+                      <span className="text-base font-black text-slate-800">—</span>
+                    )}
+                  </div>
+
+                  <div className="flex items-center justify-between pt-2">
+                    <div className="flex items-center gap-3">
+                      <Icon icon="solar:heart-bold" className="text-slate-400 text-lg" />
+                      <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">Relationship</span>
+                    </div>
+                    <span className="text-base font-black text-slate-800 capitalize">{patientInfo?.attenderRelationship || "—"}</span>
+                  </div>
+                </div>
+              </div>
+            </CollapseSection>
+
+            {usertype?.userType !== "generalManager" && (
+              <CollapseSection
+                id="2"
+                title="Lab Reports"
+                description="Laboratory results and reports"
+                icon="solar:document-bold-duotone"
+                colorInfo={tabColors[2]}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+              >
+                <PatientDocuments patientId={patient_id} />
+              </CollapseSection>
+            )}
+
+            <CollapseSection
+              id="4"
+              title="Treatment Data"
+              description="Active treatment tracker logs"
+              icon="solar:heart-pulse-bold-duotone"
+              colorInfo={tabColors[4]}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+            >
+              <TreatmentTracker patientId={patient_id} />
+            </CollapseSection>
+
+            <CollapseSection
+              id="11"
+              title="Prescription"
+              description="Prescribed medications and dosages"
+              icon="solar:pill-bold-duotone"
+              colorInfo={tabColors[11]}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+            >
+              <Prescription patientId={patient_id} />
+            </CollapseSection>
+
+            <CollapseSection
+              id="3"
+              title="Billing"
+              description="Invoices, billing, and payment records"
+              icon="solar:bill-list-bold-duotone"
+              colorInfo={tabColors[3]}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+            >
+              <BillsEntery patientId={patient_id} />
+            </CollapseSection>
+
+            {usertype?.userType !== "generalManager" && (
+              <CollapseSection
+                id="5"
+                title="Session Notes"
+                description="Clinical visit notes and logs"
+                icon="solar:document-text-bold-duotone"
+                colorInfo={tabColors[5]}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+              >
+                <SessionNotes patientId={patient_id} />
+              </CollapseSection>
+            )}
+
+            {usertype?.userType !== "generalManager" && (
+              <CollapseSection
+                id="8"
+                title="Feedback"
+                description="Patient reviews and experience feedback"
+                icon="solar:chat-round-line-bold-duotone"
+                colorInfo={tabColors[8]}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+              >
+                <Feedback patientId={patient_id} />
+              </CollapseSection>
+            )}
+
+            {usertype?.userType !== "generalManager" && (
+              <CollapseSection
+                id="7"
+                title="Consent Form"
+                description="Signed consent and waiver forms"
+                icon="solar:file-text-bold-duotone"
+                colorInfo={tabColors[7]}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+              >
+                <ConsentForm patientId={patient_id} />
+              </CollapseSection>
+            )}
+
+            <CollapseSection
+              id="10"
+              title="Summary"
+              description="Patient summaries and AI insights"
+              icon="solar:notebook-bold-duotone"
+              colorInfo={tabColors[10]}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+            >
+              <Summary patientId={patient_id} />
+            </CollapseSection>
+
+            {usertype?.userType !== "accountant" &&
+              usertype?.userType !== "generalManager" &&
+              usertype?.userType !== "receptionist" && (
+                <CollapseSection
+                  id="12"
+                  title="Assessment"
+                  description="Specialist diagnosis and evaluation sheets"
+                  icon="solar:document-text-bold-duotone"
+                  colorInfo={tabColors[12]}
+                  activeTab={activeTab}
+                  setActiveTab={setActiveTab}
                 >
-                  <div className="bg-white/40  backdrop-blur-md border border-slate-200  p-6 rounded-2xl min-h-[400px] mt-2">
-                    <PatientDocuments patientId={patient_id} />
-                  </div>
-                </TabPane>
+                  <PhysicianAssessmentSheet patientId={patient_id} />
+                </CollapseSection>
               )}
-              <TabPane
-                tab={
-                  <div
-                    className={`px-4 py-2.5 rounded-xl text-sm font-black transition-all duration-300 uppercase tracking-widest ${activeTab === "4"
-                      ? `bg-gradient-to-r ${tabColors[4].gradient} text-white shadow-lg`
-                      : "bg-slate-200  text-slate-600  hover:bg-slate-300 :bg-slate-600"
-                      }`}
-                  >
-                    Treatment Data
-                  </div>
-                }
-                key="4"
-              >
-                <div className="bg-white/40  backdrop-blur-md border border-slate-200  p-6 rounded-2xl min-h-[400px] mt-2">
-                  <TreatmentTracker patientId={patient_id} />
-                </div>
-              </TabPane>
-              <TabPane
-                tab={
-                  <div
-                    className={`px-4 py-2.5 rounded-xl text-sm font-black transition-all duration-300 uppercase tracking-widest ${activeTab === "11"
-                      ? `bg-gradient-to-r ${tabColors[11].gradient} text-white shadow-lg`
-                      : "bg-slate-200  text-slate-600  hover:bg-slate-300 :bg-slate-600"
-                      }`}
-                  >
-                    Prescription
-                  </div>
-                }
-                key="11"
-              >
-                <div className="bg-white/40  backdrop-blur-md border border-slate-200  p-6 rounded-2xl min-h-[400px] mt-2">
-                  <Prescription patientId={patient_id} />
-                </div>
-              </TabPane>
-              <TabPane
-                tab={
-                  <div
-                    className={`px-4 py-2.5 rounded-xl text-sm font-black transition-all duration-300 uppercase tracking-widest ${activeTab === "3"
-                      ? `bg-gradient-to-r ${tabColors[3].gradient} text-white shadow-lg`
-                      : "bg-slate-200  text-slate-600  hover:bg-slate-300 :bg-slate-600"
-                      }`}
-                  >
-                    Billing
-                  </div>
-                }
-                key="3"
-              >
-                <div className="bg-white/40  backdrop-blur-md border border-slate-200  p-6 rounded-2xl min-h-[400px] mt-2">
-                  <BillsEntery patientId={patient_id} />
-                </div>
-              </TabPane>
-              {usertype?.userType !== "generalManager" && (
-                <TabPane
-                  tab={
-                    <div
-                      className={`px-4 py-2.5 rounded-xl text-sm font-black transition-all duration-300 uppercase tracking-widest ${activeTab === "5"
-                        ? `bg-gradient-to-r ${tabColors[5].gradient} text-white shadow-lg`
-                        : "bg-slate-200  text-slate-600  hover:bg-slate-300 :bg-slate-600"
-                        }`}
-                    >
-                      Session Notes
-                    </div>
-                  }
-                  key="5"
-                >
-                  <div className="bg-white/40  backdrop-blur-md border border-slate-200  p-6 rounded-2xl min-h-[400px] mt-2">
-                    <SessionNotes patientId={patient_id} />
-                  </div>
-                </TabPane>
-              )}
-
-              {usertype?.userType !== "generalManager" && (
-                <TabPane
-                  tab={
-                    <div
-                      className={`px-4 py-2.5 rounded-xl text-sm font-black transition-all duration-300 uppercase tracking-widest ${activeTab === "8"
-                        ? `bg-gradient-to-r ${tabColors[8].gradient} text-white shadow-lg`
-                        : "bg-slate-200  text-slate-600  hover:bg-slate-300 :bg-slate-600"
-                        }`}
-                    >
-                      Feedback
-                    </div>
-                  }
-                  key="8"
-                >
-                  <div className="bg-white/40  backdrop-blur-md border border-slate-200  p-6 rounded-2xl min-h-[400px] mt-2">
-                    <Feedback patientId={patient_id} />
-                  </div>
-                </TabPane>
-              )}
-              {usertype?.userType !== "generalManager" && (
-                <TabPane
-                  tab={
-                    <div
-                      className={`px-4 py-2.5 rounded-xl text-sm font-black transition-all duration-300 uppercase tracking-widest ${activeTab === "7"
-                        ? `bg-gradient-to-r ${tabColors[7].gradient} text-white shadow-lg`
-                        : "bg-slate-200  text-slate-600  hover:bg-slate-300 :bg-slate-600"
-                        }`}
-                    >
-                      Consent Form
-                    </div>
-                  }
-                  key="7"
-                >
-                  <div className="bg-white/40  backdrop-blur-md border border-slate-200  p-6 rounded-2xl min-h-[400px] mt-2">
-                    <ConsentForm patientId={patient_id} />
-                  </div>
-                </TabPane>
-              )}
-              <TabPane
-                tab={
-                  <div
-                    className={`px-4 py-2.5 rounded-xl text-sm font-black transition-all duration-300 uppercase tracking-widest ${activeTab === "10"
-                      ? `bg-gradient-to-r ${tabColors[10].gradient} text-white shadow-lg`
-                      : "bg-slate-200  text-slate-600  hover:bg-slate-300 :bg-slate-600"
-                      }`}
-                  >
-                    Summary
-                  </div>
-                }
-                key="10"
-              >
-                <div className="bg-white/40  backdrop-blur-md border border-slate-200  p-6 rounded-2xl min-h-[400px] mt-2">
-                  <Summary patientId={patient_id} />
-                </div>
-              </TabPane>
-              {usertype?.userType !== "accountant" &&
-                usertype?.userType !== "generalManager" &&
-                usertype?.userType !== "receptionist" && (
-                  <TabPane
-                    tab={
-                      <div
-                        className={`px-4 py-2.5 rounded-xl text-sm font-black transition-all duration-300 uppercase tracking-widest ${activeTab === "12"
-                          ? `bg-gradient-to-r ${tabColors[12].gradient} text-white shadow-lg`
-                          : "bg-slate-200  text-slate-600  hover:bg-slate-300 :bg-slate-600"
-                          }`}
-                      >
-                        Assessment
-                      </div>
-                    }
-                    key="12"
-                  >
-                    <div className="bg-white/40  backdrop-blur-md border border-slate-200  p-6 rounded-2xl min-h-[400px] mt-2">
-                      <PhysicianAssessmentSheet patientId={patient_id} />
-                    </div>
-                  </TabPane>
-                )}
-            </Tabs>
           </div>
         </StaggerItem>
       </div>

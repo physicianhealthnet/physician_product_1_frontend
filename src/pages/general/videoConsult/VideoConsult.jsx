@@ -220,7 +220,7 @@ const VideoConsult = () => {
 
   return (
     <div className="w-full h-full p-6 animate-in fade-in zoom-in-95 duration-300 flex flex-col items-center justify-start min-h-[calc(100vh-120px)] bg-slate-50/30">
-      <div className="max-w-6xl w-full bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-[750px]">
+      <div className="max-w-full w-full bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-[750px]">
         {/* Header Section */}
         <div className="bg-gradient-to-r from-primary-500 to-primary-600 p-6 text-center relative overflow-hidden flex flex-col sm:flex-row items-center justify-between shrink-0">
           <div className="flex items-center gap-4 text-left z-10">

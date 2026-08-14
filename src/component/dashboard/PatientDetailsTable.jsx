@@ -115,12 +115,10 @@ const PatientDetailsTable = ({
     });
   }, [data, todayAppointments, futureAppointments]);
 
-  // Pagination calculations
+  // Pagination calculations (disabled/full scroll)
   const total = sortedData.length;
-  const startIdx = (currentPage - 1) * PAGE_SIZE;
-  const currentRows = useMemo(() => {
-    return sortedData.slice(startIdx, startIdx + PAGE_SIZE);
-  }, [sortedData, startIdx]);
+  const startIdx = 0;
+  const currentRows = sortedData;
 
   const currentIdsList = useMemo(() => {
     return currentRows.map((p) => p.patientId).join(",");
@@ -182,10 +180,10 @@ const PatientDetailsTable = ({
         )}
       </div>
 
-      <div className="overflow-x-auto custom-scrollbar">
+      <div className="overflow-auto custom-scrollbar max-h-[500px]">
         <table className="w-full text-left border-collapse whitespace-nowrap min-w-max">
-          <thead>
-            <tr className="bg-slate-50/50 text-[10px] uppercase font-black text-slate-500 tracking-widest border-b border-slate-100">
+          <thead className="sticky top-0 z-20 bg-slate-50 border-b border-slate-100">
+            <tr className="bg-slate-50/50 text-[10px] uppercase font-black text-slate-500 tracking-widest">
               <th className="p-4 pl-6 w-16 text-center">#</th>
               <th className="p-4">Name</th>
               <th className="p-4">Gender</th>
@@ -407,38 +405,7 @@ const PatientDetailsTable = ({
         </table>
       </div>
 
-      {/* Pagination */}
-      {total > 0 && (
-        <div className="p-4 border-t border-slate-100 bg-slate-50/50 flex justify-between items-center shrink-0">
-          <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">
-            Showing {startIdx + 1}-{Math.min(startIdx + PAGE_SIZE, total)} of{" "}
-            {total}
-          </span>
-          <div className="flex gap-2">
-            <button
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-              className="w-8 h-8 flex items-center justify-center rounded bg-white border border-slate-200 text-slate-500 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              <Icon icon="solar:alt-arrow-left-bold" />
-            </button>
-            <span className="w-8 h-8 flex items-center justify-center rounded bg-blue-500 text-white font-bold text-sm">
-              {currentPage}
-            </span>
-            <button
-              disabled={currentPage >= Math.ceil(total / PAGE_SIZE)}
-              onClick={() =>
-                setCurrentPage((prev) =>
-                  Math.min(Math.ceil(total / PAGE_SIZE), prev + 1),
-                )
-              }
-              className="w-8 h-8 flex items-center justify-center rounded bg-white border border-slate-200 text-slate-500 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              <Icon icon="solar:alt-arrow-right-outline" className="text-xl" />
-            </button>
-          </div>
-        </div>
-      )}
+
 
       <PatientClinicalDataModal
         isOpen={modalConfig.isOpen}

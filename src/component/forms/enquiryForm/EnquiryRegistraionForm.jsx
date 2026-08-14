@@ -7,6 +7,7 @@ import PatientMedicalForm from "./PatientMedicalForm";
 import Button from "../../ui/Button";
 import { Icon } from "@iconify/react";
 import Card from "../../ui/Card";
+import PatientInfoTable from "../../tables/PatientInfoTable";
 
 const SectionHeader = ({ title, icon }) => (
   <div className="flex items-center gap-3 mb-6">
@@ -333,113 +334,100 @@ function EnquiryRegistraionForm() {
       {/* Tab Cards for Full Width Flex Col */}
       <div className="flex flex-col gap-6">
         {/* Basic Details Card Tab */}
-        <div
-          onClick={() => {
-            setActiveStep("basic");
-            setIsOpen(true);
-          }}
-          className="group relative overflow-hidden bg-white/40 hover:bg-white/60 backdrop-blur-md border border-slate-200 hover:border-blue-400 p-8 rounded-3xl shadow-sm hover:shadow-md transition-all cursor-pointer flex items-center justify-between"
-        >
-          <div className="flex items-center gap-6">
-            <div className="w-16 h-16 rounded-2xl bg-blue-500/10 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Icon icon="tabler:user-circle" width={36} />
+        <div className="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden transition-all duration-300">
+          <div
+            onClick={() => {
+              setActiveStep(activeStep === "basic" ? null : "basic");
+            }}
+            className="group p-8 flex items-center justify-between cursor-pointer hover:bg-slate-50/50 transition-colors"
+          >
+            <div className="flex items-center gap-6">
+              <div className="w-16 h-16 rounded-2xl bg-blue-500/10 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Icon icon="tabler:user-circle" width={36} />
+              </div>
+              <div>
+                <h2 className="text-xl font-black text-slate-800 m-0">1) Basic Details</h2>
+                <p className="text-sm text-slate-500 font-medium m-0 mt-1">Patient registration, contact info, photo, and emergency attender info</p>
+              </div>
             </div>
-            <div>
-              <h2 className="text-xl font-black text-slate-800 m-0">1) Basic Details</h2>
-              <p className="text-sm text-slate-500 font-medium m-0 mt-1">Patient registration, contact info, photo, and emergency attender info</p>
-            </div>
+            <Icon 
+              icon="solar:alt-arrow-right-bold" 
+              className={`text-slate-400 group-hover:text-blue-500 transition-all text-xl ${activeStep === "basic" ? "rotate-90 text-blue-500" : ""}`} 
+            />
           </div>
-          <Icon icon="solar:alt-arrow-right-bold" className="text-slate-400 group-hover:text-blue-500 group-hover:translate-x-2 transition-all text-xl" />
+
+          {activeStep === "basic" && (
+            <div className="p-8 border-t border-slate-100 bg-white animate-in slide-in-from-top-4 duration-300">
+              <PatientBasicDetails
+                patientFormData={patientBasic}
+                setPatientFormData={setPatientBasic}
+              />
+              <div className="flex items-center justify-between mt-8 pt-5 border-t border-slate-100">
+                <Button
+                  onClick={() => setActiveStep(null)}
+                  variant="secondary"
+                  className="rounded-xl px-5 py-2.5 border border-slate-200 text-slate-500 bg-white hover:bg-slate-50 cursor-pointer"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={async () => {
+                    const res = await saveBasicDetails(true);
+                    if (res) {
+                      setActiveStep("medical");
+                    }
+                  }}
+                  loading={loading}
+                  variant="primary"
+                  className="rounded-xl px-6 py-2.5 flex items-center gap-2 cursor-pointer"
+                >
+                  Save & Next
+                  <Icon icon="tabler:arrow-right" />
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Medical Details Card Tab */}
         {user?.userType !== "receptionist" && (patientBasic?.patientId || patient_id) && (
-          <div
-            onClick={() => {
-              setActiveStep("medical");
-              setIsOpen(true);
-            }}
-            className="group relative overflow-hidden bg-white/40 hover:bg-white/60 backdrop-blur-md border border-slate-200 hover:border-emerald-400 p-8 rounded-3xl shadow-sm hover:shadow-md transition-all cursor-pointer flex items-center justify-between animate-in fade-in slide-in-from-bottom-2 duration-300"
-          >
-            <div className="flex items-center gap-6">
-              <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Icon icon="tabler:file-medical" width={36} />
-              </div>
-              <div>
-                <h2 className="text-xl font-black text-slate-800 m-0">2) Medical Details</h2>
-                <p className="text-sm text-slate-500 font-medium m-0 mt-1">Physician history, chief complaints, symptoms, and medical habits</p>
-              </div>
-            </div>
-            <Icon icon="solar:alt-arrow-right-bold" className="text-slate-400 group-hover:text-emerald-500 group-hover:translate-x-2 transition-all text-xl" />
-          </div>
-        )}
-      </div>
-
-      {/* Pop-up Dialog Window */}
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 md:p-6 transition-all duration-300 animate-in fade-in">
-          <div className="relative bg-white rounded-[32px] border border-slate-200 shadow-2xl flex flex-col w-full max-w-5xl max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-200">
-            
-            {/* Modal Header */}
-            <div className="flex items-center justify-between px-8 py-6 border-b border-slate-100 bg-slate-50/50">
-              <div className="flex items-center gap-4">
-                <div className={`p-2.5 rounded-xl ${activeStep === "basic" ? "bg-blue-500/10 text-blue-600" : "bg-emerald-500/10 text-emerald-600"}`}>
-                  <Icon icon={activeStep === "basic" ? "tabler:user-circle" : "tabler:file-medical"} className="text-2xl" />
+          <div className="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden transition-all duration-300">
+            <div
+              onClick={() => {
+                setActiveStep(activeStep === "medical" ? null : "medical");
+              }}
+              className="group p-8 flex items-center justify-between cursor-pointer hover:bg-slate-50/50 transition-colors"
+            >
+              <div className="flex items-center gap-6">
+                <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Icon icon="tabler:file-medical" width={36} />
                 </div>
                 <div>
-                  <h2 className="text-xl font-black text-slate-800 m-0">
-                    {activeStep === "basic" ? "Patient Basic Details" : "Physician & Medical History"}
-                  </h2>
-                  <p className="text-xs text-slate-400 font-semibold m-0 mt-0.5">
-                    {activeStep === "basic" ? "Step 1 of 2: Demographics & Contact Info" : "Step 2 of 2: Health Profile & History"}
-                  </p>
+                  <h2 className="text-xl font-black text-slate-800 m-0">2) Medical Details</h2>
+                  <p className="text-sm text-slate-500 font-medium m-0 mt-1">Physician history, chief complaints, symptoms, and medical habits</p>
                 </div>
               </div>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all cursor-pointer"
-              >
-                <Icon icon="tabler:x" className="text-xl" />
-              </button>
-            </div>
-
-            {/* Step Progress Bar */}
-            <div className="w-full bg-slate-100 h-1">
-              <div 
-                className={`h-full transition-all duration-500 ${activeStep === "basic" ? "w-1/2 bg-blue-500" : "w-full bg-emerald-500"}`}
+              <Icon 
+                icon="solar:alt-arrow-right-bold" 
+                className={`text-slate-400 group-hover:text-emerald-500 transition-all text-xl ${activeStep === "medical" ? "rotate-90 text-emerald-500" : ""}`} 
               />
             </div>
 
-            {/* Modal Content Body */}
-            <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
-              {activeStep === "basic" ? (
-                <PatientBasicDetails
-                  patientFormData={patientBasic}
-                  setPatientFormData={setPatientBasic}
-                />
-              ) : (
+            {activeStep === "medical" && (
+              <div className="p-8 border-t border-slate-100 bg-white animate-in slide-in-from-top-4 duration-300">
                 <PatientMedicalForm 
                   fetchPatientMedical={fetchPatientMedical}
                   patientId={patientBasic.patientId || patient_id}
                   hideSubmitButton={true}
                   onSaveSuccess={() => {
-                    // If it was a new registration, redirect to card preview page, else go to home
                     if (!patient_id && patientBasic.patientId) {
                       navigate(`/administration/identicards?patientId=${patientBasic.patientId}&autostart=true`);
                     } else {
                       conformationToTreatmentHistory();
                     }
-                    setIsOpen(false);
                   }}
                 />
-              )}
-            </div>
-
-            {/* Modal Footer */}
-            <div className="flex items-center justify-between px-8 py-5 border-t border-slate-100 bg-slate-50/50">
-              {/* Left Side Button */}
-              <div>
-                {activeStep === "medical" ? (
+                <div className="flex items-center justify-between mt-8 pt-5 border-t border-slate-100">
                   <Button
                     onClick={() => setActiveStep("basic")}
                     variant="secondary"
@@ -448,38 +436,8 @@ function EnquiryRegistraionForm() {
                     <Icon icon="tabler:arrow-left" />
                     Previous
                   </Button>
-                ) : (
-                  <Button
-                    onClick={() => setIsOpen(false)}
-                    variant="secondary"
-                    className="rounded-xl px-5 py-2.5 border border-slate-200 text-slate-500 bg-white hover:bg-slate-50 cursor-pointer"
-                  >
-                    Cancel
-                  </Button>
-                )}
-              </div>
-
-              {/* Right Side Button */}
-              <div>
-                {activeStep === "basic" ? (
-                  <Button
-                    onClick={async () => {
-                      const res = await saveBasicDetails(true);
-                      if (res) {
-                        setActiveStep("medical");
-                      }
-                    }}
-                    loading={loading}
-                    variant="primary"
-                    className="rounded-xl px-6 py-2.5 flex items-center gap-2 cursor-pointer"
-                  >
-                    Save & Next
-                    <Icon icon="tabler:arrow-right" />
-                  </Button>
-                ) : (
                   <Button
                     onClick={() => {
-                      // Trigger submit of the medical details form
                       document.getElementById("hidden-medical-submit-btn")?.click();
                     }}
                     variant="primary"
@@ -488,13 +446,27 @@ function EnquiryRegistraionForm() {
                     <Icon icon="tabler:circle-check" />
                     Finish
                   </Button>
-                )}
+                </div>
               </div>
-            </div>
-
+            )}
           </div>
+        )}
+      </div>
+
+      {/* Patient Information Table Section */}
+      <div className="flex flex-col gap-4 mt-8">
+        <div className="flex flex-col gap-1">
+          <h2 className="font-black text-slate-800 text-2xl tracking-tight">
+            Registered <span className="text-blue-500">Patients</span>
+          </h2>
+          <p className="text-slate-500 font-medium text-sm">
+            View, search, and manage clinic patients and their history
+          </p>
         </div>
-      )}
+        <div className="bg-white/40 backdrop-blur-md border border-slate-200 p-6 rounded-3xl shadow-sm">
+          <PatientInfoTable />
+        </div>
+      </div>
     </div>
   );
 }
