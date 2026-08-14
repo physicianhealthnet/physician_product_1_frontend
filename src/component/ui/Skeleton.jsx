@@ -1,4 +1,5 @@
 import React from 'react';
+import PageLoader from './PageLoader';
 
 export const Skeleton = ({ className = '', variant = 'rect', ...props }) => {
     const baseClass = "animate-pulse bg-slate-200 ";
@@ -78,27 +79,33 @@ export const TableSkeleton = ({ rows = 5 }) => (
 );
 
 export const PageSkeleton = () => (
-    <div className="flex flex-col gap-8 p-4 md:p-8 animate-in fade-in duration-500">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div className="flex flex-col gap-2 w-full md:w-1/3">
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-4 w-2/3" />
-            </div>
-            <div className="flex gap-2 w-full md:w-auto">
-                <Skeleton className="h-10 w-32" />
-                <Skeleton className="h-10 w-24" />
-            </div>
-        </div>
+    <div className="relative min-h-[400px]">
+        {/* Full-screen or page-level thinking-orbs loader overlay */}
+        <PageLoader />
 
-        <div className="flex gap-4">
-            <Skeleton className="h-12 flex-1 rounded-2xl" />
-            <Skeleton className="h-12 w-1/3 rounded-2xl" />
-        </div>
+        {/* Faint blurred mockup layout in the background */}
+        <div className="flex flex-col gap-8 p-4 md:p-8 opacity-25 select-none pointer-events-none blur-sm">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div className="flex flex-col gap-2 w-full md:w-1/3">
+                    <Skeleton className="h-10 w-full" />
+                    <Skeleton className="h-4 w-2/3" />
+                </div>
+                <div className="flex gap-2 w-full md:w-auto">
+                    <Skeleton className="h-10 w-32" />
+                    <Skeleton className="h-10 w-24" />
+                </div>
+            </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => (
-                <CardSkeleton key={i} />
-            ))}
+            <div className="flex gap-4">
+                <Skeleton className="h-12 flex-1 rounded-2xl" />
+                <Skeleton className="h-12 w-1/3 rounded-2xl" />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[...Array(6)].map((_, i) => (
+                    <CardSkeleton key={i} />
+                ))}
+            </div>
         </div>
     </div>
 );

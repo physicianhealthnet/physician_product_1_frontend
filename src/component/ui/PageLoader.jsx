@@ -1,30 +1,27 @@
 import React from 'react';
+import { ThinkingOrb } from 'thinking-orbs';
 
 const PageLoader = () => {
     return (
-        <div className="fixed inset-0 flex flex-col items-center justify-center bg-white  z-50">
+        <div className="fixed inset-0 flex flex-col items-center justify-center bg-slate-50/50 backdrop-blur-md z-50">
             <div className="relative">
-                {/* Outer Glow */}
-                <div className="absolute inset-0 bg-primary-500/20 blur-2xl rounded-full animate-pulse"></div>
+                {/* Ambient Soft Glows */}
+                <div className="absolute -inset-10 bg-gradient-to-tr from-cyan-500/10 to-indigo-500/10 blur-3xl rounded-full animate-pulse"></div>
 
-                {/* Spinner */}
-                <div className="relative flex flex-col items-center gap-6">
-                    <div className="w-16 h-16 border-4 border-slate-100  border-t-primary-500 rounded-full animate-spin"></div>
+                {/* Glassmorphism Card Wrapper */}
+                <div className="relative flex flex-col items-center gap-8 bg-white/70 backdrop-blur-xl border border-white/40 shadow-[0_24px_48px_-12px_rgba(71,85,105,0.08)] rounded-3xl p-10 min-w-[280px]">
+                    <div className="flex items-center justify-center h-20 w-20">
+                        <ThinkingOrb state="searching" size={64} />
+                    </div>
 
                     <div className="flex flex-col items-center gap-2">
-                        <h2 className="text-xl font-black text-slate-800  tracking-widest uppercase animate-pulse">
-                            Loading
+                        <h2 className="text-sm font-bold text-slate-800 tracking-[0.25em] uppercase">
+                            PHN Workstation
                         </h2>
-                        <div className="flex gap-1">
-                            <div className="w-1.5 h-1.5 bg-primary-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                            <div className="w-1.5 h-1.5 bg-primary-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                            <div className="w-1.5 h-1.5 bg-primary-500 rounded-full animate-bounce"></div>
-                        </div>
+                        <span className="text-xs text-slate-400 font-medium">Curating your workspace...</span>
                     </div>
                 </div>
             </div>
-
-            {/* Branding at bottom */}
         </div>
     );
 };

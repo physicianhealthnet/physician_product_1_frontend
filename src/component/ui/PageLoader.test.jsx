@@ -8,10 +8,10 @@ describe('PageLoader Component', () => {
     render(<PageLoader />);
     
     // Check if the loading text is present
-    expect(screen.getByText('Loading')).toBeInTheDocument();
+    expect(screen.getByText('PHN Workstation')).toBeInTheDocument();
     
     // Check if the container is present
-    const loadingHeading = screen.getByText('Loading');
-    expect(loadingHeading).toHaveClass('animate-pulse');
+    const loadingHeading = screen.getByText('PHN Workstation');
+    expect(loadingHeading).toBeInTheDocument();
   });
 });

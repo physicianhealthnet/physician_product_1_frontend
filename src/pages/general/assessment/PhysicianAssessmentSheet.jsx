@@ -13,6 +13,166 @@ import Prescription from "../prescription/Prescription";
 import PrescriptionFormatShow from "../prescription/PrescriptionFormatShow";
 import PatientDocuments from "../../../component/patientDetails/PatientDocuments";
 import chatSocketService from "../../../utilities/chatSocketService";
+import { anesthesiologistAssessmentSections } from "./seperate_assessments/anesthesiologistAssessment";
+import { cardiologistSections } from "./seperate_assessments/cardiologistAssessment";
+import { cardiothoracicSurgeonSections } from "./seperate_assessments/cardiothoracicSurgeonAssessment";
+import { dentistAssessmentSections } from "./seperate_assessments/dentistAssessment";
+import { dermatologistSections } from "./seperate_assessments/dermatologistAssessment";
+import { endocrinologistSections } from "./seperate_assessments/endocrinologistAssessment";
+import { entAssessmentSections } from "./seperate_assessments/entAssessment";
+import { gastroenterologistSections } from "./seperate_assessments/gastroenterologistAssessment";
+import { generalSurgeonSections } from "./seperate_assessments/generalSurgeonAssessment";
+import { nephrologistSections } from "./seperate_assessments/nephrologistAssessment";
+import { neurosurgeonSections } from "./seperate_assessments/neurosurgeonAssessment";
+import { obGynAssessmentSections } from "./seperate_assessments/obstetricsAndGynecologyAssessment";
+import { oncologistAssessmentSections } from "./seperate_assessments/oncologistAssessment";
+import { ophthalmologistSections } from "./seperate_assessments/ophthalmologistAssessment";
+import { orthopedicSurgeonSections } from "./seperate_assessments/orthopedicSurgeonAssessment";
+import { pediatricianAssessmentSections } from "./seperate_assessments/pediatricianAssessment";
+import { psychiatristAssessmentSections } from "./seperate_assessments/psychiatristAssessment";
+import { pulmonologistSections } from "./seperate_assessments/pulmonologistAssessment";
+import { rheumatologistSections } from "./seperate_assessments/rheumatologistAssessment";
+import { urologistSections } from "./seperate_assessments/urologistAssessment";
+
+
+const generalPhysicianSections = [
+  {
+    title: "General Medicine & Systemic Exam",
+    fields: [
+      {
+        type: "textarea",
+        label: "General Symptoms & Notes",
+        name: "generalSymptoms",
+        placeholder: "Notes on general symptoms, duration, onset..."
+      }
+    ]
+  },
+  {
+    title: "Systemic Examination",
+    fields: [
+      {
+        type: "input",
+        label: "CVS (Cardiovascular System)",
+        name: "cvs",
+        placeholder: "S1 S2 heard, murmurs..."
+      },
+      {
+        type: "input",
+        label: "RS (Respiratory System)",
+        name: "rs",
+        placeholder: "Bilateral clear air entry, wheeze, creps..."
+      },
+      {
+        type: "input",
+        label: "CNS (Central Nervous System)",
+        name: "cns",
+        placeholder: "Conscious, oriented, pupils..."
+      },
+      {
+        type: "input",
+        label: "P/A (Per Abdomen)",
+        name: "pa",
+        placeholder: "Soft, non-tender, organomegaly..."
+      }
+    ]
+  }
+];
+
+
+const physiotherapistSections = [
+  {
+    title: "Physiotherapy & Rehabilitation Assessment",
+    fields: [
+      {
+        type: "input",
+        label: "Range of Motion (ROM)",
+        name: "physioRom",
+        placeholder: "Active/passive degrees, joint restriction..."
+      },
+      {
+        type: "input",
+        label: "Muscle Strength (MRC Grade)",
+        name: "physioStrength",
+        placeholder: "Grade 0 to 5 for major muscle groups..."
+      },
+      {
+        type: "input",
+        label: "Functional Mobility & Gait",
+        name: "physioMobility",
+        placeholder: "Independent, assisted gait, balance issues..."
+      },
+      {
+        type: "input",
+        label: "Pain Trigger Points & Description",
+        name: "physioPainTrigger",
+        placeholder: "Tender points, nature of pain (dull/sharp/shooting)..."
+      }
+    ]
+  }
+];
+
+const neurologistSections = [
+  {
+    title: "Neurological Examination",
+    fields: [
+      {
+        type: "input",
+        label: "Cranial Nerve Exam",
+        name: "neuroCranialNerves",
+        placeholder: "CN I to XII status, deficits..."
+      },
+      {
+        type: "input",
+        label: "Reflexes & Motor System",
+        name: "neuroReflexes",
+        placeholder: "DTRs (biceps, patellar), tone, power..."
+      },
+      {
+        type: "input",
+        label: "Gait, Coordination & Balance",
+        name: "neuroGaitBalance",
+        placeholder: "Romberg test, finger-to-nose coordination..."
+      },
+      {
+        type: "input",
+        label: "Sensory System Examination",
+        name: "neuroSensory",
+        placeholder: "Touch, pain, vibration, proprioception..."
+      }
+    ]
+  }
+];
+
+const departmentSectionsMap = {
+  "General Physician": generalPhysicianSections,
+  "Dentist": dentistAssessmentSections,
+  "Dermatologist": dermatologistSections,
+  "ENT Specialist": entAssessmentSections,
+  "Ophthalmologist": ophthalmologistSections,
+  "Cardiologist": cardiologistSections,
+  "Orthopedic": orthopedicSurgeonSections,
+  "Orthopedic Surgeon": orthopedicSurgeonSections,
+  "Gynecologist": obGynAssessmentSections,
+  "Obstetrics and Gynecology": obGynAssessmentSections,
+  "Pediatrician": pediatricianAssessmentSections,
+  "Endocrinologist": endocrinologistSections,
+  "Psychiatrist": psychiatristAssessmentSections,
+  "Physiotherapist": physiotherapistSections,
+  "Neurologist": neurologistSections,
+  "Gastroenterologist": gastroenterologistSections,
+  "Urologist": urologistSections,
+  "Pulmonologist": pulmonologistSections,
+  "Oncologist": oncologistAssessmentSections,
+  "Nephrologist": nephrologistSections,
+  "Anesthesiologist": anesthesiologistAssessmentSections,
+  "Cardiothoracic Surgeon": cardiothoracicSurgeonSections,
+  "General Surgeon": generalSurgeonSections,
+  "Neurosurgeon": neurosurgeonSections,
+  "Rheumatologist": rheumatologistSections,
+};
+
+const departmentList = Object.keys(departmentSectionsMap);
+
 
 export default function PhysicianAssessmentSheet({ patientId }) {
   const { patient_id: urlPatientId } = useParams();
@@ -92,6 +252,57 @@ export default function PhysicianAssessmentSheet({ patientId }) {
   const currentDoctorId = user._id || "";
   const currentDoctorName = user.userName || "Unknown Doctor";
   const currentDoctorDepartment = user.department || "General";
+
+  const [doctorDepartments, setDoctorDepartments] = useState({});
+
+  const getVisibleCategories = (dept) => {
+    const normalizedDept = (dept || "").toLowerCase();
+    
+    // Base categories that everyone sees
+    const categories = ["General Medical History"];
+    
+    if (normalizedDept.includes("cardiologist")) {
+      categories.push("Cardiology History", "Respiratory History");
+    } else if (normalizedDept.includes("dermatologist")) {
+      categories.push("Dermatology History");
+    } else if (normalizedDept.includes("ent") || normalizedDept.includes("otolaryngologist")) {
+      categories.push("ENT History");
+    } else if (normalizedDept.includes("ophthalmologist")) {
+      categories.push("Ophthalmology History");
+    } else if (normalizedDept.includes("orthopedic") || normalizedDept.includes("orthopaedic")) {
+      categories.push("Orthopedic History");
+    } else if (normalizedDept.includes("gynecologist") || normalizedDept.includes("ob-gyn") || normalizedDept.includes("obstetric")) {
+      categories.push("Gynecology History", "Obstetric History");
+    } else if (normalizedDept.includes("pediatrician") || normalizedDept.includes("pediatric")) {
+      categories.push("Pediatric History");
+    } else if (normalizedDept.includes("endocrinologist")) {
+      categories.push("Endocrinology History");
+    } else if (normalizedDept.includes("psychiatrist")) {
+      categories.push("Psychiatric History");
+    } else if (normalizedDept.includes("dentist")) {
+      categories.push("Dental History");
+    } else if (normalizedDept.includes("gastroenterologist")) {
+      categories.push("Gastroenterology History");
+    } else if (normalizedDept.includes("pulmonologist")) {
+      categories.push("Respiratory History");
+    } else if (normalizedDept.includes("neurologist") || normalizedDept.includes("neurosurgeon")) {
+      categories.push("Neurology History");
+    } else if (normalizedDept.includes("nephrologist") || normalizedDept.includes("urologist")) {
+      categories.push("Nephrology / Urology History");
+    } else if (normalizedDept.includes("oncologist")) {
+      categories.push("Oncology History");
+    } else if (normalizedDept.includes("rheumatologist")) {
+      categories.push("Rheumatology History");
+    } else if (normalizedDept.includes("physiatrist")) {
+      categories.push("Physiotherapy History", "Rehabilitation History");
+    } else {
+      if (normalizedDept === "general" || normalizedDept === "" || normalizedDept === "admin" || normalizedDept === "staff") {
+        return Object.keys(medicalHistoryCategories);
+      }
+    }
+    
+    return categories;
+  };
 
   // Active Assessment Doctor Tab State
   const [activeDoctorTab, setActiveDoctorTab] = useState(currentDoctorName);
@@ -198,6 +409,84 @@ export default function PhysicianAssessmentSheet({ patientId }) {
   };
 
   const [generalExamination, setGeneralExamination] = useState("");
+
+  const initialSpecialistAssessment = {
+    selectedDept: "General Physician",
+    generalSymptoms: "",
+    cvs: "",
+    rs: "",
+    cns: "",
+    pa: "",
+    oralHygiene: "Good",
+    gumCondition: "",
+    dentalNotes: "",
+    lesionType: "Macule",
+    distribution: "Localized",
+    skinNotes: "",
+    otoscopy: "",
+    rhinoscopy: "",
+    throatExam: "",
+    visualAcuity: "",
+    iop: "",
+    funduscopy: "",
+    cvsAuscultation: "",
+    ecgNotes: "",
+    echoDetails: "",
+    rom: "",
+    jointStability: "",
+    spineAssessment: "",
+    gpal: "",
+    menstrualNotes: "",
+    pelvicExam: "",
+    developmentalMilestones: "Normal",
+    immunizationNotes: "Up to date",
+    growthParameters: "",
+    thyroidPalpation: "",
+    diabeticScreening: "",
+    hormonalNotes: "",
+    mse: "",
+    moodAffect: "",
+    psychNotes: "",
+    // Physiotherapist
+    physioRom: "",
+    physioStrength: "",
+    physioMobility: "",
+    physioPainTrigger: "",
+    // Neurologist
+    neuroCranialNerves: "",
+    neuroReflexes: "",
+    neuroGaitBalance: "",
+    neuroSensory: "",
+    // Gastroenterologist
+    gastroAbdominalExam: "",
+    gastroBowelHabits: "",
+    gastroEpigastricPain: "",
+    gastroEndoscopy: "",
+    // Urologist
+    uroUrinarySymptoms: "",
+    uroRenalAngle: "",
+    uroProstateExam: "",
+    uroResidualVolume: "",
+    // Pulmonologist
+    pulmoBreathSounds: "",
+    pulmoDyspneaGrade: "Grade 0",
+    pulmoSpo2Rate: "",
+    pulmoSpirometry: "",
+    // Oncologist
+    oncoTumorSite: "",
+    oncoBiopsyNotes: "",
+    oncoChemoCycles: "",
+    oncoLymphNodes: "",
+    // Nephrologist
+    nephroGfrCreatinine: "",
+    nephroEdema: "",
+    nephroUrineProtein: "",
+    nephroBpControl: "",
+  };
+  const [specialistAssessment, setSpecialistAssessment] = useState(
+    initialSpecialistAssessment,
+  );
+  const [specialistStep, setSpecialistStep] = useState(0);
 
   const initialSystemicExamination = {
     cvs: "",
@@ -523,6 +812,12 @@ export default function PhysicianAssessmentSheet({ patientId }) {
 
       setMedicalChecks(d.medicalChecks || initialMedicalChecks);
       setMedicalNotes(d.medicalNotes || initialMedicalNotes);
+      const specAss = d.medicalNotes?.specialistAssessment || {};
+      setSpecialistAssessment({
+        ...initialSpecialistAssessment,
+        ...specAss,
+        selectedDept: specAss.selectedDept || currentDoctorDepartment || "General Physician",
+      });
       setChiefComplaints(d.chiefComplaints || "");
       setHistoryOfPresentIllness(d.historyOfPresentIllness || "");
       setChiefComplaintsList(d.chiefComplaintsList || []);
@@ -658,6 +953,26 @@ export default function PhysicianAssessmentSheet({ patientId }) {
   useEffect(() => {
     getAssessmentData();
   }, [patient_id]);
+
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const response = await AxiosInstance.get("/user/getAllUsers");
+        if (response.data && Array.isArray(response.data.user)) {
+          const map = {};
+          response.data.user.forEach((u) => {
+            if (u.userName && u.department) {
+              map[u.userName] = u.department;
+            }
+          });
+          setDoctorDepartments(map);
+        }
+      } catch (error) {
+        console.error("Error fetching doctor departments:", error);
+      }
+    };
+    fetchDoctors();
+  }, []);
 
   useEffect(() => {
     const handleVitalsUpdate = (data) => {
@@ -856,7 +1171,10 @@ export default function PhysicianAssessmentSheet({ patientId }) {
     clinicId,
     phnId:patientInfo?.PHN_ID,
     medicalChecks,
-    medicalNotes,
+    medicalNotes: {
+      ...medicalNotes,
+      specialistAssessment
+    },
     chiefComplaints,
     historyOfPresentIllness,
     chiefComplaintsList,
@@ -907,11 +1225,242 @@ export default function PhysicianAssessmentSheet({ patientId }) {
   );
   const latestActiveDiagnosis = activeDoctorDiagnoses[activeDoctorDiagnoses.length - 1] || {};
   
+  const activeDoctorPlans = (treatment?.plan || []).filter(p => 
+    (activeDoctorTab === "General" ? !p.doctorName : p.doctorName === activeDoctorTab)
+  );
+
   const activeChiefComplaintsList = chiefComplaintsList.filter(c =>
     (activeDoctorTab === "General" ? !c.doctorName : c.doctorName === activeDoctorTab)
   );
 
+
+
+
+
+  const renderSpecialistAssessmentContent = () => {
+    const activeDept = specialistAssessment.selectedDept || "General Physician";
+    const rawSections = departmentSectionsMap[activeDept] || generalPhysicianSections;
+    const sections = rawSections.filter(sec => 
+      !sec.title.toLowerCase().includes("patient info") && 
+      !sec.title.toLowerCase().includes("patient details")
+    );
+    const stepIndex = Math.max(0, Math.min(specialistStep, sections.length - 1));
+    const activeSection = sections[stepIndex] || { title: "", fields: [] };
+
+    return (
+      <div className="p-4 bg-white rounded-b-xl space-y-6">
+        {/* Active Specialty Selector */}
+        <div className="mb-6 flex flex-col md:flex-row md:items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
+          <div className="flex-1">
+            <label className="text-[10px] font-black tracking-widest uppercase text-slate-400 pl-1 mb-2 block">
+              Active Assessment Specialty (Department)
+            </label>
+            <select
+              className="w-full md:w-80 rounded-xl border border-slate-200 p-3 text-sm font-medium focus:border-blue-500 focus:outline-none bg-white shadow-sm transition-all"
+              value={activeDept}
+              disabled={isReadOnlyView}
+              onChange={(e) => {
+                setSpecialistAssessment({ ...specialistAssessment, selectedDept: e.target.value });
+                setSpecialistStep(0);
+              }}
+            >
+              {departmentList.map((dep) => (
+                <option key={dep} value={dep}>{dep}</option>
+              ))}
+            </select>
+          </div>
+          <div className="text-xs text-slate-500 bg-white p-3 rounded-lg border border-slate-100 max-w-sm">
+            Toggle departments to view/fill assessment protocols. Stored data persists across all selected specialties.
+          </div>
+        </div>
+
+        {/* Modern Stepper Header */}
+        {sections.length > 1 && (
+          <div className="bg-slate-50 p-4 rounded-xl border border-slate-100/80">
+            {/* Horizontal steps tracker */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin">
+              {sections.map((sec, idx) => {
+                const isActive = idx === stepIndex;
+                const isCompleted = idx < stepIndex;
+                return (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setSpecialistStep(idx)}
+                    className="flex items-center gap-2 flex-shrink-0 focus:outline-none cursor-pointer"
+                  >
+                    <div
+                      className={`w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs transition-all ${
+                        isActive
+                          ? "bg-blue-600 text-white shadow-md shadow-blue-200 ring-2 ring-blue-100"
+                          : isCompleted
+                          ? "bg-emerald-500 text-white"
+                          : "bg-slate-200 text-slate-500 hover:bg-slate-300"
+                      }`}
+                    >
+                      {isCompleted ? (
+                        <Icon icon="solar:check-circle-bold" className="text-sm" />
+                      ) : (
+                        idx + 1
+                      )}
+                    </div>
+                    <span
+                      className={`text-xs font-bold transition-all ${
+                        isActive ? "text-blue-600 font-extrabold" : isCompleted ? "text-emerald-600" : "text-slate-400"
+                      } hidden md:inline`}
+                    >
+                      {sec.title.replace(/^\d+\.\s*/, "")}
+                    </span>
+                    {idx < sections.length - 1 && (
+                      <div className="w-4 h-[1px] bg-slate-300 hidden md:block mx-1" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+            {/* Step text & Progress bar */}
+            <div className="mt-3 flex justify-between items-center text-xs font-bold text-slate-500">
+              <div>
+                Step {stepIndex + 1} of {sections.length}: <span className="text-slate-800">{activeSection.title}</span>
+              </div>
+              <div>{Math.round(((stepIndex + 1) / sections.length) * 100)}% Complete</div>
+            </div>
+            <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden mt-1.5">
+              <div
+                className="bg-blue-600 h-full transition-all duration-300"
+                style={{ width: `${((stepIndex + 1) / sections.length) * 100}%` }}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Step Body */}
+        <div className="transition-all duration-300 py-2">
+          {activeSection.type === "checkbox" ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {activeSection.fields.map(([label, name]) => (
+                <label
+                  key={name}
+                  className={`flex items-center p-3 rounded-xl border transition-all ${
+                    specialistAssessment[name]
+                      ? "bg-blue-50/50 border-blue-200 shadow-sm text-blue-800"
+                      : "bg-transparent border-slate-100 hover:bg-slate-50 text-slate-700"
+                  } ${isReadOnlyView ? "cursor-default" : "cursor-pointer font-medium"}`}
+                >
+                  <input
+                    type="checkbox"
+                    className="mr-3 w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                    checked={!!specialistAssessment[name]}
+                    disabled={isReadOnlyView}
+                    onChange={(e) =>
+                      setSpecialistAssessment({
+                        ...specialistAssessment,
+                        [name]: e.target.checked,
+                      })
+                    }
+                  />
+                  <span className="text-sm font-semibold">{label}</span>
+                </label>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {activeSection.fields.map((field) => {
+                const isFullWidth = field.type === "textarea";
+                return (
+                  <div key={field.name} className={isFullWidth ? "md:col-span-2 lg:col-span-3" : ""}>
+                    <label className="text-[11px] font-bold text-slate-500 block mb-1.5 pl-1">
+                      {field.label}
+                    </label>
+                    {field.type === "textarea" ? (
+                      <textarea
+                        className="w-full rounded-xl border border-slate-200 p-3 text-sm focus:border-blue-500 focus:outline-none bg-white transition-all shadow-sm focus:ring-2 focus:ring-blue-50"
+                        value={specialistAssessment[field.name] || ""}
+                        disabled={isReadOnlyView}
+                        readOnly={isReadOnlyView}
+                        onChange={(e) =>
+                          setSpecialistAssessment({
+                            ...specialistAssessment,
+                            [field.name]: e.target.value,
+                          })
+                        }
+                        placeholder={field.placeholder || `Enter ${field.label}...`}
+                        rows={field.rows || 3}
+                      />
+                    ) : field.type === "select" ? (
+                      <select
+                        className="w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:border-blue-500 focus:outline-none bg-white transition-all shadow-sm focus:ring-2 focus:ring-blue-50 font-medium"
+                        value={specialistAssessment[field.name] || ""}
+                        disabled={isReadOnlyView}
+                        onChange={(e) =>
+                          setSpecialistAssessment({
+                            ...specialistAssessment,
+                            [field.name]: e.target.value,
+                          })
+                        }
+                      >
+                        <option value="">Select {field.label}</option>
+                        {field.options && field.options.map((opt) => (
+                          <option key={opt} value={opt}>
+                            {opt}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        type={field.inputType || "text"}
+                        className="w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:border-blue-500 focus:outline-none bg-white transition-all shadow-sm focus:ring-2 focus:ring-blue-50"
+                        value={specialistAssessment[field.name] || ""}
+                        disabled={isReadOnlyView}
+                        readOnly={isReadOnlyView}
+                        onChange={(e) =>
+                          setSpecialistAssessment({
+                            ...specialistAssessment,
+                            [field.name]: e.target.value,
+                          })
+                        }
+                        placeholder={field.placeholder || `Enter ${field.label}...`}
+                        step={field.step}
+                      />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Navigation Buttons */}
+        {sections.length > 1 && (
+          <div className="flex justify-between items-center pt-4 border-t border-slate-100">
+            <Button
+              type="button"
+              disabled={stepIndex === 0}
+              onClick={() => setSpecialistStep(stepIndex - 1)}
+              className="flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold tracking-wider bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all border border-slate-200 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Icon icon="solar:arrow-left-bold" />
+              PREVIOUS
+            </Button>
+            <Button
+              type="button"
+              disabled={stepIndex === sections.length - 1}
+              onClick={() => setSpecialistStep(stepIndex + 1)}
+              className="flex items-center gap-2 rounded-xl px-5 py-2 text-xs font-bold tracking-wider bg-blue-600 hover:bg-blue-700 text-white transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              NEXT
+              <Icon icon="solar:arrow-right-bold" />
+            </Button>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const isReadOnlyView = activeDoctorTab !== currentDoctorName;
+  const activeDoctorDepartment = activeDoctorTab === currentDoctorName
+    ? currentDoctorDepartment
+    : (activeDoctorTab === "General" ? "General" : (doctorDepartments[activeDoctorTab] || "General Physician"));
 
   return (
     <div className="p-6 bg-slate-50  min-h-screen">
@@ -1001,6 +1550,10 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                             ghost
                             items={Object.entries(medicalHistoryCategories)
                               .filter(([category]) => {
+                                const visibleCategories = getVisibleCategories(activeDoctorDepartment);
+                                if (!visibleCategories.includes(category)) {
+                                  return false;
+                                }
                                 if (
                                   category === "Gynecology History" ||
                                   category === "Obstetric History"
@@ -1027,11 +1580,12 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 bg-white p-4 rounded-lg border border-slate-100 shadow-sm">
                                     {items.map((m) => (
                                       <div key={m} className={`flex flex-col p-3 rounded-xl border transition-all ${medicalChecks[m] ? "bg-red-50/50 border-red-200 shadow-sm" : "bg-transparent border-transparent hover:bg-slate-50"}`}>
-                                        <label className={`flex items-center font-medium cursor-pointer ${medicalChecks[m] ? "text-red-800" : "text-slate-700"}`}>
+                                        <label className={`flex items-center font-medium ${isReadOnlyView ? "cursor-default text-slate-500" : "cursor-pointer"} ${medicalChecks[m] && !isReadOnlyView ? "text-red-800" : "text-slate-700"}`}>
                                           <input
                                             type="checkbox"
-                                            className="mr-3 w-4 h-4 rounded border-gray-300 text-red-600 focus:ring-red-500"
+                                            className={`mr-3 w-4 h-4 rounded border-gray-300 text-red-600 focus:ring-red-500 ${isReadOnlyView ? "pointer-events-none" : "cursor-pointer"}`}
                                             checked={medicalChecks[m] || false}
+                                            disabled={isReadOnlyView}
                                             onChange={(e) =>
                                               setMedicalChecks({
                                                 ...medicalChecks,
@@ -1044,10 +1598,12 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                                         {medicalChecks[m] && (
                                           <div className="mt-3 ml-7">
                                             <Textarea
-                                              className="w-full bg-white border-red-100 focus:border-red-300 focus:ring-red-200"
-                                              placeholder={`Notes for ${m}...`}
+                                              className={`w-full bg-white border-red-100 focus:border-red-300 focus:ring-red-200 ${isReadOnlyView ? "cursor-not-allowed text-slate-500 pointer-events-none" : ""}`}
+                                              placeholder={isReadOnlyView ? "No notes provided." : `Notes for ${m}...`}
                                               rows={2}
                                               value={medicalNotes[m] || ""}
+                                              disabled={isReadOnlyView}
+                                              readOnly={isReadOnlyView}
                                               onChange={(e) =>
                                                 setMedicalNotes({
                                                   ...medicalNotes,
@@ -1096,96 +1652,100 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                       className: "border-b border-slate-200 bg-slate-50/50",
                       children: (
                         <div className="p-4 space-y-6">
-                          <div className="border border-gray-200 rounded-md p-4 bg-white">
-                            <h3 className="text-lg font-bold mb-4 text-slate-800">
-                              Primary Complaint (PC)
-                            </h3>
-                            <div className="flex items-start w-full gap-3">
-                              <div className="flex-1 space-y-2">
-                                <Input
-                                  className="w-full"
-                                  placeholder="Complaint"
-                                  value={chiefComplaintName}
-                                  onChange={(e) =>
-                                    setChiefComplaintName(e.target.value)
-                                  }
-                                />
-                                <Textarea
-                                  className="w-full"
-                                  placeholder="Complaint Details..."
-                                  value={chiefComplaintText}
-                                  onChange={(e) =>
-                                    setChiefComplaintText(e.target.value)
-                                  }
-                                  rows={2}
-                                />
-                              </div>
-                              <div className="w-40">
-                                <Input
-                                  type="date"
-                                  value={chiefComplaintDate}
-                                  onChange={(e) =>
-                                    setChiefComplaintDate(e.target.value)
-                                  }
-                                />
-                              </div>
-                              <Button
-                                onClick={addChiefComplaint}
-                                className="bg-blue-600 text-white h-[42px] px-6"
-                              >
-                                {editingChiefComplaintIndex !== null ? "Update" : "Add"}
-                              </Button>
-                            </div>
-                            {chiefComplaintsList.length > 0 && (
-                              <div className="mt-4 overflow-hidden rounded-lg border border-slate-200 shadow-sm">
-                                <table className="w-full text-sm text-left text-slate-500">
-                                  <thead className="text-xs text-slate-700 uppercase bg-slate-100 border-b border-slate-200">
-                                    <tr>
-                                      <th scope="col" className="px-4 py-3 font-semibold">Complaint</th>
-                                      <th scope="col" className="px-4 py-3 font-semibold">Complaint Details</th>
-                                      <th scope="col" className="px-4 py-3 font-semibold">Dr Name</th>
-                                      <th scope="col" className="px-4 py-3 font-semibold">Visiting Date</th>
-                                      <th scope="col" className="px-4 py-3 font-semibold text-right">Action</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody className="divide-y divide-slate-100">
-                                    {activeChiefComplaintsList.map((c, i) => (
-                                      <tr key={i} className="bg-white hover:bg-slate-50 transition-colors">
-                                        <td className="px-4 py-3 text-slate-800 font-medium whitespace-nowrap">{c.text || "-"}</td>
-                                        <td className="px-4 py-3 text-slate-600 break-words max-w-xs">{c.details || "-"}</td>
-                                        <td className="px-4 py-3 whitespace-nowrap">
-                                          {c.doctorName ? (
-                                            <span className="text-[11px] text-blue-600 font-bold bg-blue-50 px-2.5 py-1 rounded-full w-fit flex items-center gap-1 border border-blue-100">
-                                              <Icon icon="solar:user-md-bold" />
-                                              Dr. {c.doctorName}
-                                            </span>
-                                          ) : (
-                                            <span className="text-slate-400">-</span>
-                                          )}
-                                        </td>
-                                        <td className="px-4 py-3 text-slate-500 whitespace-nowrap">{c.date || "-"}</td>
-                                        <td className="px-4 py-3 text-right">
-                                          <div className="flex items-center justify-end gap-2">
-                                            <button
-                                              className="text-blue-500 font-bold w-7 h-7 flex items-center justify-center rounded-md hover:bg-blue-50 transition-colors"
-                                              onClick={() => editChiefComplaint(i)}
-                                              title="Edit"
-                                            >
-                                              <Icon icon="solar:pen-bold" />
-                                            </button>
-                                            <button
-                                              className="text-red-500 font-bold w-7 h-7 flex items-center justify-center rounded-md hover:bg-red-50 transition-colors"
-                                              onClick={() => removeChiefComplaint(i)}
-                                              title="Delete"
-                                            >
-                                              X
-                                            </button>
-                                          </div>
-                                        </td>
-                                      </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
+                           <div className="border border-gray-200 rounded-md p-4 bg-white">
+                             <h3 className="text-lg font-bold mb-4 text-slate-800">
+                               Primary Complaint (PC)
+                             </h3>
+                             {!isReadOnlyView && (
+                               <div className="flex items-start w-full gap-3 mb-4">
+                                 <div className="flex-1 space-y-2">
+                                   <Input
+                                     className="w-full"
+                                     placeholder="Complaint"
+                                     value={chiefComplaintName}
+                                     onChange={(e) =>
+                                       setChiefComplaintName(e.target.value)
+                                     }
+                                   />
+                                   <Textarea
+                                     className="w-full"
+                                     placeholder="Complaint Details..."
+                                     value={chiefComplaintText}
+                                     onChange={(e) =>
+                                       setChiefComplaintText(e.target.value)
+                                     }
+                                     rows={2}
+                                   />
+                                 </div>
+                                 <div className="w-40">
+                                   <Input
+                                     type="date"
+                                     value={chiefComplaintDate}
+                                     onChange={(e) =>
+                                       setChiefComplaintDate(e.target.value)
+                                     }
+                                   />
+                                 </div>
+                                 <Button
+                                   onClick={addChiefComplaint}
+                                   className="bg-blue-600 text-white h-[42px] px-6"
+                                 >
+                                   {editingChiefComplaintIndex !== null ? "Update" : "Add"}
+                                 </Button>
+                               </div>
+                             )}
+                             {activeChiefComplaintsList.length > 0 && (
+                               <div className="mt-4 overflow-hidden rounded-lg border border-slate-200 shadow-sm">
+                                 <table className="w-full text-sm text-left text-slate-500">
+                                   <thead className="text-xs text-slate-700 uppercase bg-slate-100 border-b border-slate-200">
+                                     <tr>
+                                       <th scope="col" className="px-4 py-3 font-semibold">Complaint</th>
+                                       <th scope="col" className="px-4 py-3 font-semibold">Complaint Details</th>
+                                       <th scope="col" className="px-4 py-3 font-semibold">Dr Name</th>
+                                       <th scope="col" className="px-4 py-3 font-semibold">Visiting Date</th>
+                                       {!isReadOnlyView && <th scope="col" className="px-4 py-3 font-semibold text-right">Action</th>}
+                                     </tr>
+                                   </thead>
+                                   <tbody className="divide-y divide-slate-100">
+                                     {activeChiefComplaintsList.map((c, i) => (
+                                       <tr key={i} className="bg-white hover:bg-slate-50 transition-colors">
+                                         <td className="px-4 py-3 text-slate-800 font-medium whitespace-nowrap">{c.text || "-"}</td>
+                                         <td className="px-4 py-3 text-slate-600 break-words max-w-xs">{c.details || "-"}</td>
+                                         <td className="px-4 py-3 whitespace-nowrap">
+                                           {c.doctorName ? (
+                                             <span className="text-[11px] text-blue-600 font-bold bg-blue-50 px-2.5 py-1 rounded-full w-fit flex items-center gap-1 border border-blue-100">
+                                               <Icon icon="solar:user-md-bold" />
+                                               Dr. {c.doctorName}
+                                             </span>
+                                           ) : (
+                                             <span className="text-slate-400">-</span>
+                                           )}
+                                         </td>
+                                         <td className="px-4 py-3 text-slate-500 whitespace-nowrap">{c.date || "-"}</td>
+                                         {!isReadOnlyView && (
+                                           <td className="px-4 py-3 text-right">
+                                             <div className="flex items-center justify-end gap-2">
+                                               <button
+                                                 className="text-blue-500 font-bold w-7 h-7 flex items-center justify-center rounded-md hover:bg-blue-50 transition-colors"
+                                                 onClick={() => editChiefComplaint(i)}
+                                                 title="Edit"
+                                               >
+                                                 <Icon icon="solar:pen-bold" />
+                                               </button>
+                                               <button
+                                                 className="text-red-500 font-bold w-7 h-7 flex items-center justify-center rounded-md hover:bg-red-50 transition-colors"
+                                                 onClick={() => removeChiefComplaint(i)}
+                                                 title="Delete"
+                                               >
+                                                 X
+                                               </button>
+                                             </div>
+                                           </td>
+                                         )}
+                                       </tr>
+                                     ))}
+                                   </tbody>
+                                 </table>
                               </div>
                             )}
                           </div>
@@ -1205,324 +1765,328 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                       children: (
                         <div className="space-y-6">
                           {/* Current Vitals Form */}
-                          <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
-                            <h3 className="text-md font-bold text-slate-800 mb-4 border-b pb-2">
-                              Add New Vitals Record
-                            </h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                              {/* Temperature */}
-                              <div className="space-y-2">
-                                <Input
-                                  label="Temperature (°F/°C)"
-                                  placeholder="e.g. 98.6"
-                                  value={currentVitals.temperature}
-                                  onChange={(e) =>
-                                    setCurrentVitals({
-                                      ...currentVitals,
-                                      temperature: e.target.value,
-                                    })
-                                  }
-                                />
-                                <select
-                                  className="w-full rounded-md border border-slate-300 p-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
-                                  value={currentVitals.temperatureCondition}
-                                  onChange={(e) =>
-                                    setCurrentVitals({
-                                      ...currentVitals,
-                                      temperatureCondition: e.target.value,
-                                    })
-                                  }
-                                >
-                                  <option value="">Select Condition</option>
-                                  {vitalOptions.temperature.map((opt) => (
-                                    <option key={opt} value={opt}>
-                                      {opt}
-                                    </option>
-                                  ))}
-                                </select>
-                              </div>
-
-                              {/* Pulse Rate */}
-                              <div className="space-y-2">
-                                <Input
-                                  label="Pulse Rate (bpm)"
-                                  type="number"
-                                  placeholder="e.g. 78"
-                                  value={currentVitals.pulseRate}
-                                  onChange={(e) =>
-                                    setCurrentVitals({
-                                      ...currentVitals,
-                                      pulseRate: e.target.value,
-                                    })
-                                  }
-                                />
-                                <select
-                                  className="w-full rounded-md border border-slate-300 p-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
-                                  value={currentVitals.pulseRateCondition}
-                                  onChange={(e) =>
-                                    setCurrentVitals({
-                                      ...currentVitals,
-                                      pulseRateCondition: e.target.value,
-                                    })
-                                  }
-                                >
-                                  <option value="">Select Condition</option>
-                                  {vitalOptions.pulseRate.map((opt) => (
-                                    <option key={opt} value={opt}>
-                                      {opt}
-                                    </option>
-                                  ))}
-                                </select>
-                              </div>
-
-                              {/* Respiratory Rate */}
-                              <div className="space-y-2">
-                                <Input
-                                  label="Respiratory Rate (/min)"
-                                  type="number"
-                                  placeholder="e.g. 18"
-                                  value={currentVitals.respiratoryRate}
-                                  onChange={(e) =>
-                                    setCurrentVitals({
-                                      ...currentVitals,
-                                      respiratoryRate: e.target.value,
-                                    })
-                                  }
-                                />
-                                <select
-                                  className="w-full rounded-md border border-slate-300 p-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
-                                  value={currentVitals.respiratoryRateCondition}
-                                  onChange={(e) =>
-                                    setCurrentVitals({
-                                      ...currentVitals,
-                                      respiratoryRateCondition: e.target.value,
-                                    })
-                                  }
-                                >
-                                  <option value="">Select Condition</option>
-                                  {vitalOptions.respiratoryRate.map((opt) => (
-                                    <option key={opt} value={opt}>
-                                      {opt}
-                                    </option>
-                                  ))}
-                                </select>
-                              </div>
-
-                              {/* Blood Pressure */}
-                              <div className="space-y-2">
-                                <Input
-                                  label="Blood Pressure (mmHg)"
-                                  placeholder="e.g. 120/80"
-                                  value={currentVitals.bloodPressure}
-                                  onChange={(e) =>
-                                    setCurrentVitals({
-                                      ...currentVitals,
-                                      bloodPressure: e.target.value,
-                                    })
-                                  }
-                                />
-                                <select
-                                  className="w-full rounded-md border border-slate-300 p-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
-                                  value={currentVitals.bloodPressureCondition}
-                                  onChange={(e) =>
-                                    setCurrentVitals({
-                                      ...currentVitals,
-                                      bloodPressureCondition: e.target.value,
-                                    })
-                                  }
-                                >
-                                  <option value="">Select Condition</option>
-                                  {vitalOptions.bloodPressure.map((opt) => (
-                                    <option key={opt} value={opt}>
-                                      {opt}
-                                    </option>
-                                  ))}
-                                </select>
-                              </div>
-
-                              {/* SpO2 */}
-                              <div className="space-y-2">
-                                <Input
-                                  label="SpO2 (%)"
-                                  type="number"
-                                  placeholder="e.g. 98"
-                                  value={currentVitals.spO2}
-                                  onChange={(e) =>
-                                    setCurrentVitals({
-                                      ...currentVitals,
-                                      spO2: e.target.value,
-                                    })
-                                  }
-                                />
-                                <select
-                                  className="w-full rounded-md border border-slate-300 p-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
-                                  value={currentVitals.spO2Condition}
-                                  onChange={(e) =>
-                                    setCurrentVitals({
-                                      ...currentVitals,
-                                      spO2Condition: e.target.value,
-                                    })
-                                  }
-                                >
-                                  <option value="">Select Condition</option>
-                                  {vitalOptions.spO2.map((opt) => (
-                                    <option key={opt} value={opt}>
-                                      {opt}
-                                    </option>
-                                  ))}
-                                </select>
-                              </div>
-
-                              {/* Height & Weight */}
-                              <div className="grid grid-cols-2 gap-4">
+                          {!isReadOnlyView && (
+                            <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                              <h3 className="text-md font-bold text-slate-800 mb-4 border-b pb-2">
+                                Add New Vitals Record
+                              </h3>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {/* Temperature */}
                                 <div className="space-y-2">
                                   <Input
-                                    label="Height (cm)"
-                                    type="number"
-                                    placeholder="e.g. 172"
-                                    value={currentVitals.height}
+                                    label="Temperature (°F/°C)"
+                                    placeholder="e.g. 98.6"
+                                    value={currentVitals.temperature}
                                     onChange={(e) =>
                                       setCurrentVitals({
                                         ...currentVitals,
-                                        height: e.target.value,
+                                        temperature: e.target.value,
                                       })
                                     }
                                   />
-                                </div>
-                                <div className="space-y-2">
-                                  <Input
-                                    label="Weight (kg)"
-                                    type="number"
-                                    placeholder="e.g. 68"
-                                    value={currentVitals.weight}
+                                  <select
+                                    className="w-full rounded-md border border-slate-300 p-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                                    value={currentVitals.temperatureCondition}
                                     onChange={(e) =>
                                       setCurrentVitals({
                                         ...currentVitals,
-                                        weight: e.target.value,
+                                        temperatureCondition: e.target.value,
+                                      })
+                                    }
+                                  >
+                                    <option value="">Select Condition</option>
+                                    {vitalOptions.temperature.map((opt) => (
+                                      <option key={opt} value={opt}>
+                                        {opt}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+
+                                {/* Pulse Rate */}
+                                <div className="space-y-2">
+                                  <Input
+                                    label="Pulse Rate (bpm)"
+                                    type="number"
+                                    placeholder="e.g. 78"
+                                    value={currentVitals.pulseRate}
+                                    onChange={(e) =>
+                                      setCurrentVitals({
+                                        ...currentVitals,
+                                        pulseRate: e.target.value,
                                       })
                                     }
                                   />
-                                </div>
-                              </div>
-
-                              {/* BMI */}
-                              <div className="space-y-2">
-                                <Input
-                                  label="BMI (kg/m²)"
-                                  placeholder="e.g. 22.9"
-                                  value={currentVitals.bmi}
-                                  onChange={(e) =>
-                                    setCurrentVitals({
-                                      ...currentVitals,
-                                      bmi: e.target.value,
-                                    })
-                                  }
-                                />
-                                <select
-                                  className="w-full rounded-md border border-slate-300 p-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
-                                  value={currentVitals.bmiCondition}
-                                  onChange={(e) =>
-                                    setCurrentVitals({
-                                      ...currentVitals,
-                                      bmiCondition: e.target.value,
-                                    })
-                                  }
-                                >
-                                  <option value="">Select Condition</option>
-                                  {vitalOptions.bmi.map((opt) => (
-                                    <option key={opt} value={opt}>
-                                      {opt}
-                                    </option>
-                                  ))}
-                                </select>
-                              </div>
-
-                              {/* Blood Sugar Toggle & Input */}
-                              <div className="mt-4">
-                                <label className="text-[12px] font-black tracking-widest uppercase text-slate-500 pl-1 mb-2 block">
-                                  Blood Sugar Mode
-                                </label>
-                                <div className="flex bg-slate-100 p-1 rounded-lg w-fit mb-4">
-                                  <button
-                                    type="button"
-                                    className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${bloodSugarMode === "Fasting" ? "bg-white text-blue-600 shadow-sm border border-slate-200" : "text-slate-500 hover:text-slate-700"}`}
-                                    onClick={() => {
-                                      setBloodSugarMode("Fasting");
-                                      setCurrentVitals((prev) => ({ ...prev, bloodSugarAfterFood: "" }));
-                                    }}
+                                  <select
+                                    className="w-full rounded-md border border-slate-300 p-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                                    value={currentVitals.pulseRateCondition}
+                                    onChange={(e) =>
+                                      setCurrentVitals({
+                                        ...currentVitals,
+                                        pulseRateCondition: e.target.value,
+                                      })
+                                    }
                                   >
-                                    Fasting
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${bloodSugarMode === "After Food" ? "bg-white text-blue-600 shadow-sm border border-slate-200" : "text-slate-500 hover:text-slate-700"}`}
-                                    onClick={() => {
-                                      setBloodSugarMode("After Food");
-                                      setCurrentVitals((prev) => ({ ...prev, bloodSugarFasting: "" }));
-                                    }}
-                                  >
-                                    After Food
-                                  </button>
+                                    <option value="">Select Condition</option>
+                                    {vitalOptions.pulseRate.map((opt) => (
+                                      <option key={opt} value={opt}>
+                                        {opt}
+                                      </option>
+                                    ))}
+                                  </select>
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                  {bloodSugarMode === "Fasting" && (
-                                    <div className="space-y-2">
-                                      <Input
-                                        label="Blood Sugar (Fasting) mg/dL"
-                                        type="number"
-                                        placeholder="e.g. 90"
-                                        value={currentVitals.bloodSugarFasting || ""}
-                                        onChange={(e) =>
-                                          setCurrentVitals({
-                                            ...currentVitals,
-                                            bloodSugarFasting: e.target.value,
-                                          })
-                                        }
-                                      />
-                                    </div>
-                                  )}
-                                  {bloodSugarMode === "After Food" && (
-                                    <div className="space-y-2">
-                                      <Input
-                                        label="Blood Sugar (After Food) mg/dL"
-                                        type="number"
-                                        placeholder="e.g. 140"
-                                        value={currentVitals.bloodSugarAfterFood || ""}
-                                        onChange={(e) =>
-                                          setCurrentVitals({
-                                            ...currentVitals,
-                                            bloodSugarAfterFood: e.target.value,
-                                          })
-                                        }
-                                      />
-                                    </div>
-                                  )}
+                                {/* Respiratory Rate */}
+                                <div className="space-y-2">
+                                  <Input
+                                    label="Respiratory Rate (/min)"
+                                    type="number"
+                                    placeholder="e.g. 18"
+                                    value={currentVitals.respiratoryRate}
+                                    onChange={(e) =>
+                                      setCurrentVitals({
+                                        ...currentVitals,
+                                        respiratoryRate: e.target.value,
+                                      })
+                                    }
+                                  />
+                                  <select
+                                    className="w-full rounded-md border border-slate-300 p-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                                    value={currentVitals.respiratoryRateCondition}
+                                    onChange={(e) =>
+                                      setCurrentVitals({
+                                        ...currentVitals,
+                                        respiratoryRateCondition: e.target.value,
+                                      })
+                                    }
+                                  >
+                                    <option value="">Select Condition</option>
+                                    {vitalOptions.respiratoryRate.map((opt) => (
+                                      <option key={opt} value={opt}>
+                                        {opt}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+
+                                {/* Blood Pressure */}
+                                <div className="space-y-2">
+                                  <Input
+                                    label="Blood Pressure (mmHg)"
+                                    placeholder="e.g. 120/80"
+                                    value={currentVitals.bloodPressure}
+                                    onChange={(e) =>
+                                      setCurrentVitals({
+                                        ...currentVitals,
+                                        bloodPressure: e.target.value,
+                                      })
+                                    }
+                                  />
+                                  <select
+                                    className="w-full rounded-md border border-slate-300 p-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                                    value={currentVitals.bloodPressureCondition}
+                                    onChange={(e) =>
+                                      setCurrentVitals({
+                                        ...currentVitals,
+                                        bloodPressureCondition: e.target.value,
+                                      })
+                                    }
+                                  >
+                                    <option value="">Select Condition</option>
+                                    {vitalOptions.bloodPressure.map((opt) => (
+                                      <option key={opt} value={opt}>
+                                        {opt}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+
+                                {/* SpO2 */}
+                                <div className="space-y-2">
+                                  <Input
+                                    label="SpO2 (%)"
+                                    type="number"
+                                    placeholder="e.g. 98"
+                                    value={currentVitals.spO2}
+                                    onChange={(e) =>
+                                      setCurrentVitals({
+                                        ...currentVitals,
+                                        spO2: e.target.value,
+                                      })
+                                    }
+                                  />
+                                  <select
+                                    className="w-full rounded-md border border-slate-300 p-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                                    value={currentVitals.spO2Condition}
+                                    onChange={(e) =>
+                                      setCurrentVitals({
+                                        ...currentVitals,
+                                        spO2Condition: e.target.value,
+                                      })
+                                    }
+                                  >
+                                    <option value="">Select Condition</option>
+                                    {vitalOptions.spO2.map((opt) => (
+                                      <option key={opt} value={opt}>
+                                        {opt}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+
+                                {/* Height & Weight */}
+                                <div className="grid grid-cols-2 gap-4">
+                                  <div className="space-y-2">
+                                    <Input
+                                      label="Height (cm)"
+                                      type="number"
+                                      placeholder="e.g. 170"
+                                      value={currentVitals.height}
+                                      onChange={(e) => {
+                                        const h = e.target.value;
+                                        setCurrentVitals((prev) => {
+                                          const w = prev.weight;
+                                          let calculatedBmi = "";
+                                          let condition = "";
+                                          if (h && w) {
+                                            const hm = parseFloat(h) / 100;
+                                            const bmiVal = parseFloat(w) / (hm * hm);
+                                            calculatedBmi = bmiVal.toFixed(1);
+                                            if (bmiVal < 18.5) condition = "Underweight";
+                                            else if (bmiVal < 25) condition = "Normal";
+                                            else if (bmiVal < 30) condition = "Overweight";
+                                            else condition = "Obese";
+                                          }
+                                          return {
+                                            ...prev,
+                                            height: h,
+                                            bmi: calculatedBmi,
+                                            bmiCondition: condition,
+                                          };
+                                        });
+                                      }}
+                                    />
+                                  </div>
+                                  <div className="space-y-2">
+                                    <Input
+                                      label="Weight (kg)"
+                                      type="number"
+                                      placeholder="e.g. 70"
+                                      value={currentVitals.weight}
+                                      onChange={(e) => {
+                                        const w = e.target.value;
+                                        setCurrentVitals((prev) => {
+                                          const h = prev.height;
+                                          let calculatedBmi = "";
+                                          let condition = "";
+                                          if (h && w) {
+                                            const hm = parseFloat(h) / 100;
+                                            const bmiVal = parseFloat(w) / (hm * hm);
+                                            calculatedBmi = bmiVal.toFixed(1);
+                                            if (bmiVal < 18.5) condition = "Underweight";
+                                            else if (bmiVal < 25) condition = "Normal";
+                                            else if (bmiVal < 30) condition = "Overweight";
+                                            else condition = "Obese";
+                                          }
+                                          return {
+                                            ...prev,
+                                            weight: w,
+                                            bmi: calculatedBmi,
+                                            bmiCondition: condition,
+                                          };
+                                        });
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+
+                                {/* Blood Sugar Mode Toggle & Inputs */}
+                                <div className="space-y-4 md:col-span-2">
+                                  <label className="text-sm font-semibold text-slate-700 block">
+                                    Blood Sugar Level
+                                  </label>
+                                  <div className="flex gap-2 p-1 bg-slate-100 rounded-lg w-fit border border-slate-200">
+                                    <button
+                                      type="button"
+                                      className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${bloodSugarMode === "Fasting" ? "bg-white text-blue-600 shadow-sm border border-slate-200" : "text-slate-500 hover:text-slate-700"}`}
+                                      onClick={() => {
+                                        setBloodSugarMode("Fasting");
+                                        setCurrentVitals((prev) => ({ ...prev, bloodSugarAfterFood: "" }));
+                                      }}
+                                    >
+                                      Fasting
+                                    </button>
+                                    <button
+                                      type="button"
+                                      className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${bloodSugarMode === "After Food" ? "bg-white text-blue-600 shadow-sm border border-slate-200" : "text-slate-500 hover:text-slate-700"}`}
+                                      onClick={() => {
+                                        setBloodSugarMode("After Food");
+                                        setCurrentVitals((prev) => ({ ...prev, bloodSugarFasting: "" }));
+                                      }}
+                                    >
+                                      After Food
+                                    </button>
+                                  </div>
+
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {bloodSugarMode === "Fasting" && (
+                                      <div className="space-y-2">
+                                        <Input
+                                          label="Blood Sugar (Fasting) mg/dL"
+                                          type="number"
+                                          placeholder="e.g. 90"
+                                          value={currentVitals.bloodSugarFasting || ""}
+                                          onChange={(e) =>
+                                            setCurrentVitals({
+                                              ...currentVitals,
+                                              bloodSugarFasting: e.target.value,
+                                            })
+                                          }
+                                        />
+                                      </div>
+                                    )}
+                                    {bloodSugarMode === "After Food" && (
+                                      <div className="space-y-2">
+                                        <Input
+                                          label="Blood Sugar (After Food) mg/dL"
+                                          type="number"
+                                          placeholder="e.g. 140"
+                                          value={currentVitals.bloodSugarAfterFood || ""}
+                                          onChange={(e) =>
+                                            setCurrentVitals({
+                                              ...currentVitals,
+                                              bloodSugarAfterFood: e.target.value,
+                                            })
+                                          }
+                                        />
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                            <div className="mt-4 flex justify-end">
-                              {editingIndex !== null && (
+                              <div className="mt-4 flex justify-end">
+                                {editingIndex !== null && (
+                                  <Button
+                                    onClick={() => {
+                                      setEditingIndex(null);
+                                      setCurrentVitals(initialVitals);
+                                    }}
+                                    className="bg-slate-500 hover:bg-slate-600 text-white shadow-sm mr-2"
+                                  >
+                                    Cancel Edit
+                                  </Button>
+                                )}
                                 <Button
-                                  onClick={() => {
-                                    setEditingIndex(null);
-                                    setCurrentVitals(initialVitals);
-                                  }}
-                                  className="bg-slate-500 hover:bg-slate-600 text-white shadow-sm mr-2"
+                                  onClick={addVitals}
+                                  className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
                                 >
-                                  Cancel Edit
+                                  {editingIndex !== null
+                                    ? "Update Record"
+                                    : "+ Add Record"}
                                 </Button>
-                              )}
-                              <Button
-                                onClick={addVitals}
-                                className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
-                              >
-                                {editingIndex !== null
-                                  ? "Update Record"
-                                  : "+ Add Record"}
-                              </Button>
+                              </div>
                             </div>
-                          </div>
+                          )}
 
                           {/* Vitals History Table */}
                           {vitalsHistory.length > 0 && (
@@ -1552,9 +2116,11 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                                       <th className="p-3 font-semibold">
                                         Ht/Wt/BMI
                                       </th>
-                                      <th className="p-3 font-semibold text-center">
-                                        Action
-                                      </th>
+                                      {!isReadOnlyView && (
+                                        <th className="p-3 font-semibold text-center">
+                                          Action
+                                        </th>
+                                      )}
                                     </tr>
                                   </thead>
                                   <tbody>
@@ -1626,22 +2192,6 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                                             ""
                                           )}
                                         </td>
-                                        <td className="p-3 text-center flex items-center justify-center space-x-2">
-                                          <button
-                                            onClick={() => editVitals(i)}
-                                            className="text-blue-500 hover:text-blue-700 font-bold px-2 py-1 rounded transition-colors"
-                                            title="Edit Record"
-                                          >
-                                            Edit
-                                          </button>
-                                          <button
-                                            onClick={() => removeVitals(i)}
-                                            className="text-red-500 hover:text-red-700 font-bold px-2 py-1 rounded transition-colors"
-                                            title="Remove Record"
-                                          >
-                                            X
-                                          </button>
-                                        </td>
                                       </tr>
                                     ))}
                                   </tbody>
@@ -1653,7 +2203,17 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                       ),
                     },
                     {
-                      key:"5",
+                      key: "specialist-assessment",
+                      label: (
+                        <span className="text-lg font-bold text-slate-800">
+                          Specialist Assessment
+                        </span>
+                      ),
+                      className: "border-b border-slate-200 bg-slate-50/50",
+                      children: renderSpecialistAssessmentContent(),
+                    },
+                    {
+                      key: "5",
                       label: (
                         <span className="text-lg font-bold text-slate-800">
                           Emergency care
@@ -1698,6 +2258,10 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                             )}
                             items={Object.entries(medicalHistoryCategories)
                               .filter(([category]) => {
+                                const visibleCategories = getVisibleCategories(activeDoctorDepartment);
+                                if (!visibleCategories.includes(category)) {
+                                  return false;
+                                }
                                 if (
                                   category === "Gynecology History" ||
                                   category === "Obstetric History"
@@ -1950,6 +2514,16 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                         </div>
                       ),
                     },
+                    {
+                      key: "specialist-assessment",
+                      label: (
+                        <span className="text-lg font-bold text-slate-800">
+                          Specialist Assessment
+                        </span>
+                      ),
+                      className: "border-b border-slate-200 bg-slate-50/50",
+                      children: renderSpecialistAssessmentContent(),
+                    },
                     ...(prescriptionDocs && prescriptionDocs.length > 0 ? [{
                       key: "4",
                       label: (
@@ -2005,8 +2579,8 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                       className: "border-b border-slate-200 bg-slate-50/50",
                       children: (
                         <div className="p-4">
-                          <div className="mb-4">
-                            <div className="flex flex-col w-full gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                          {!isReadOnlyView && (
+                            <div className="flex flex-col w-full gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm mb-4">
                               <div className="flex flex-col md:flex-row gap-4">
                                 <div className="w-full md:w-1/2">
                                   <label className="text-[10px] font-black tracking-widest uppercase text-slate-400 pl-1 mb-2 block">
@@ -2148,6 +2722,7 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                                 </Button>
                               </div>
                             </div>
+                          )}
 
                             {activeDoctorDiagnoses.length > 0 && (
                               <div className="mt-4 overflow-x-auto rounded-xl border border-slate-200 shadow-sm">
@@ -2161,7 +2736,7 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                                       <th className="px-4 py-3 whitespace-nowrap">Compliant Details</th>
                                       <th className="px-4 py-3 whitespace-nowrap">Diagnosis Report</th>
                                       <th className="px-4 py-3 whitespace-nowrap">Tests & Prescriptions</th>
-                                      <th className="px-4 py-3 text-center">Action</th>
+                                      {!isReadOnlyView && <th className="px-4 py-3 text-center">Action</th>}
                                     </tr>
                                   </thead>
                                   <tbody className="divide-y divide-slate-100 bg-white">
@@ -2207,15 +2782,17 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                                             ))}
                                           </div>
                                         </td>
-                                        <td className="px-4 py-3 text-center">
-                                          <button
-                                            className="text-slate-400 hover:text-rose-500 hover:bg-rose-50 p-1.5 rounded-lg transition-all"
-                                            onClick={() => removeDiagnosis(i)}
-                                            title="Remove Diagnosis"
-                                          >
-                                            <Icon icon="solar:trash-bin-trash-bold-duotone" className="text-lg" />
-                                          </button>
-                                        </td>
+                                        {!isReadOnlyView && (
+                                          <td className="px-4 py-3 text-center">
+                                            <button
+                                              className="text-slate-400 hover:text-rose-500 hover:bg-rose-50 p-1.5 rounded-lg transition-all"
+                                              onClick={() => removeDiagnosis(i)}
+                                              title="Remove Diagnosis"
+                                            >
+                                              <Icon icon="solar:trash-bin-trash-bold-duotone" className="text-lg" />
+                                            </button>
+                                          </td>
+                                        )}
                                       </tr>
                                     ))}
                                   </tbody>
@@ -2223,9 +2800,8 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                               </div>
                             )}
                           </div>
-                        </div>
-                      ),
-                    },
+                        ),
+                      },
                     {
                       key: "8",
                       label: (
@@ -2236,8 +2812,8 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                       className: "border-b border-slate-200 bg-slate-50/50",
                       children: (
                         <div className="p-4">
-                          <div className="mb-4">
-                            <div className="flex flex-col w-full gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                          {!isReadOnlyView && (
+                            <div className="flex flex-col w-full gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm mb-4">
                               <div className="flex flex-col md:flex-row gap-4">
                                 <div className="w-full md:w-1/2">
                                   <label className="text-[10px] font-black tracking-widest uppercase text-slate-400 pl-1 mb-2 block">
@@ -2444,96 +3020,98 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                                 </Button>
                               </div>
                             </div>
+                          )}
 
-                            {treatment.plan.length > 0 && (
-                              <div className="mt-4 overflow-x-auto rounded-xl border border-slate-200 shadow-sm">
-                                <table className="w-full text-left text-sm text-slate-600">
-                                  <thead className="bg-slate-100 text-slate-700 font-bold uppercase text-[10px] tracking-widest border-b border-slate-200">
-                                    <tr>
-                                      <th className="px-4 py-3 whitespace-nowrap">S.No</th>
-                                      <th className="px-4 py-3 whitespace-nowrap">Visiting Date</th>
-                                      <th className="px-4 py-3 whitespace-nowrap">Primary Doctor</th>
-                                      <th className="px-4 py-3 min-w-[150px]">Primary Complaint</th>
-                                      <th className="px-4 py-3 min-w-[200px]">Primary Complaint Details</th>
-                                      <th className="px-4 py-3 min-w-[200px]">Diagnosis Report</th>
-                                      <th className="px-4 py-3 min-w-[200px]">Treatment Plan</th>
-                                      <th className="px-4 py-3 whitespace-nowrap">Prescription</th>
-                                      <th className="px-4 py-3 whitespace-nowrap">Blood Test</th>
-                                      <th className="px-4 py-3 whitespace-nowrap">X-Ray</th>
-                                      <th className="px-4 py-3 whitespace-nowrap">CT-Scan</th>
-                                      <th className="px-4 py-3 whitespace-nowrap">MRI</th>
-                                      <th className="px-4 py-3 text-center">Action</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody className="divide-y divide-slate-100 bg-white">
-                                    {treatment.plan.map((p, i) => {
-                                      const getStatusCell = (label, val) => {
-                                        if (val !== "Yes") return <span className="text-[10px] text-slate-400 font-medium whitespace-nowrap">Not ordered</span>;
-                                        const isReady = isDocReady(label, p.date);
-                                        if (!isReady) return <span className="text-[10px] text-rose-500 font-medium bg-rose-50 px-2 py-1 rounded border border-rose-100 whitespace-nowrap">Not Ready</span>;
-                                        return (
-                                          <button
-                                            type="button"
-                                            className="bg-green-50 text-green-600 border border-green-200 hover:bg-green-100 px-2 py-1 rounded-md text-[10px] font-bold transition-all flex items-center gap-1 shadow-sm whitespace-nowrap"
-                                            onClick={(e) => {
-                                              e.preventDefault();
-                                              handleViewReport(label, p.date);
-                                            }}
-                                          >
-                                            <Icon icon="solar:eye-bold-duotone" /> Ready to pickup
-                                          </button>
-                                        );
-                                      };
-
+                          {activeDoctorPlans.length > 0 && (
+                            <div className="mt-4 overflow-x-auto rounded-xl border border-slate-200 shadow-sm">
+                              <table className="w-full text-left text-sm text-slate-600">
+                                <thead className="bg-slate-100 text-slate-700 font-bold uppercase text-[10px] tracking-widest border-b border-slate-200">
+                                  <tr>
+                                    <th className="px-4 py-3 whitespace-nowrap">S.No</th>
+                                    <th className="px-4 py-3 whitespace-nowrap">Visiting Date</th>
+                                    <th className="px-4 py-3 whitespace-nowrap">Primary Doctor</th>
+                                    <th className="px-4 py-3 min-w-[150px]">Primary Complaint</th>
+                                    <th className="px-4 py-3 min-w-[200px]">Primary Complaint Details</th>
+                                    <th className="px-4 py-3 min-w-[200px]">Diagnosis Report</th>
+                                    <th className="px-4 py-3 min-w-[200px]">Treatment Plan</th>
+                                    <th className="px-4 py-3 whitespace-nowrap">Prescription</th>
+                                    <th className="px-4 py-3 whitespace-nowrap">Blood Test</th>
+                                    <th className="px-4 py-3 whitespace-nowrap">X-Ray</th>
+                                    <th className="px-4 py-3 whitespace-nowrap">CT-Scan</th>
+                                    <th className="px-4 py-3 whitespace-nowrap">MRI</th>
+                                    {!isReadOnlyView && <th className="px-4 py-3 text-center">Action</th>}
+                                  </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-100 bg-white">
+                                  {activeDoctorPlans.map((p, i) => {
+                                    const getStatusCell = (label, val) => {
+                                      if (val !== "Yes") return <span className="text-[10px] text-slate-400 font-medium whitespace-nowrap">Not ordered</span>;
+                                      const isReady = isDocReady(label, p.date);
+                                      if (!isReady) return <span className="text-[10px] text-rose-500 font-medium bg-rose-50 px-2 py-1 rounded border border-rose-100 whitespace-nowrap">Not Ready</span>;
                                       return (
-                                      <tr key={i} className="hover:bg-slate-50 transition-all">
-                                        <td className="px-4 py-3 font-semibold text-slate-800">{i + 1}</td>
-                                        <td className="px-4 py-3 whitespace-nowrap">
-                                          <div className="flex items-center gap-1.5 bg-slate-50 px-2 py-1 rounded-md border border-slate-200 w-fit">
-                                            <Icon icon="solar:calendar-bold-duotone" className="text-slate-400" />
-                                            {p.date}
+                                        <button
+                                          type="button"
+                                          className="bg-green-50 text-green-600 border border-green-200 hover:bg-green-100 px-2 py-1 rounded-md text-[10px] font-bold transition-all flex items-center gap-1 shadow-sm whitespace-nowrap"
+                                          onClick={(e) => {
+                                            e.preventDefault();
+                                            handleViewReport(label, p.date);
+                                          }}
+                                        >
+                                          <Icon icon="solar:eye-bold-duotone" /> Ready to pickup
+                                        </button>
+                                      );
+                                    };
+
+                                    return (
+                                    <tr key={i} className="hover:bg-slate-50 transition-all">
+                                      <td className="px-4 py-3 font-semibold text-slate-800">{i + 1}</td>
+                                      <td className="px-4 py-3 whitespace-nowrap">
+                                        <div className="flex items-center gap-1.5 bg-slate-50 px-2 py-1 rounded-md border border-slate-200 w-fit">
+                                          <Icon icon="solar:calendar-bold-duotone" className="text-slate-400" />
+                                          {p.date}
+                                        </div>
+                                      </td>
+                                      <td className="px-4 py-3 whitespace-nowrap">
+                                        {p.doctorName ? (
+                                          <span className="text-[10px] font-black tracking-widest uppercase text-blue-600 bg-blue-50 px-2 py-1 rounded-md border border-blue-100 flex items-center gap-1 w-fit">
+                                            <Icon icon="solar:user-md-bold-duotone" className="text-blue-500" />
+                                            Dr. {p.doctorName}
+                                          </span>
+                                        ) : "-"}
+                                      </td>
+                                      <td className="px-4 py-3">
+                                        {p.primaryComplaint ? <span className="font-semibold text-slate-800">{p.primaryComplaint}</span> : "-"}
+                                      </td>
+                                      <td className="px-4 py-3 text-xs">
+                                        {p.primaryComplaintDetails || "-"}
+                                      </td>
+                                      <td className="px-4 py-3 text-xs whitespace-pre-wrap text-slate-500">
+                                        {p.diagnosisReport || "-"}
+                                      </td>
+                                      <td className="px-4 py-3 text-xs whitespace-pre-wrap text-slate-800 font-medium">
+                                        {p.text}
+                                        {p.nextVisitDate && (
+                                          <div className="mt-2 text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded border border-blue-100 inline-block">
+                                            Next Visit: {p.nextVisitDate} {p.nextVisitFollowUp && `(${p.nextVisitFollowUp})`}
                                           </div>
-                                        </td>
-                                        <td className="px-4 py-3 whitespace-nowrap">
-                                          {p.doctorName ? (
-                                            <span className="text-[10px] font-black tracking-widest uppercase text-blue-600 bg-blue-50 px-2 py-1 rounded-md border border-blue-100 flex items-center gap-1 w-fit">
-                                              <Icon icon="solar:user-md-bold-duotone" className="text-blue-500" />
-                                              Dr. {p.doctorName}
-                                            </span>
-                                          ) : "-"}
-                                        </td>
-                                        <td className="px-4 py-3">
-                                          {p.primaryComplaint ? <span className="font-semibold text-slate-800">{p.primaryComplaint}</span> : "-"}
-                                        </td>
-                                        <td className="px-4 py-3 text-xs">
-                                          {p.primaryComplaintDetails || "-"}
-                                        </td>
-                                        <td className="px-4 py-3 text-xs whitespace-pre-wrap text-slate-500">
-                                          {p.diagnosisReport || "-"}
-                                        </td>
-                                        <td className="px-4 py-3 text-xs whitespace-pre-wrap text-slate-800 font-medium">
-                                          {p.text}
-                                          {p.nextVisitDate && (
-                                            <div className="mt-2 text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded border border-blue-100 inline-block">
-                                              Next Visit: {p.nextVisitDate} {p.nextVisitFollowUp && `(${p.nextVisitFollowUp})`}
-                                            </div>
-                                          )}
-                                        </td>
-                                        <td className="px-4 py-3 text-center">
-                                          {getStatusCell("Prescription", p.prescriptionGiven)}
-                                        </td>
-                                        <td className="px-4 py-3 text-center">
-                                          {getStatusCell("Blood Test", p.bloodTestGiven)}
-                                        </td>
-                                        <td className="px-4 py-3 text-center">
-                                          {getStatusCell("X-Ray", p.xrayGiven)}
-                                        </td>
-                                        <td className="px-4 py-3 text-center">
-                                          {getStatusCell("CT-Scan", p.ctScanGiven)}
-                                        </td>
-                                        <td className="px-4 py-3 text-center">
-                                          {getStatusCell("MRI", p.mriGiven)}
-                                        </td>
+                                        )}
+                                      </td>
+                                      <td className="px-4 py-3 text-center">
+                                        {getStatusCell("Prescription", p.prescriptionGiven)}
+                                      </td>
+                                      <td className="px-4 py-3 text-center">
+                                        {getStatusCell("Blood Test", p.bloodTestGiven)}
+                                      </td>
+                                      <td className="px-4 py-3 text-center">
+                                        {getStatusCell("X-Ray", p.xrayGiven)}
+                                      </td>
+                                      <td className="px-4 py-3 text-center">
+                                        {getStatusCell("CT-Scan", p.ctScanGiven)}
+                                      </td>
+                                      <td className="px-4 py-3 text-center">
+                                        {getStatusCell("MRI", p.mriGiven)}
+                                      </td>
+                                      {!isReadOnlyView && (
                                         <td className="px-4 py-3 text-center">
                                           <button
                                             className="text-slate-400 hover:text-rose-500 hover:bg-rose-50 p-1.5 rounded-lg transition-all"
@@ -2543,16 +3121,16 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                                             <Icon icon="solar:trash-bin-trash-bold-duotone" className="text-lg" />
                                           </button>
                                         </td>
-                                      </tr>
-                                      );
-                                    })}
-                                  </tbody>
-                                </table>
-                              </div>
-                            )}
+                                      )}
+                                    </tr>
+                                    );
+                                  })}
+                                </tbody>
+                              </table>
+                            </div>
+                          )}
                           </div>
-                        </div>
-                      ),
+                        ),
                     },
                     {
                       key: "9",
@@ -2564,7 +3142,7 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                       className: "border-b border-slate-200 bg-slate-50/50",
                       children: (
                         <div className="p-4">
-                          {treatment.plan && treatment.plan.length > 0 ? (
+                          {activeDoctorPlans.length > 0 ? (
                             <div className="overflow-x-auto bg-white rounded-xl shadow-sm border border-slate-200">
                               <table className="w-full text-left text-sm text-slate-600">
                                 <thead className="bg-slate-50 border-b border-slate-200 text-slate-800 uppercase text-[10px] font-black tracking-wider">
@@ -2582,7 +3160,7 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                                   </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-100">
-                                  {treatment.plan.map((p, i) => {
+                                  {activeDoctorPlans.map((p, i) => {
                                     const hasAppointment = !!p.nextVisitDate;
                                     let daysLeft = "-";
                                     if (hasAppointment) {
@@ -2632,23 +3210,25 @@ export default function PhysicianAssessmentSheet({ patientId }) {
           ]}
         />
 
-        <div className="flex justify-end gap-4 mt-8 pt-4 border-t border-slate-200 ">
-          {updateId ? (
-            <Button
-              onClick={updateAssessment}
-              className="w-40 bg-green-600 hover:bg-green-700 text-white shadow-md"
-            >
-              Update Profile
-            </Button>
-          ) : (
-            <Button
-              onClick={submitAssessment}
-              className="w-40 bg-blue-600 hover:bg-blue-700 text-white shadow-md"
-            >
-              Complete Profile
-            </Button>
-          )}
-        </div>
+        {!isReadOnlyView && (
+          <div className="flex justify-end gap-4 mt-8 pt-4 border-t border-slate-200 ">
+            {updateId ? (
+              <Button
+                onClick={updateAssessment}
+                className="w-40 bg-green-600 hover:bg-green-700 text-white shadow-md"
+              >
+                Update Profile
+              </Button>
+            ) : (
+              <Button
+                onClick={submitAssessment}
+                className="w-40 bg-blue-600 hover:bg-blue-700 text-white shadow-md"
+              >
+                Complete Profile
+              </Button>
+            )}
+          </div>
+        )}
       </Card>
 
       <Modal
