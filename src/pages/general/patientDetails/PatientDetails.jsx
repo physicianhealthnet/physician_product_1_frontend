@@ -20,10 +20,22 @@ import Button from "../../../component/ui/Button";
 import Card from "../../../component/ui/Card";
 import { Skeleton } from "../../../component/ui/Skeleton";
 
-import { StaggerContainer, StaggerItem } from "../../../component/ui/Transitions";
+import {
+  StaggerContainer,
+  StaggerItem,
+} from "../../../component/ui/Transitions";
 import PhysicianAssessmentSheet from "../assessment/PhysicianAssessmentSheet";
 
-const CollapseSection = ({ id, title, description, icon, colorInfo, activeTab, setActiveTab, children }) => {
+const CollapseSection = ({
+  id,
+  title,
+  description,
+  icon,
+  colorInfo,
+  activeTab,
+  setActiveTab,
+  children,
+}) => {
   const isActive = activeTab === id;
   return (
     <div className="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden transition-all duration-300">
@@ -32,19 +44,25 @@ const CollapseSection = ({ id, title, description, icon, colorInfo, activeTab, s
         className="group p-6 flex items-center justify-between cursor-pointer hover:bg-slate-50/50 transition-colors"
       >
         <div className="flex items-center gap-4">
-          <div className={`w-12 h-12 rounded-xl ${colorInfo?.gradient} flex items-center justify-center group-hover:scale-110 transition-transform`}>
+          <div
+            className={`w-12 h-12 rounded-xl ${colorInfo?.gradient} flex items-center justify-center group-hover:scale-110 transition-transform`}
+          >
             <Icon icon={icon} className={`${colorInfo?.bg} text-xl`} />
           </div>
           <div>
-            <h3 className="font-extrabold text-slate-800 text-sm uppercase tracking-wider m-0">{title}</h3>
+            <h3 className="font-extrabold text-slate-800 text-sm uppercase tracking-wider m-0">
+              {title}
+            </h3>
             {description && (
-              <p className="text-[11px] text-slate-400 font-medium m-0 mt-0.5">{description}</p>
+              <p className="text-[11px] text-slate-400 font-medium m-0 mt-0.5">
+                {description}
+              </p>
             )}
           </div>
         </div>
-        <Icon 
-          icon="solar:alt-arrow-right-bold" 
-          className={`text-slate-400 group-hover:text-blue-500 transition-all text-lg ${isActive ? "rotate-90 text-blue-500" : ""}`} 
+        <Icon
+          icon="solar:alt-arrow-right-bold"
+          className={`text-slate-400 group-hover:text-blue-500 transition-all text-lg ${isActive ? "rotate-90 text-blue-500" : ""}`}
         />
       </div>
       {isActive && (
@@ -85,7 +103,7 @@ const PatientDetails = ({ patientId, isNested }) => {
     try {
       setLoading(true);
       const response = await AxiosInstance.get(
-        `/patient/get-by-id/${patient_id}`
+        `/patient/get-by-id/${patient_id}`,
       );
 
       setPatientInfo(response?.data?.patient);
@@ -99,7 +117,7 @@ const PatientDetails = ({ patientId, isNested }) => {
   const getPatientMedicalDetails = async () => {
     try {
       const response = await AxiosInstance.get(
-        `/patientregistration/get-by-patient/${patient_id}`
+        `/patientregistration/get-by-patient/${patient_id}`,
       );
       setPatientMedicalData(response?.data?.patient);
     } catch (error) {
@@ -118,7 +136,7 @@ const PatientDetails = ({ patientId, isNested }) => {
     if (!dateString) return "-";
     const date = new Date(dateString);
     if (isNaN(date.getTime())) return "-";
-    
+
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = date.getFullYear();
@@ -139,7 +157,7 @@ const PatientDetails = ({ patientId, isNested }) => {
     } catch (error) {
       console.error(error);
       message.error(
-        error.response?.data?.message || "Failed to share records via email"
+        error.response?.data?.message || "Failed to share records via email",
       );
     } finally {
       setSharing(false);
@@ -149,14 +167,21 @@ const PatientDetails = ({ patientId, isNested }) => {
   const getImageUrl = (url) => {
     if (!url) return null;
     if (url.startsWith("http") || url.startsWith("data:")) return url;
-    const rawBaseUrl = AxiosInstance.defaults.baseURL || "http://localhost:3026";
+    const rawBaseUrl =
+      AxiosInstance.defaults.baseURL || "http://localhost:3026";
     const baseUrl = rawBaseUrl.replace(/\/api\/?$/, "");
     return `${baseUrl}${url.startsWith("/") ? "" : "/"}${url}`;
   };
 
   return (
     <StaggerContainer>
-      <div className={isNested ? "flex flex-col gap-6" : "flex flex-col gap-10 p-10 bg-white/70 rounded backdrop-blur-3xl border border-slate-200 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] min-h-[900px]"}>
+      <div
+        className={
+          isNested
+            ? "flex flex-col gap-6"
+            : "flex flex-col gap-10 p-10 bg-white/70 rounded backdrop-blur-3xl border border-slate-200 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] min-h-[900px]"
+        }
+      >
         {/* Modern Header */}
         {!isNested && (
           <StaggerItem>
@@ -198,7 +223,7 @@ const PatientDetails = ({ patientId, isNested }) => {
                       usertype?.userType === "receptionist"
                     ) {
                       message.warning(
-                        "Doctor & CEO Only Able Access This Assessment"
+                        "Doctor & CEO Only Able Access This Assessment",
                       );
                       return;
                     }
@@ -228,20 +253,33 @@ const PatientDetails = ({ patientId, isNested }) => {
                       <div className="w-20 h-20 rounded-full bg-blue-500/20 flex items-center justify-center overflow-hidden shrink-0 shadow-sm border border-slate-200/50">
                         {patientInfo?.profileImg || patientInfo?.photo ? (
                           <img
-                            src={getImageUrl(patientInfo.profileImg || patientInfo.photo)}
+                            src={getImageUrl(
+                              patientInfo.profileImg || patientInfo.photo,
+                            )}
                             alt={patientInfo.patientName}
                             className="w-full h-full object-cover"
                           />
                         ) : (
-                          <Icon icon="tabler:user-circle" className="text-5xl text-blue-600 " />
+                          <Icon
+                            icon="tabler:user-circle"
+                            className="text-5xl text-blue-600 "
+                          />
                         )}
                       </div>
                       <div className="flex-1">
                         <p className="text-xs font-black text-slate-400  uppercase tracking-widest m-0">
-                          {loading ? <Skeleton className="h-4 w-20" /> : patientInfo.patientId}
+                          {loading ? (
+                            <Skeleton className="h-4 w-20" />
+                          ) : (
+                            patientInfo.patientId
+                          )}
                         </p>
                         <h2 className="font-black text-3xl md:text-4xl uppercase text-slate-800  tracking-tight m-0 mt-1">
-                          {loading ? <Skeleton className="h-10 w-48" /> : patientInfo.patientName}
+                          {loading ? (
+                            <Skeleton className="h-10 w-48" />
+                          ) : (
+                            patientInfo.patientName
+                          )}
                         </h2>
                       </div>
                     </div>
@@ -249,10 +287,15 @@ const PatientDetails = ({ patientId, isNested }) => {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
                       <div className="flex items-center gap-3 bg-slate-50/50  rounded-xl p-3 border border-slate-100 ">
                         <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0">
-                          <Icon icon="tabler:info-circle" className="text-xl text-blue-600 " />
+                          <Icon
+                            icon="tabler:info-circle"
+                            className="text-xl text-blue-600 "
+                          />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-[10px] font-black text-slate-400  uppercase tracking-widest m-0">Info</p>
+                          <p className="text-[10px] font-black text-slate-400  uppercase tracking-widest m-0">
+                            Info
+                          </p>
                           <div className="font-black text-slate-800  m-0 truncate">
                             {loading ? (
                               <Skeleton className="h-4 w-20" />
@@ -265,10 +308,15 @@ const PatientDetails = ({ patientId, isNested }) => {
 
                       <div className="flex items-center gap-3 bg-slate-50/50  rounded-xl p-3 border border-slate-100 ">
                         <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
-                          <Icon icon="tabler:calendar" className="text-xl text-emerald-600 " />
+                          <Icon
+                            icon="tabler:calendar"
+                            className="text-xl text-emerald-600 "
+                          />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-[10px] font-black text-slate-400  uppercase tracking-widest m-0">DOB</p>
+                          <p className="text-[10px] font-black text-slate-400  uppercase tracking-widest m-0">
+                            DOB
+                          </p>
                           <div className="font-black text-slate-800  m-0 truncate">
                             {loading ? (
                               <Skeleton className="h-4 w-24" />
@@ -282,10 +330,15 @@ const PatientDetails = ({ patientId, isNested }) => {
                       {(loading || patientInfo.patientPhone) && (
                         <div className="flex items-center gap-3 bg-slate-50/50  rounded-xl p-3 border border-slate-100 ">
                           <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center flex-shrink-0">
-                            <Icon icon="tabler:phone" className="text-xl text-purple-600 " />
+                            <Icon
+                              icon="tabler:phone"
+                              className="text-xl text-purple-600 "
+                            />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-[10px] font-black text-slate-400  uppercase tracking-widest m-0">Phone</p>
+                            <p className="text-[10px] font-black text-slate-400  uppercase tracking-widest m-0">
+                              Phone
+                            </p>
                             <div className="font-black text-slate-800  m-0 truncate">
                               {loading ? (
                                 <Skeleton className="h-4 w-32" />
@@ -300,10 +353,15 @@ const PatientDetails = ({ patientId, isNested }) => {
                       {(loading || patientInfo.patientEmail) && (
                         <div className="flex items-center gap-3 bg-slate-50/50  rounded-xl p-3 border border-slate-100 ">
                           <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center flex-shrink-0">
-                            <Icon icon="tabler:mail" className="text-xl text-amber-600 " />
+                            <Icon
+                              icon="tabler:mail"
+                              className="text-xl text-amber-600 "
+                            />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-[10px] font-black text-slate-400  uppercase tracking-widest m-0">Email</p>
+                            <p className="text-[10px] font-black text-slate-400  uppercase tracking-widest m-0">
+                              Email
+                            </p>
                             <div className="font-black text-slate-800  m-0 truncate">
                               {loading ? (
                                 <Skeleton className="h-4 w-40" />
@@ -318,10 +376,15 @@ const PatientDetails = ({ patientId, isNested }) => {
                       {(loading || patientInfo.patientAddress) && (
                         <div className="flex items-center gap-3 bg-slate-50/50  rounded-xl p-3 border border-slate-100  md:col-span-2 lg:col-span-3">
                           <div className="w-10 h-10 rounded-lg bg-rose-500/10 flex items-center justify-center flex-shrink-0">
-                            <Icon icon="tabler:map-pin" className="text-xl text-rose-600 " />
+                            <Icon
+                              icon="tabler:map-pin"
+                              className="text-xl text-rose-600 "
+                            />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-[10px] font-black text-slate-400  uppercase tracking-widest m-0">Address</p>
+                            <p className="text-[10px] font-black text-slate-400  uppercase tracking-widest m-0">
+                              Address
+                            </p>
                             <div className="font-black text-slate-800  m-0 capitalize">
                               {loading ? (
                                 <Skeleton className="h-4 w-3/4" />
@@ -342,62 +405,101 @@ const PatientDetails = ({ patientId, isNested }) => {
             <div className="w-full xl:w-96 flex flex-col gap-4 justify-between">
               <button
                 onClick={() => {
-                  const targetKey = (usertype?.userType !== "accountant" &&
+                  const targetKey =
+                    usertype?.userType !== "accountant" &&
                     usertype?.userType !== "generalManager" &&
-                    usertype?.userType !== "receptionist") ? "12" : "10";
+                    usertype?.userType !== "receptionist"
+                      ? "12"
+                      : "10";
                   setActiveTab(targetKey);
-                  document.querySelector(".custom-tabs")?.scrollIntoView({ behavior: "smooth" });
+                  document
+                    .querySelector(".custom-tabs")
+                    ?.scrollIntoView({ behavior: "smooth" });
                 }}
                 className="flex-1 flex items-center justify-between p-5 bg-white hover:bg-slate-50 border border-slate-200 hover:border-blue-400 rounded-2xl shadow-sm hover:shadow-md transition-all group text-left cursor-pointer"
               >
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <Icon icon="solar:document-text-bold-duotone" className="text-2xl" />
+                    <Icon
+                      icon="solar:document-text-bold-duotone"
+                      className="text-2xl"
+                    />
                   </div>
                   <div>
-                    <h3 className="font-extrabold text-slate-800 text-sm tracking-tight m-0">Patient History & Assessment</h3>
-                    <p className="text-[11px] text-slate-400 font-medium m-0 mt-0.5">Clinical notes & doctor assessment</p>
+                    <h3 className="font-extrabold text-slate-800 text-sm tracking-tight m-0">
+                      Patient History & Assessment
+                    </h3>
+                    <p className="text-[11px] text-slate-400 font-medium m-0 mt-0.5">
+                      Clinical notes & doctor assessment
+                    </p>
                   </div>
                 </div>
-                <Icon icon="solar:alt-arrow-right-bold" className="text-slate-400 group-hover:text-blue-500 group-hover:translate-x-1 transition-all" />
+                <Icon
+                  icon="solar:alt-arrow-right-bold"
+                  className="text-slate-400 group-hover:text-blue-500 group-hover:translate-x-1 transition-all"
+                />
               </button>
 
               <button
                 onClick={() => {
                   setActiveTab("1");
-                  document.querySelector(".custom-tabs")?.scrollIntoView({ behavior: "smooth" });
+                  document
+                    .querySelector(".custom-tabs")
+                    ?.scrollIntoView({ behavior: "smooth" });
                 }}
                 className="flex-1 flex items-center justify-between p-5 bg-white hover:bg-slate-50 border border-slate-200 hover:border-emerald-400 rounded-2xl shadow-sm hover:shadow-md transition-all group text-left cursor-pointer"
               >
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <Icon icon="solar:user-id-bold-duotone" className="text-2xl" />
+                    <Icon
+                      icon="solar:user-id-bold-duotone"
+                      className="text-2xl"
+                    />
                   </div>
                   <div>
-                    <h3 className="font-extrabold text-slate-800 text-sm tracking-tight m-0">Patient Medical Data</h3>
-                    <p className="text-[11px] text-slate-400 font-medium m-0 mt-0.5">Personal details & demographics</p>
+                    <h3 className="font-extrabold text-slate-800 text-sm tracking-tight m-0">
+                      Patient Medical Data
+                    </h3>
+                    <p className="text-[11px] text-slate-400 font-medium m-0 mt-0.5">
+                      Personal details & demographics
+                    </p>
                   </div>
                 </div>
-                <Icon icon="solar:alt-arrow-right-bold" className="text-slate-400 group-hover:text-emerald-500 group-hover:translate-x-1 transition-all" />
+                <Icon
+                  icon="solar:alt-arrow-right-bold"
+                  className="text-slate-400 group-hover:text-emerald-500 group-hover:translate-x-1 transition-all"
+                />
               </button>
 
               <button
                 onClick={() => {
                   setActiveTab("4");
-                  document.querySelector(".custom-tabs")?.scrollIntoView({ behavior: "smooth" });
+                  document
+                    .querySelector(".custom-tabs")
+                    ?.scrollIntoView({ behavior: "smooth" });
                 }}
                 className="flex-1 flex items-center justify-between p-5 bg-white hover:bg-slate-50 border border-slate-200 hover:border-orange-400 rounded-2xl shadow-sm hover:shadow-md transition-all group text-left cursor-pointer"
               >
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-orange-500/10 text-orange-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <Icon icon="solar:heart-pulse-bold-duotone" className="text-2xl" />
+                    <Icon
+                      icon="solar:heart-pulse-bold-duotone"
+                      className="text-2xl"
+                    />
                   </div>
                   <div>
-                    <h3 className="font-extrabold text-slate-800 text-sm tracking-tight m-0">Current Treatment Data</h3>
-                    <p className="text-[11px] text-slate-400 font-medium m-0 mt-0.5">Active treatment tracking & progress</p>
+                    <h3 className="font-extrabold text-slate-800 text-sm tracking-tight m-0">
+                      Current Treatment Data
+                    </h3>
+                    <p className="text-[11px] text-slate-400 font-medium m-0 mt-0.5">
+                      Active treatment tracking & progress
+                    </p>
                   </div>
                 </div>
-                <Icon icon="solar:alt-arrow-right-bold" className="text-slate-400 group-hover:text-orange-500 group-hover:translate-x-1 transition-all" />
+                <Icon
+                  icon="solar:alt-arrow-right-bold"
+                  className="text-slate-400 group-hover:text-orange-500 group-hover:translate-x-1 transition-all"
+                />
               </button>
             </div>
           </div>
@@ -407,9 +509,25 @@ const PatientDetails = ({ patientId, isNested }) => {
         <StaggerItem>
           <div className="w-full flex flex-col gap-4">
             {usertype?.userType !== "accountant" &&
-              usertype?.userType !== "generalManager" && (
+              usertype?.userType !== "generalManager" &&
+              usertype?.userType !== "receptionist" && (
                 <CollapseSection
                   id="1"
+                  title="Assessment"
+                  description="Specialist diagnosis and evaluation sheets"
+                  icon="solar:document-text-bold-duotone"
+                  colorInfo={tabColors[12]}
+                  activeTab={activeTab}
+                  setActiveTab={setActiveTab}
+                >
+                  <PhysicianAssessmentSheet patientId={patient_id} />
+                </CollapseSection>
+              )}
+
+            {usertype?.userType !== "accountant" &&
+              usertype?.userType !== "generalManager" && (
+                <CollapseSection
+                  id="2"
                   title="Patient Medical Data"
                   description="Personal details and demographic records"
                   icon="solar:user-id-bold-duotone"
@@ -425,7 +543,7 @@ const PatientDetails = ({ patientId, isNested }) => {
               )}
 
             <CollapseSection
-              id="13"
+              id="3"
               title="Attender Details"
               description="Emergency contact and caregiver info"
               icon="solar:users-group-two-rounded-bold-duotone"
@@ -436,33 +554,59 @@ const PatientDetails = ({ patientId, isNested }) => {
               <div className="max-w-2xl mx-auto py-4">
                 <div className="flex items-center gap-3 mb-8">
                   <div className="p-3 bg-teal-500/10 text-teal-600 rounded-2xl">
-                    <Icon icon="solar:users-group-two-rounded-bold-duotone" width={28} />
+                    <Icon
+                      icon="solar:users-group-two-rounded-bold-duotone"
+                      width={28}
+                    />
                   </div>
                   <div>
-                    <h3 className="text-xl font-black text-slate-800 m-0">Patient Attender Details</h3>
-                    <p className="text-xs text-slate-400 font-semibold m-0 mt-0.5">Primary caregiver and emergency contact information</p>
+                    <h3 className="text-xl font-black text-slate-800 m-0">
+                      Patient Attender Details
+                    </h3>
+                    <p className="text-xs text-slate-400 font-semibold m-0 mt-0.5">
+                      Primary caregiver and emergency contact information
+                    </p>
                   </div>
                 </div>
 
                 <div className="bg-slate-50/50 border border-slate-100 rounded-3xl p-6 md:p-8 space-y-6">
                   <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                     <div className="flex items-center gap-3">
-                      <Icon icon="solar:user-bold" className="text-slate-400 text-lg" />
-                      <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">Attender Name</span>
+                      <Icon
+                        icon="solar:user-bold"
+                        className="text-slate-400 text-lg"
+                      />
+                      <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">
+                        Attender Name
+                      </span>
                     </div>
-                    <span className="text-base font-black text-slate-800">{patientInfo?.guardianName || "—"}</span>
+                    <span className="text-base font-black text-slate-800">
+                      {patientInfo?.guardianName || "—"}
+                    </span>
                   </div>
 
                   <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                     <div className="flex items-center gap-3">
-                      <Icon icon="solar:phone-bold" className="text-slate-400 text-lg" />
-                      <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">Phone Number</span>
+                      <Icon
+                        icon="solar:phone-bold"
+                        className="text-slate-400 text-lg"
+                      />
+                      <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">
+                        Phone Number
+                      </span>
                     </div>
                     {patientInfo?.attenderPhone ? (
                       <div className="flex items-center gap-3">
-                        <span className="text-base font-black text-slate-800">{patientInfo.attenderPhone}</span>
+                        <span className="text-base font-black text-slate-800">
+                          {patientInfo.attenderPhone}
+                        </span>
                         <button
-                          onClick={() => window.open(`https://wa.me/${patientInfo.attenderPhone}`, "_blank")}
+                          onClick={() =>
+                            window.open(
+                              `https://wa.me/${patientInfo.attenderPhone}`,
+                              "_blank",
+                            )
+                          }
                           className="w-8 h-8 rounded-xl bg-emerald-50 border border-emerald-100 hover:bg-emerald-600 hover:text-white text-emerald-600 flex items-center justify-center transition-all active:scale-95"
                           title="Chat on WhatsApp"
                         >
@@ -470,16 +614,25 @@ const PatientDetails = ({ patientId, isNested }) => {
                         </button>
                       </div>
                     ) : (
-                      <span className="text-base font-black text-slate-800">—</span>
+                      <span className="text-base font-black text-slate-800">
+                        —
+                      </span>
                     )}
                   </div>
 
                   <div className="flex items-center justify-between pt-2">
                     <div className="flex items-center gap-3">
-                      <Icon icon="solar:heart-bold" className="text-slate-400 text-lg" />
-                      <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">Relationship</span>
+                      <Icon
+                        icon="solar:heart-bold"
+                        className="text-slate-400 text-lg"
+                      />
+                      <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">
+                        Relationship
+                      </span>
                     </div>
-                    <span className="text-base font-black text-slate-800 capitalize">{patientInfo?.attenderRelationship || "—"}</span>
+                    <span className="text-base font-black text-slate-800 capitalize">
+                      {patientInfo?.attenderRelationship || "—"}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -487,7 +640,7 @@ const PatientDetails = ({ patientId, isNested }) => {
 
             {usertype?.userType !== "generalManager" && (
               <CollapseSection
-                id="2"
+                id="4"
                 title="Lab Reports"
                 description="Laboratory results and reports"
                 icon="solar:document-bold-duotone"
@@ -500,7 +653,7 @@ const PatientDetails = ({ patientId, isNested }) => {
             )}
 
             <CollapseSection
-              id="4"
+              id="5"
               title="Treatment Data"
               description="Active treatment tracker logs"
               icon="solar:heart-pulse-bold-duotone"
@@ -512,7 +665,7 @@ const PatientDetails = ({ patientId, isNested }) => {
             </CollapseSection>
 
             <CollapseSection
-              id="11"
+              id="6"
               title="Prescription"
               description="Prescribed medications and dosages"
               icon="solar:pill-bold-duotone"
@@ -524,7 +677,7 @@ const PatientDetails = ({ patientId, isNested }) => {
             </CollapseSection>
 
             <CollapseSection
-              id="3"
+              id="7"
               title="Billing"
               description="Invoices, billing, and payment records"
               icon="solar:bill-list-bold-duotone"
@@ -537,7 +690,7 @@ const PatientDetails = ({ patientId, isNested }) => {
 
             {usertype?.userType !== "generalManager" && (
               <CollapseSection
-                id="5"
+                id="8"
                 title="Session Notes"
                 description="Clinical visit notes and logs"
                 icon="solar:document-text-bold-duotone"
@@ -551,7 +704,7 @@ const PatientDetails = ({ patientId, isNested }) => {
 
             {usertype?.userType !== "generalManager" && (
               <CollapseSection
-                id="8"
+                id="9"
                 title="Feedback"
                 description="Patient reviews and experience feedback"
                 icon="solar:chat-round-line-bold-duotone"
@@ -565,7 +718,7 @@ const PatientDetails = ({ patientId, isNested }) => {
 
             {usertype?.userType !== "generalManager" && (
               <CollapseSection
-                id="7"
+                id="10"
                 title="Consent Form"
                 description="Signed consent and waiver forms"
                 icon="solar:file-text-bold-duotone"
@@ -578,7 +731,7 @@ const PatientDetails = ({ patientId, isNested }) => {
             )}
 
             <CollapseSection
-              id="10"
+              id="11"
               title="Summary"
               description="Patient summaries and AI insights"
               icon="solar:notebook-bold-duotone"
@@ -588,22 +741,6 @@ const PatientDetails = ({ patientId, isNested }) => {
             >
               <Summary patientId={patient_id} />
             </CollapseSection>
-
-            {usertype?.userType !== "accountant" &&
-              usertype?.userType !== "generalManager" &&
-              usertype?.userType !== "receptionist" && (
-                <CollapseSection
-                  id="12"
-                  title="Assessment"
-                  description="Specialist diagnosis and evaluation sheets"
-                  icon="solar:document-text-bold-duotone"
-                  colorInfo={tabColors[12]}
-                  activeTab={activeTab}
-                  setActiveTab={setActiveTab}
-                >
-                  <PhysicianAssessmentSheet patientId={patient_id} />
-                </CollapseSection>
-              )}
           </div>
         </StaggerItem>
       </div>
