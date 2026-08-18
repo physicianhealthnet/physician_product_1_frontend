@@ -51,9 +51,9 @@ const handleMockRequest = (config) => {
     };
   }
 
-  // 3. Appointments search
-  if (lowerUrl.includes("/appointments/search")) {
-    return { patients: mockPatientsList };
+  // 3. Appointments search & Patient search
+  if (lowerUrl.includes("/appointments/search") || lowerUrl.includes("/patient/search") || lowerUrl.includes("/patientregistration/list")) {
+    return { patients: mockPatientsList, status: 200, success: true };
   }
 
   // 4. Appointments list/get
@@ -551,10 +551,30 @@ const handleMockRequest = (config) => {
         notScheduled: 1,
         missing: 1,
         reportNotReady: 2,
-        notReviewed: 2
       }
     };
   }
+
+  if (lowerUrl.includes("/scan-prescription/get-all")) {
+    return {
+      data: mockPatientsList.slice(0, 10).map((p, i) => ({
+        _id: `scan-${p.patientId}-${i}`,
+        prescriptionId: `PR-${1000 + i}`,
+        ptrName: p.patientName,
+        ptNo: p.patientId,
+        scanType: i % 2 === 0 ? "Chest X-Ray PA View" : "MRI Lumbar Spine",
+        drName: "Dr. Murugan",
+        priority: i % 3 === 0 ? "High" : i % 3 === 1 ? "Medium" : "Low",
+        status: i % 2 === 0 ? "Not Scheduled" : "Completed",
+        createdAt: new Date().toISOString(),
+      })),
+    };
+  }
+
+  if (lowerUrl.includes("/scan-prescription/create")) {
+    return { status: 201, success: true, message: "Scan prescription created successfully" };
+  }
+
   if (lowerUrl.includes("/scan-prescription/by-status")) {
     return {
       data: mockPatientsList.slice(0, 10).map((p, i) => {

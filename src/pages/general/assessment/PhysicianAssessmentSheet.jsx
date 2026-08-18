@@ -180,6 +180,7 @@ export default function PhysicianAssessmentSheet({ patientId }) {
 
   /* ================= PATIENT INFO ================= */
   const [patientInfo, setPatientInfo] = useState({});
+  const [assessmentSlideStep, setAssessmentSlideStep] = useState(1);
   console.log(patientInfo, "data");
 
   const [scanDocs, setScanDocs] = useState([]);
@@ -1433,24 +1434,32 @@ export default function PhysicianAssessmentSheet({ patientId }) {
         {/* Navigation Buttons */}
         {sections.length > 1 && (
           <div className="flex justify-between items-center pt-4 border-t border-slate-100">
-            <Button
+            <button
               type="button"
               disabled={stepIndex === 0}
               onClick={() => setSpecialistStep(stepIndex - 1)}
-              className="flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold tracking-wider bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all border border-slate-200 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              className={`flex items-center gap-2 rounded-xl px-5 py-2.5 text-xs font-black tracking-wider transition-all border ${
+                stepIndex === 0
+                  ? "bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed opacity-60"
+                  : "bg-white hover:bg-slate-50 text-slate-700 border-slate-300 shadow-xs cursor-pointer"
+              }`}
             >
-              <Icon icon="solar:arrow-left-bold" />
+              <Icon icon="solar:arrow-left-bold" className="text-sm" />
               PREVIOUS
-            </Button>
-            <Button
+            </button>
+            <button
               type="button"
               disabled={stepIndex === sections.length - 1}
               onClick={() => setSpecialistStep(stepIndex + 1)}
-              className="flex items-center gap-2 rounded-xl px-5 py-2 text-xs font-bold tracking-wider bg-blue-600 hover:bg-blue-700 text-white transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+              className={`flex items-center gap-2 rounded-xl px-6 py-2.5 text-xs font-black tracking-wider text-white transition-all border-none ${
+                stepIndex === sections.length - 1
+                  ? "bg-blue-300 cursor-not-allowed opacity-60"
+                  : "bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-500/20 cursor-pointer"
+              }`}
             >
               NEXT
-              <Icon icon="solar:arrow-right-bold" />
-            </Button>
+              <Icon icon="solar:arrow-right-bold" className="text-sm" />
+            </button>
           </div>
         )}
       </div>
@@ -1516,11 +1525,80 @@ export default function PhysicianAssessmentSheet({ patientId }) {
           })}
         />
 
+        {/* GUIDED ASSESSMENT SLIDER WIZARD NAVBAR */}
+        <div className="bg-white border border-slate-200/80 rounded-3xl p-5 shadow-sm mb-6 flex flex-col gap-4">
+          <div className="flex items-center gap-3">
+            {[
+              {
+                id: 1,
+                title: "History & Primary Complaint",
+                subtitle: "Medical history, primary complaint, and vitals",
+                icon: "solar:notes-bold-duotone",
+              },
+              {
+                id: 2,
+                title: "Diagnosis & Treatment Plan",
+                subtitle: "Diagnosis, prescriptions, lab orders, and clinical notes",
+                icon: "solar:medical-kit-bold-duotone",
+              },
+            ].map((step) => {
+              const isActive = assessmentSlideStep === step.id;
+              const isCompleted = assessmentSlideStep > step.id;
+
+              return (
+                <button
+                  key={step.id}
+                  type="button"
+                  onClick={() => setAssessmentSlideStep(step.id)}
+                  className={`flex-1 py-3.5 px-5 rounded-2xl text-xs font-bold transition-all border flex items-center justify-between gap-3 cursor-pointer ${
+                    isActive
+                      ? "bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-500/20"
+                      : isCompleted
+                      ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
+                      : "bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100"
+                  }`}
+                >
+                  <div className="flex items-center gap-3 truncate">
+                    <span
+                      className={`w-7 h-7 rounded-full text-xs flex items-center justify-center font-black ${
+                        isActive
+                          ? "bg-white text-blue-600"
+                          : isCompleted
+                          ? "bg-emerald-600 text-white"
+                          : "bg-slate-200 text-slate-600"
+                      }`}
+                    >
+                      {step.id}
+                    </span>
+                    <div className="flex flex-col text-left truncate">
+                      <span className="truncate leading-tight text-sm font-extrabold">{step.title}</span>
+                      <span className={`text-[11px] truncate ${isActive ? "text-blue-100 font-normal" : "text-slate-400"}`}>
+                        {step.subtitle}
+                      </span>
+                    </div>
+                  </div>
+                  {isCompleted && (
+                    <Icon icon="tabler:check" className="text-lg shrink-0 text-emerald-600" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-blue-600 transition-all duration-500 rounded-full"
+              style={{ width: `${(assessmentSlideStep / 2) * 100}%` }}
+            />
+          </div>
+        </div>
+
         {/* TABS SECTIONS */}
         <Tabs
-          defaultActiveKey="1"
-          type="card"
-          className="mb-8 tabs-custom-styling"
+          renderTabBar={() => null}
+          activeKey={assessmentSlideStep.toString()}
+          onChange={(key) => setAssessmentSlideStep(Number(key))}
+          className="mb-8"
           items={[
             {
               key: "1",
@@ -1531,7 +1609,7 @@ export default function PhysicianAssessmentSheet({ patientId }) {
               ),
               children: (
                 <Collapse
-                  defaultActiveKey={["1"]}
+                  defaultActiveKey={["1", "2", "3", "4", "5", "6", "specialist-assessment"]}
                   className="bg-white shadow-sm border border-slate-200 rounded-xl overflow-hidden"
                   expandIconPlacement="end"
                   size="large"
@@ -3210,25 +3288,51 @@ export default function PhysicianAssessmentSheet({ patientId }) {
           ]}
         />
 
-        {!isReadOnlyView && (
-          <div className="flex justify-end gap-4 mt-8 pt-4 border-t border-slate-200 ">
-            {updateId ? (
-              <Button
-                onClick={updateAssessment}
-                className="w-40 bg-green-600 hover:bg-green-700 text-white shadow-md"
+        <div className="flex items-center justify-between gap-4 mt-8 pt-4 border-t border-slate-200">
+          <div>
+            {assessmentSlideStep > 1 && (
+              <button
+                type="button"
+                onClick={() => setAssessmentSlideStep((prev) => prev - 1)}
+                className="px-5 py-2.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold text-xs rounded-xl flex items-center gap-2 cursor-pointer transition-all"
               >
-                Update Profile
-              </Button>
-            ) : (
-              <Button
-                onClick={submitAssessment}
-                className="w-40 bg-blue-600 hover:bg-blue-700 text-white shadow-md"
-              >
-                Complete Profile
-              </Button>
+                <Icon icon="tabler:arrow-left" className="text-base" />
+                <span>Previous Section</span>
+              </button>
             )}
           </div>
-        )}
+
+          <div className="flex items-center gap-3">
+            {assessmentSlideStep === 1 ? (
+              <button
+                type="button"
+                onClick={() => setAssessmentSlideStep(2)}
+                className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md shadow-blue-500/20 flex items-center gap-2 cursor-pointer transition-all border-none"
+              >
+                <span>Next Section: Diagnosis & Treatment Plan</span>
+                <Icon icon="tabler:arrow-right" className="text-base" />
+              </button>
+            ) : (
+              !isReadOnlyView && (
+                updateId ? (
+                  <Button
+                    onClick={updateAssessment}
+                    className="w-44 bg-green-600 hover:bg-green-700 text-white shadow-md font-bold h-10 rounded-xl"
+                  >
+                    Update Profile
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={submitAssessment}
+                    className="w-44 bg-blue-600 hover:bg-blue-700 text-white shadow-md font-bold h-10 rounded-xl"
+                  >
+                    Complete Profile
+                  </Button>
+                )
+              )
+            )}
+          </div>
+        </div>
       </Card>
 
       <Modal

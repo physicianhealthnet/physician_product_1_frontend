@@ -212,18 +212,18 @@ function ExpenditureShow() {
 
               {/* Data Table */}
               <StaggerItem>
-                <div className="rounded-xl border border-slate-200  overflow-hidden shadow-sm bg-white ">
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                      <thead>
-                        <tr className="bg-slate-50  border-b border-slate-200 ">
-                          <th className="p-4 text-xs font-bold text-slate-500  uppercase tracking-wider">Invoice</th>
-                          <th className="p-4 text-xs font-bold text-slate-500  uppercase tracking-wider">Date</th>
-                          <th className="p-4 text-xs font-bold text-slate-500  uppercase tracking-wider">Supplier</th>
-                          <th className="p-4 text-xs font-bold text-slate-500  uppercase tracking-wider text-right">Total</th>
-                          <th className="p-4 text-xs font-bold text-slate-500  uppercase tracking-wider text-right">Net Amount</th>
-                          <th className="p-4 text-xs font-bold text-slate-500  uppercase tracking-wider text-center">Status</th>
-                          <th className="p-4 text-xs font-bold text-slate-500  uppercase tracking-wider text-center">Actions</th>
+                <div className="rounded-2xl border border-slate-200 overflow-hidden shadow-sm bg-white">
+                  <div className="overflow-x-auto max-h-[500px] overflow-y-auto custom-scrollbar">
+                    <table className="w-full text-left border-collapse relative">
+                      <thead className="sticky top-0 z-10 bg-slate-50 shadow-xs border-b border-slate-200">
+                        <tr>
+                          <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Invoice</th>
+                          <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Date</th>
+                          <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Supplier</th>
+                          <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Total</th>
+                          <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Net Amount</th>
+                          <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Status</th>
+                          <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Actions</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100 ">

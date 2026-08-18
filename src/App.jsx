@@ -12,6 +12,7 @@ import { PageSkeleton } from "./component/ui/Skeleton";
 import DashboardWrapper from "./component/DashboardWrapper";
 import PageTransition from "./component/ui/PageTransition";
 import Revenue from "./component/analitics/Revenue";
+import BookAppointment from "./pages/general/appointments/BookAppointment";
 
 // Lazy Load Pages
 const Home = lazy(() => import("./pages/receptionist/home/Home"));
@@ -77,13 +78,18 @@ const AppointmentForTheLab = lazy(
   () => import("./component/lab/AppointmentForTheLab"),
 );
 const XRayUpload = lazy(() => import("./component/scan/XRayUpload"));
-const VideoConsult = lazy(() => import("./pages/general/videoConsult/VideoConsult"));
-const Identicards = lazy(() => import("./pages/general/identicard/Identicards"));
+const VideoConsult = lazy(
+  () => import("./pages/general/videoConsult/VideoConsult"),
+);
+const Identicards = lazy(
+  () => import("./pages/general/identicard/Identicards"),
+);
 
 // Protected Route Component to enforce authentication
 const ProtectedRoute = ({ children }) => {
   const location = useLocation();
-  const isLoggedIn = sessionStorage.getItem("user") || sessionStorage.getItem("master");
+  const isLoggedIn =
+    sessionStorage.getItem("user") || sessionStorage.getItem("master");
 
   if (!isLoggedIn) {
     sessionStorage.setItem("redirectUrl", location.pathname + location.search);
@@ -404,11 +410,19 @@ const AppContent = () => {
               </PageTransition>
             }
           />
-                    <Route
+          <Route
             path="/revenue"
             element={
               <PageTransition>
                 <Revenue />
+              </PageTransition>
+            }
+          />
+          <Route
+            path="/appointment-booking"
+            element={
+              <PageTransition>
+                <BookAppointment />
               </PageTransition>
             }
           />
