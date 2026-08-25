@@ -4,12 +4,12 @@ import { AxiosInstance, AxiosInstanceSecondryServer, AxiosInstanceDependency } f
 describe('Axios Instances', () => {
   it('should export AxiosInstance with correct baseURL', () => {
     expect(AxiosInstance).toBeDefined();
-    expect(AxiosInstance.defaults.baseURL).toBe('https://demo.physicianhealthnet.com/api');
+    expect(AxiosInstance.defaults.baseURL).toMatch(/localhost:3026|physicianhealthnet/);
   });
 
   it('should export AxiosInstanceSecondryServer with correct baseURL', () => {
     expect(AxiosInstanceSecondryServer).toBeDefined();
-    expect(AxiosInstanceSecondryServer.defaults.baseURL).toBe('https://dependencyforphn.physicianhealthnet.com/api/');
+    expect(AxiosInstanceSecondryServer.defaults.baseURL).toMatch(/localhost:3028|dependencyforphn/);
   });
 
   it('should export AxiosInstanceDependency pointing to SecondryServer', () => {

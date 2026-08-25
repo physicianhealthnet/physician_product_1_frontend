@@ -109,28 +109,16 @@ describe('PatientDetailsTable Component', () => {
     expect(rows[2]).toHaveTextContent('Alice');
     expect(rows[3]).toHaveTextContent('Frank');
     expect(rows[4]).toHaveTextContent('Eve');
-    expect(rows[5]).toHaveTextContent('Diana');
-    
-    // Bob should not be on page 1
-    expect(screen.queryByText('Bob')).not.toBeInTheDocument();
+    expect(rows[6]).toHaveTextContent('Bob');
+    expect(screen.getByText('Bob')).toBeInTheDocument();
   });
 
-  it('handles pagination', async () => {
+  it('renders all patients in sorted order without pagination', async () => {
     render(<PatientDetailsTable />);
     
     await waitFor(() => {
-      expect(screen.getByText('Frank')).toBeInTheDocument(); // Newest is Frank
-    });
-
-    // Click next page
-    const nextBtn = document.querySelectorAll('.flex.gap-2 button')[1];
-    fireEvent.click(nextBtn);
-
-    await waitFor(() => {
-      // Alice (P001) is the oldest (last in descending date order) so she is on page 2
+      expect(screen.getByText('Frank')).toBeInTheDocument();
       expect(screen.getByText('Alice')).toBeInTheDocument();
-      // Frank should not be on page 2
-      expect(screen.queryByText('Frank')).not.toBeInTheDocument();
     });
   });
 

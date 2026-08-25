@@ -136,7 +136,7 @@ function SessionNotes({ session, outerswaper, patientId }) {
             className="flex items-center gap-2"
           >
             <Icon
-              icon={swaper ? "solar:close-circle-bold" : "solar:add-circle-bold"}
+              icon={swaper ? "solar:close-circle-linear" : "solar:add-circle-linear"}
               width="20"
               height="20"
             />
@@ -152,7 +152,7 @@ function SessionNotes({ session, outerswaper, patientId }) {
             <Card key={index} className="!p-4">
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2 mb-2">
-                  <Icon icon="solar:calendar-date-bold" className="text-blue-500" />
+                  <Icon icon="solar:calendar-date-linear" className="text-blue-500" />
                   <span className="font-semibold text-slate-700 ">
                     {formatDateToDDMMYYYY(data.sessionDate)}
                   </span>
@@ -168,7 +168,7 @@ function SessionNotes({ session, outerswaper, patientId }) {
         allNotes.length < 1 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center border-2 border-dashed border-slate-200  rounded-2xl bg-slate-50/50 ">
             <div className="bg-white  p-4 rounded-full shadow-sm mb-3">
-              <Icon icon="solar:notebook-bold-duotone" className="text-slate-300 " width={48} />
+              <Icon icon="solar:notebook-linear" className="text-slate-300 " width={48} />
             </div>
             <h3 className="text-lg font-semibold text-slate-900 ">No Notes Found</h3>
             <p className="text-slate-500  max-w-xs mx-auto text-sm mt-1">
@@ -218,7 +218,7 @@ function SessionNotes({ session, outerswaper, patientId }) {
                       <div className="flex items-start justify-between border-b border-slate-100  pb-3">
                         <div className="flex items-center gap-2">
                           <div className="p-2 bg-blue-50  rounded-lg text-blue-600 ">
-                            <Icon icon="solar:calendar-date-bold-duotone" width={20} />
+                            <Icon icon="solar:calendar-date-linear" width={20} />
                           </div>
                           <span className="font-bold text-lg text-slate-800 ">
                             {formatDateToDDMMYYYY(data.sessionDate)}
@@ -234,7 +234,7 @@ function SessionNotes({ session, outerswaper, patientId }) {
                             className="!p-2"
                             title="Edit"
                           >
-                            <Icon icon="solar:pen-bold" width={18} />
+                            <Icon icon="solar:pen-linear" width={18} />
                           </Button>
                           <Button
                             variant="danger-ghost"
@@ -242,7 +242,7 @@ function SessionNotes({ session, outerswaper, patientId }) {
                             className="!p-2"
                             title="Delete"
                           >
-                            <Icon icon="solar:trash-bin-trash-bold" width={18} />
+                            <Icon icon="solar:trash-bin-trash-linear" width={18} />
                           </Button>
                         </div>
                       </div>

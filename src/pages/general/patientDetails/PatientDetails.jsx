@@ -61,7 +61,7 @@ const CollapseSection = ({
           </div>
         </div>
         <Icon
-          icon="solar:alt-arrow-right-bold"
+          icon="solar:alt-arrow-right-linear"
           className={`text-slate-400 group-hover:text-blue-500 transition-all text-lg ${isActive ? "rotate-90 text-blue-500" : ""}`}
         />
       </div>
@@ -421,7 +421,7 @@ const PatientDetails = ({ patientId, isNested }) => {
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
                     <Icon
-                      icon="solar:document-text-bold-duotone"
+                      icon="solar:document-text-linear"
                       className="text-2xl"
                     />
                   </div>
@@ -435,7 +435,7 @@ const PatientDetails = ({ patientId, isNested }) => {
                   </div>
                 </div>
                 <Icon
-                  icon="solar:alt-arrow-right-bold"
+                  icon="solar:alt-arrow-right-linear"
                   className="text-slate-400 group-hover:text-blue-500 group-hover:translate-x-1 transition-all"
                 />
               </button>
@@ -452,7 +452,7 @@ const PatientDetails = ({ patientId, isNested }) => {
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center group-hover:scale-110 transition-transform">
                     <Icon
-                      icon="solar:user-id-bold-duotone"
+                      icon="solar:user-id-linear"
                       className="text-2xl"
                     />
                   </div>
@@ -466,7 +466,7 @@ const PatientDetails = ({ patientId, isNested }) => {
                   </div>
                 </div>
                 <Icon
-                  icon="solar:alt-arrow-right-bold"
+                  icon="solar:alt-arrow-right-linear"
                   className="text-slate-400 group-hover:text-emerald-500 group-hover:translate-x-1 transition-all"
                 />
               </button>
@@ -483,7 +483,7 @@ const PatientDetails = ({ patientId, isNested }) => {
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-orange-500/10 text-orange-600 flex items-center justify-center group-hover:scale-110 transition-transform">
                     <Icon
-                      icon="solar:heart-pulse-bold-duotone"
+                      icon="solar:heart-pulse-linear"
                       className="text-2xl"
                     />
                   </div>
@@ -497,7 +497,7 @@ const PatientDetails = ({ patientId, isNested }) => {
                   </div>
                 </div>
                 <Icon
-                  icon="solar:alt-arrow-right-bold"
+                  icon="solar:alt-arrow-right-linear"
                   className="text-slate-400 group-hover:text-orange-500 group-hover:translate-x-1 transition-all"
                 />
               </button>
@@ -515,7 +515,7 @@ const PatientDetails = ({ patientId, isNested }) => {
                   id="1"
                   title="Assessment"
                   description="Specialist diagnosis and evaluation sheets"
-                  icon="solar:document-text-bold-duotone"
+                  icon="solar:document-text-linear"
                   colorInfo={tabColors[12]}
                   activeTab={activeTab}
                   setActiveTab={setActiveTab}
@@ -530,7 +530,7 @@ const PatientDetails = ({ patientId, isNested }) => {
                   id="2"
                   title="Patient Medical Data"
                   description="Personal details and demographic records"
-                  icon="solar:user-id-bold-duotone"
+                  icon="solar:user-id-linear"
                   colorInfo={tabColors[1]}
                   activeTab={activeTab}
                   setActiveTab={setActiveTab}
@@ -546,7 +546,7 @@ const PatientDetails = ({ patientId, isNested }) => {
               id="3"
               title="Attender Details"
               description="Emergency contact and caregiver info"
-              icon="solar:users-group-two-rounded-bold-duotone"
+              icon="solar:users-group-two-rounded-linear"
               colorInfo={tabColors[13]}
               activeTab={activeTab}
               setActiveTab={setActiveTab}
@@ -555,7 +555,7 @@ const PatientDetails = ({ patientId, isNested }) => {
                 <div className="flex items-center gap-3 mb-8">
                   <div className="p-3 bg-teal-500/10 text-teal-600 rounded-2xl">
                     <Icon
-                      icon="solar:users-group-two-rounded-bold-duotone"
+                      icon="solar:users-group-two-rounded-linear"
                       width={28}
                     />
                   </div>
@@ -573,7 +573,7 @@ const PatientDetails = ({ patientId, isNested }) => {
                   <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                     <div className="flex items-center gap-3">
                       <Icon
-                        icon="solar:user-bold"
+                        icon="solar:user-linear"
                         className="text-slate-400 text-lg"
                       />
                       <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">
@@ -588,7 +588,7 @@ const PatientDetails = ({ patientId, isNested }) => {
                   <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                     <div className="flex items-center gap-3">
                       <Icon
-                        icon="solar:phone-bold"
+                        icon="solar:phone-linear"
                         className="text-slate-400 text-lg"
                       />
                       <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">
@@ -623,7 +623,7 @@ const PatientDetails = ({ patientId, isNested }) => {
                   <div className="flex items-center justify-between pt-2">
                     <div className="flex items-center gap-3">
                       <Icon
-                        icon="solar:heart-bold"
+                        icon="solar:heart-linear"
                         className="text-slate-400 text-lg"
                       />
                       <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">
@@ -643,7 +643,7 @@ const PatientDetails = ({ patientId, isNested }) => {
                 id="4"
                 title="Lab Reports"
                 description="Laboratory results and reports"
-                icon="solar:document-bold-duotone"
+                icon="solar:document-linear"
                 colorInfo={tabColors[2]}
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
@@ -656,7 +656,7 @@ const PatientDetails = ({ patientId, isNested }) => {
               id="5"
               title="Treatment Data"
               description="Active treatment tracker logs"
-              icon="solar:heart-pulse-bold-duotone"
+              icon="solar:heart-pulse-linear"
               colorInfo={tabColors[4]}
               activeTab={activeTab}
               setActiveTab={setActiveTab}
@@ -668,7 +668,7 @@ const PatientDetails = ({ patientId, isNested }) => {
               id="6"
               title="Prescription"
               description="Prescribed medications and dosages"
-              icon="solar:pill-bold-duotone"
+              icon="solar:pill-linear"
               colorInfo={tabColors[11]}
               activeTab={activeTab}
               setActiveTab={setActiveTab}
@@ -680,7 +680,7 @@ const PatientDetails = ({ patientId, isNested }) => {
               id="7"
               title="Billing"
               description="Invoices, billing, and payment records"
-              icon="solar:bill-list-bold-duotone"
+              icon="solar:bill-list-linear"
               colorInfo={tabColors[3]}
               activeTab={activeTab}
               setActiveTab={setActiveTab}
@@ -693,7 +693,7 @@ const PatientDetails = ({ patientId, isNested }) => {
                 id="8"
                 title="Session Notes"
                 description="Clinical visit notes and logs"
-                icon="solar:document-text-bold-duotone"
+                icon="solar:document-text-linear"
                 colorInfo={tabColors[5]}
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
@@ -707,7 +707,7 @@ const PatientDetails = ({ patientId, isNested }) => {
                 id="9"
                 title="Feedback"
                 description="Patient reviews and experience feedback"
-                icon="solar:chat-round-line-bold-duotone"
+                icon="solar:chat-round-line-linear"
                 colorInfo={tabColors[8]}
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
@@ -721,7 +721,7 @@ const PatientDetails = ({ patientId, isNested }) => {
                 id="10"
                 title="Consent Form"
                 description="Signed consent and waiver forms"
-                icon="solar:file-text-bold-duotone"
+                icon="solar:file-text-linear"
                 colorInfo={tabColors[7]}
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
@@ -734,7 +734,7 @@ const PatientDetails = ({ patientId, isNested }) => {
               id="11"
               title="Summary"
               description="Patient summaries and AI insights"
-              icon="solar:notebook-bold-duotone"
+              icon="solar:notebook-linear"
               colorInfo={tabColors[10]}
               activeTab={activeTab}
               setActiveTab={setActiveTab}

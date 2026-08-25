@@ -50,7 +50,7 @@ describe('Login Component', () => {
     render(<Login />);
     expect(screen.getByTestId('auth-hero')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('name@company.com')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('••••••••')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Enter your password')).toBeInTheDocument();
   });
 
   it('switches to register tab', () => {
@@ -72,7 +72,7 @@ describe('Login Component', () => {
     
     const emailInput = screen.getByPlaceholderText('name@company.com');
     fireEvent.change(emailInput, { target: { value: 'test@test.com' } });
-    fireEvent.change(screen.getByPlaceholderText('••••••••'), { target: { value: 'password123' } });
+    fireEvent.change(screen.getByPlaceholderText('Enter your password'), { target: { value: 'password123' } });
     
     const form = emailInput.closest('form');
     fireEvent.submit(form);
@@ -102,7 +102,7 @@ describe('Login Component', () => {
     
     const emailInput = screen.getByPlaceholderText('name@company.com');
     fireEvent.change(emailInput, { target: { value: 'doc@test.com' } });
-    fireEvent.change(screen.getByPlaceholderText('••••••••'), { target: { value: 'password123' } });
+    fireEvent.change(screen.getByPlaceholderText('Enter your password'), { target: { value: 'password123' } });
     
     const roleSelect = screen.getByDisplayValue('Master Admin');
     fireEvent.change(roleSelect, { target: { value: 'doctor' } });
@@ -129,7 +129,7 @@ describe('Login Component', () => {
     
     const emailInput = screen.getByPlaceholderText('name@company.com');
     fireEvent.change(emailInput, { target: { value: 'wrong@test.com' } });
-    fireEvent.change(screen.getByPlaceholderText('••••••••'), { target: { value: 'wrongpass' } });
+    fireEvent.change(screen.getByPlaceholderText('Enter your password'), { target: { value: 'wrongpass' } });
     
     const form = emailInput.closest('form');
     fireEvent.submit(form);

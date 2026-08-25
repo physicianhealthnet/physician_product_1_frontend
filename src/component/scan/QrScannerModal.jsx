@@ -52,7 +52,7 @@ const QrScannerModal = ({ isOpen, onClose, onScan }) => {
         <div className="flex justify-between items-center p-6 border-b border-slate-100 bg-slate-50/50">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
-              <Icon icon="solar:scanner-bold-duotone" className="text-2xl" />
+              <Icon icon="solar:scanner-linear" className="text-2xl" />
             </div>
             <div>
               <h2 className="text-lg font-black text-slate-800">Scan QR Code</h2>
@@ -63,7 +63,7 @@ const QrScannerModal = ({ isOpen, onClose, onScan }) => {
             onClick={onClose}
             className="w-8 h-8 flex items-center justify-center hover:bg-slate-200 rounded-full transition-colors text-slate-500"
           >
-            <Icon icon="solar:close-circle-bold" className="text-2xl" />
+            <Icon icon="solar:close-circle-linear" className="text-2xl" />
           </button>
         </div>
 

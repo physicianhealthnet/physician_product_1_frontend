@@ -35,7 +35,12 @@ describe('PatientClinicalDataModal Component', () => {
       }
     ];
 
-    AxiosInstance.get.mockResolvedValueOnce({ data: { data: mockLabData } });
+    AxiosInstance.get.mockImplementation((url) => {
+      if (url.includes('/lab-prescription/by-patient/')) {
+        return Promise.resolve({ data: { data: mockLabData } });
+      }
+      return Promise.resolve({ data: [] });
+    });
 
     render(
       <PatientClinicalDataModal 
@@ -75,7 +80,12 @@ describe('PatientClinicalDataModal Component', () => {
       }
     ];
 
-    AxiosInstance.get.mockResolvedValueOnce({ data: { data: mockRxData } });
+    AxiosInstance.get.mockImplementation((url) => {
+      if (url.includes('/prescription/patient/')) {
+        return Promise.resolve({ data: { data: mockRxData } });
+      }
+      return Promise.resolve({ data: [] });
+    });
 
     render(
       <PatientClinicalDataModal 
@@ -93,14 +103,14 @@ describe('PatientClinicalDataModal Component', () => {
       expect(screen.getByText('Fever')).toBeInTheDocument();
       expect(screen.getByText('Paracetamol')).toBeInTheDocument();
       expect(screen.getByText('500mg • 3 Days')).toBeInTheDocument();
-      expect(screen.getByText('Pending')).toBeInTheDocument();
+      expect(screen.getAllByText('Pending')[0]).toBeInTheDocument();
     });
     
     expect(screen.getByText('Prescription History')).toBeInTheDocument();
   });
 
   it('handles empty data', async () => {
-    AxiosInstance.get.mockResolvedValueOnce({ data: [] });
+    AxiosInstance.get.mockImplementation(() => Promise.resolve({ data: [] }));
 
     render(
       <PatientClinicalDataModal 
@@ -119,7 +129,7 @@ describe('PatientClinicalDataModal Component', () => {
   });
 
   it('handles API error', async () => {
-    AxiosInstance.get.mockRejectedValueOnce(new Error('API failed'));
+    AxiosInstance.get.mockImplementation(() => Promise.reject(new Error('API failed')));
     
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 

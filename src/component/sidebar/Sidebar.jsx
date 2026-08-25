@@ -10,45 +10,62 @@ import Button from "../ui/Button";
 
 // Map menu text to icons
 const ICONS = {
-  Dashboard: "solar:widget-5-bold-duotone",
-  "Patient Information": "solar:users-group-two-rounded-bold-duotone",
-  "Today Patients": "solar:user-id-bold-duotone",
-  "Patient Registration": "solar:user-check-rounded-bold-duotone",
-  Billing: "solar:bill-list-bold-duotone",
-  "IN Appointments": "solar:calendar-bold-duotone",
-  Inventory: "solar:bedside-table-4-bold-duotone",
-  "Doctor & Staff's": "solar:stethoscope-bold-duotone",
-  Expenditure: "solar:ticket-sale-bold-duotone",
-  Supplier: "solar:dumbbells-bold-duotone",
-  Feedbacks: "solar:star-circle-bold-duotone",
-  "Upcomming Review's": "solar:chat-square-arrow-bold-duotone",
-  "Pharmacy & Prescription": "solar:checklist-line-duotone",
-  "Web Appointments": "material-symbols:event-upcoming",
-  "Patient Chat": "solar:chat-round-line-duotone",
-  "Pharmacy Management": "solar:pill-bold-duotone",
-  "Scan Center": "solar:scanner-bold-duotone",
-  "AI X-Ray Analysis": "solar:magic-stick-3-bold-duotone",
-  "Video Chat": "solar:videocamera-record-bold-duotone",
-  Administration: "solar:shield-keyhole-bold-duotone",
+  Dashboard: "solar:widget-5-linear",
+  Patient: "solar:user-rounded-linear",
+  "Patient Information": "solar:users-group-two-rounded-linear",
+  Information: "solar:users-group-two-rounded-linear",
+  "Today Patients": "solar:user-id-linear",
+  "Patient Registration": "solar:user-check-rounded-linear",
+  Registration: "solar:user-check-rounded-linear",
+  Billing: "solar:bill-list-linear",
+  Appointment: "solar:calendar-linear",
+  "IN Appointments": "solar:calendar-linear",
+  "Web Appointments": "solar:globus-linear",
+  "Upcoming Reviews": "solar:chat-square-arrow-linear",
+  "Upcomming Review's": "solar:chat-square-arrow-linear",
+  Consultation: "solar:chat-round-line-linear",
+  "Patient Chat": "solar:chat-round-line-linear",
+  "Video Consultation": "solar:videocamera-record-linear",
+  "Video Chat": "solar:videocamera-record-linear",
+  "Pharmacy & Prescription": "solar:pill-linear",
+  "Diagnostic Center": "solar:health-linear",
+  "Pharmacy Management": "solar:pill-linear",
+  "Scan Center": "solar:scanner-linear",
+  Laboratory: "solar:test-tube-linear",
+  "AI X-Ray Analysis": "solar:magic-stick-3-linear",
+  "Doctor & Staff": "solar:stethoscope-linear",
+  "Doctor & Staff's": "solar:stethoscope-linear",
+  Inventory: "solar:bedside-table-4-linear",
+  Supplier: "solar:shop-linear",
+  Expenditure: "solar:ticket-sale-linear",
+  "Inventory & Expenditures": "solar:box-minimalistic-linear",
+  Feedbacks: "solar:star-circle-linear",
+  Analytics: "solar:chart-2-linear",
+  Revenue: "solar:dollar-linear",
+  Administration: "solar:shield-keyhole-linear",
+  Identicards: "solar:card-2-linear",
+  "Web Chat": "solar:chat-round-line-linear",
+  "WhatsApp chat & call": "solar:phone-calling-rounded-linear",
 };
 
-const SidebarItem = ({ text, route, isOpen, hasSubMenu, isExpanded }) => {
+const SidebarItem = ({ text, route, isOpen, hasSubMenu, isExpanded, isActiveParent }) => {
   const location = useLocation();
   const isSelected = route ? location.pathname === route : false;
-  const ICON = ICONS[text] || "solar:widget-5-bold-duotone";
+  const isActuallySelected = isSelected || isActiveParent;
+  const ICON = ICONS[text] || "solar:widget-5-linear";
 
   return (
     <div
       className={`relative group flex items-center px-6 py-4 cursor-pointer transition-all duration-200 border-b border-[#f0f0f0]
-      ${isSelected || (hasSubMenu && isExpanded) ? "bg-primary-500" : "bg-white hover:bg-gray-50"}`}
+      ${isActuallySelected || (hasSubMenu && isExpanded) ? "bg-primary-500" : "bg-white hover:bg-gray-50"}`}
     >
       {/* Active Tab Blue Indicator */}
-      {(isSelected || (hasSubMenu && isExpanded)) && (
+      {(isActuallySelected || (hasSubMenu && isExpanded)) && (
         <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary-500" />
       )}
 
       <div
-        className={`flex items-center justify-center transition-colors duration-200 ${isSelected || (hasSubMenu && isExpanded) ? "text-white" : "text-[#666] group-hover:text-[#333]"}`}
+        className={`flex items-center justify-center transition-colors duration-200 ${isActuallySelected || (hasSubMenu && isExpanded) ? "text-white" : "text-[#666] group-hover:text-[#333]"}`}
       >
         <Icon icon={ICON} width={24} height={24} />
       </div>
@@ -57,14 +74,14 @@ const SidebarItem = ({ text, route, isOpen, hasSubMenu, isExpanded }) => {
         className={`overflow-hidden flex items-center justify-between transition-all duration-300 ease-in-out ${isOpen ? "w-auto opacity-100 ml-3 flex-1" : "w-0 opacity-0"}`}
       >
         <span
-          className={`text-[15px] whitespace-nowrap ${isSelected || (hasSubMenu && isExpanded) ? "text-white font-medium" : "text-[#666]"}`}
+          className={`text-[15px] whitespace-nowrap ${isActuallySelected || (hasSubMenu && isExpanded) ? "text-white font-medium" : "text-[#666]"}`}
         >
           {text}
         </span>
         {hasSubMenu && isOpen && (
           <Icon
-            icon="solar:alt-arrow-down-bold-duotone"
-            className={`text-[#666] transition-transform duration-300 ${isExpanded ? "rotate-180 text-primary-600" : ""}`}
+            icon="solar:alt-arrow-down-linear"
+            className={`transition-transform duration-300 ${isExpanded ? "rotate-180" : ""} ${isActuallySelected || (hasSubMenu && isExpanded) ? "text-white" : "text-[#666]"}`}
           />
         )}
       </div>
@@ -74,199 +91,168 @@ const SidebarItem = ({ text, route, isOpen, hasSubMenu, isExpanded }) => {
 
 const MENU_ITEMS = {
   receptionist: [
-    // Dashboard
     { text: "Dashboard", route: "/dashboard" },
-
-    // Patient Management
-    { text: "Patient Registration", route: "/enquiry-registration" },
-    { text: "Patient Information", route: "/home" },
-
-    // Appointment Management
-    { text: "IN Appointments", route: "/book-appointment" },
-    { text: "Web Appointments", route: "/PHNAppointments" },
-    { text: "Upcoming Reviews", route: "/next-review" },
-
-    // Clinical
-    { text: "Pharmacy & Prescription", route: "/pre-load-prescription" },
-
-    // Billing
+    {
+      text: "Patient",
+      subMenu: [
+        { text: "Registration", route: "/enquiry-registration" },
+        { text: "Information", route: "/home" },
+      ],
+    },
+    { text: "Appointment", route: "/book-appointment" },
+    {
+      text: "Pharmacy & Prescription",
+      subMenu: [
+        { text: "Pharmacy & Prescription", route: "/pre-load-prescription" },
+        { text: "Pharmacy Management", route: "/pharmacy" },
+      ],
+    },
     { text: "Billing", route: "/bill" },
-
-    // Pharmacy
-    { text: "Pharmacy Management", route: "/pharmacy" },
-
-    // Patient Experience
     { text: "Feedbacks", route: "/feedback" },
-
-    // Administration
     {
       text: "Administration",
       subMenu: [
-        {
-          text: "Identicards",
-          route: "/administration/identicards",
-        },
+        { text: "Identicards", route: "/administration/identicards" },
       ],
     },
   ],
 
   doctor: [
-    // Dashboard
     { text: "Dashboard", route: "/dashboard" },
+    { text: "Appointment", route: "/book-appointment" },
+    {
+      text: "Patient",
+      subMenu: [
+        { text: "Registration", route: "/enquiry-registration" },
+        { text: "Information", route: "/home" },
+        { text: "Web Chat", route: "/patient-chat" },
+        { text: "WhatsApp chat & call", route: "/whatsapp-chat" },
 
-    // Today's Patients
-    { text: "IN Appointments", route: "/book-appointment" },
-    { text: "Web Appointments", route: "/PHNAppointments" },
-    { text: "Upcoming Reviews", route: "/next-review" },
-
-    // Patients
-    { text: "Patient Registration", route: "/enquiry-registration" },
-    { text: "Patient Information", route: "/home" },
-
-    // Consultation
-    { text: "Patient Chat", route: "/patient-chat" },
-    { text: "Video Consultation", route: "/video-consult" },
-
-    // Clinical
-    { text: "Pharmacy & Prescription", route: "/pre-load-prescription" },
-
+      ],
+    },
+    {
+      text: "Consultation",
+      subMenu: [
+        { text: "Video Consultation", route: "/video-consult" },
+      ],
+    },
+    {
+      text: "Pharmacy & Prescription",
+      subMenu: [
+        { text: "Pharmacy & Prescription", route: "/pre-load-prescription" },
+        { text: "Pharmacy Management", route: "/pharmacy" },
+      ],
+    },
     {
       text: "Diagnostic Center",
       subMenu: [
-        {
-          text: "Scan Center",
-          route: "/scan-prescription-from-the-doctor",
-        },
-        {
-          text: "Laboratory",
-          route: "/lab-prescription-from-the-doctor",
-        },
+        { text: "Scan Center", route: "/scan-prescription-from-the-doctor" },
+        { text: "Laboratory", route: "/lab-prescription-from-the-doctor" },
       ],
     },
-
-    // Pharmacy
-    { text: "Pharmacy Management", route: "/pharmacy" },
-
-    // Billing
     { text: "Billing", route: "/bill" },
-
-    // Administration
     {
       text: "Administration",
       subMenu: [
-        {
-          text: "Identicards",
-          route: "/administration/identicards",
-        },
+        { text: "Identicards", route: "/administration/identicards" },
       ],
     },
   ],
 
   accountant: [
-    // Finance
     { text: "Billing", route: "/bill" },
     { text: "Supplier", route: "/supplier" },
     { text: "Expenditure", route: "/expenditure" },
-
-    // Pharmacy
-    { text: "Pharmacy Management", route: "/pharmacy" },
+    {
+      text: "Pharmacy & Prescription",
+      subMenu: [
+        { text: "Pharmacy Management", route: "/pharmacy" },
+      ],
+    },
   ],
 
   generalManager: [
-    // Operations
-    { text: "Patient Information", route: "/home" },
+    {
+      text: "Patient",
+      subMenu: [
+        { text: "Information", route: "/home" },
+      ],
+    },
     { text: "Doctor & Staff", route: "/master/doctor-and-staffs" },
-
-    // Finance
     { text: "Billing", route: "/bill" },
     { text: "Inventory", route: "/inventory" },
     { text: "Supplier", route: "/supplier" },
     { text: "Expenditure", route: "/expenditure" },
-
-    // Pharmacy
-    { text: "Pharmacy Management", route: "/pharmacy" },
-
-    // Administration
+    {
+      text: "Pharmacy & Prescription",
+      subMenu: [
+        { text: "Pharmacy Management", route: "/pharmacy" },
+      ],
+    },
     {
       text: "Administration",
       subMenu: [
-        {
-          text: "Identicards",
-          route: "/administration/identicards",
-        },
+        { text: "Identicards", route: "/administration/identicards" },
       ],
     },
   ],
 
   master: [
-    // Dashboard
     { text: "Dashboard", route: "/dashboard" },
+    {
+      text: "Patient",
+      subMenu: [
+        { text: "Registration", route: "/enquiry-registration" },
+        { text: "Information", route: "/home" },
+        { text: "Web Chat", route: "/patient-chat" },
+        { text: "WhatsApp chat & call", route: "/whatsapp-chat" },
 
-    // Patient Management
-    { text: "Patient Registration", route: "/enquiry-registration" },
-    { text: "Patient Information", route: "/home" },
-
-    // Appointment Management
-    { text: "IN Appointments", route: "/book-appointment" },
-    { text: "Web Appointments", route: "/PHNAppointments" },
-    { text: "Upcoming Reviews", route: "/next-review" },
-
-    // Consultation
-    { text: "Patient Chat", route: "/patient-chat" },
-    { text: "Video Consultation", route: "/video-consult" },
-
-    // Clinical
-    { text: "Pharmacy & Prescription", route: "/pre-load-prescription" },
-    { text: "AI X-Ray Analysis", route: "/xray-analysis" },
-
+      ],
+    },
+    { text: "Appointment", route: "/book-appointment" },
+    {
+      text: "Consultation",
+      subMenu: [
+        { text: "Video Consultation", route: "/video-consult" },
+      ],
+    },
+    {
+      text: "Pharmacy & Prescription",
+      subMenu: [
+        { text: "Pharmacy & Prescription", route: "/pre-load-prescription" },
+        { text: "AI X-Ray Analysis", route: "/xray-analysis" },
+        { text: "Pharmacy Management", route: "/pharmacy" }
+      ],
+    },
     {
       text: "Diagnostic Center",
       subMenu: [
-        {
-          text: "Scan Center",
-          route: "/scan-prescription-from-the-doctor",
-        },
-        {
-          text: "Laboratory",
-          route: "/lab-prescription-from-the-doctor",
-        },
+        { text: "Scan Center", route: "/scan-prescription-from-the-doctor" },
+        { text: "Laboratory", route: "/lab-prescription-from-the-doctor" },
+      ],
+    },
+    {
+      text: "Inventory & Expenditures",
+      subMenu: [
+        { text: "Inventory", route: "/inventory" },
+        { text: "Supplier", route: "/supplier" },
+        { text: "Expenditure", route: "/expenditure" },
       ],
     },
 
-    // Pharmacy
-    { text: "Pharmacy Management", route: "/pharmacy" },
-
-    // Finance
     { text: "Billing", route: "/bill" },
-    { text: "Inventory", route: "/inventory" },
-    { text: "Supplier", route: "/supplier" },
-    { text: "Expenditure", route: "/expenditure" },
-
-    // Human Resources
     { text: "Doctor & Staff", route: "/master/doctor-and-staffs" },
-
-    // Patient Experience
     { text: "Feedbacks", route: "/feedback" },
-
-    // Analytics
     {
       text: "Analytics",
       subMenu: [
-        {
-          text: "Revenue",
-          route: "/revenue",
-        },
+        { text: "Revenue", route: "/revenue" },
       ],
     },
-
-    // Administration
     {
       text: "Administration",
       subMenu: [
-        {
-          text: "Identicards",
-          route: "/administration/identicards",
-        },
+        { text: "Identicards", route: "/administration/identicards" },
       ],
     },
   ],
@@ -296,6 +282,15 @@ const Sidebar = () => {
 
   const location = useLocation();
 
+  React.useEffect(() => {
+    if (!menuItems) return;
+    menuItems.forEach((item) => {
+      if (item.subMenu && item.subMenu.some((sub) => location.pathname === sub.route)) {
+        setExpandedMenus((prev) => ({ ...prev, [item.text]: true }));
+      }
+    });
+  }, [location.pathname, menuItems]);
+
   const toggleSubmenu = (text) => {
     setExpandedMenus((prev) => ({ ...prev, [text]: !prev[text] }));
   };
@@ -308,7 +303,7 @@ const Sidebar = () => {
     <>
       <div
         className={`fixed inset-y-0 left-0 lg:relative h-screen bg-white flex flex-col border-r border-[#e0e0e0] transition-all duration-300 ease-[cubic-bezier(0.25,0.8,0.25,1)] shadow-xl lg:shadow-none z-30 shrink-0
-      ${isOpen ? "w-65 translate-x-0" : "w-17 -translate-x-full lg:translate-x-0"}`}
+      ${isOpen ? "w-[300px] translate-x-0" : "w-17 -translate-x-full lg:translate-x-0"}`}
       >
         {/* Brand/Logo Area */}
         <div className="h-16.25 flex items-center justify-center border-b border-[#e0e0e0] shrink-0">
@@ -330,6 +325,7 @@ const Sidebar = () => {
             {menuItems.map((item, index) => {
               if (item.subMenu) {
                 const isExpanded = expandedMenus[item.text];
+                const isParentActive = item.subMenu.some((sub) => location.pathname === sub.route);
                 return (
                   <div
                     key={`menu-${index}-${item.text}`}
@@ -342,6 +338,7 @@ const Sidebar = () => {
                         isOpen={isOpen}
                         hasSubMenu={true}
                         isExpanded={isExpanded}
+                        isActiveParent={isParentActive}
                       />
                     </div>
                     <AnimatePresence>
@@ -359,6 +356,7 @@ const Sidebar = () => {
                           {item.subMenu.map((subItem) => {
                             const isSubSelected =
                               location.pathname === subItem.route;
+                            const SubIcon = ICONS[subItem.text] || "solar:widget-5-linear";
                             return (
                               <Link
                                 key={subItem.route}
@@ -366,8 +364,14 @@ const Sidebar = () => {
                                 className="block no-underline"
                               >
                                 <div
-                                  className={`pl-16 pr-6 py-3 text-[13.5px] transition-all duration-200 border-l-[3px] border-transparent ${isSubSelected ? "text-primary-600 font-bold bg-[#f4f4f9] border-l-primary-500" : "text-gray-500 hover:text-primary-600 hover:bg-white hover:border-l-primary-400"}`}
+                                  className={`pl-12 pr-6 py-3 flex items-center gap-3 text-[13.5px] transition-all duration-200 border-l-[3px] border-transparent ${isSubSelected ? "text-primary-600 font-bold bg-[#f4f4f9] border-l-primary-500" : "text-gray-500 hover:text-primary-600 hover:bg-white hover:border-l-primary-400"}`}
                                 >
+                                  <Icon 
+                                    icon={SubIcon} 
+                                    width={18} 
+                                    height={18} 
+                                    className={isSubSelected ? "text-primary-600" : "text-gray-400"} 
+                                  />
                                   {subItem.text}
                                 </div>
                               </Link>
@@ -402,10 +406,16 @@ const Sidebar = () => {
             <div className="flex items-center justify-between bg-blue-50 border border-blue-200 rounded-xl p-2.5 shadow-sm">
               <div className="flex items-center gap-2">
                 <span className="relative flex h-2 w-2">
-                  <span className={`animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 ${localStorage.getItem("isDemoMode") === "true" ? "" : "hidden"}`}></span>
-                  <span className={`relative inline-flex rounded-full h-2 w-2 ${localStorage.getItem("isDemoMode") === "true" ? "bg-emerald-500" : "bg-slate-400"}`}></span>
+                  <span
+                    className={`animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 ${localStorage.getItem("isDemoMode") === "true" ? "" : "hidden"}`}
+                  ></span>
+                  <span
+                    className={`relative inline-flex rounded-full h-2 w-2 ${localStorage.getItem("isDemoMode") === "true" ? "bg-emerald-500" : "bg-slate-400"}`}
+                  ></span>
                 </span>
-                <span className="text-[10px] font-black text-blue-700 uppercase tracking-wider">Demo Mode</span>
+                <span className="text-[10px] font-black text-blue-700 uppercase tracking-wider">
+                  Demo Mode
+                </span>
               </div>
               <button
                 onClick={() => {
@@ -423,7 +433,7 @@ const Sidebar = () => {
               </button>
             </div>
           ) : (
-            <div 
+            <div
               onClick={() => {
                 const isDemo = localStorage.getItem("isDemoMode") === "true";
                 localStorage.setItem("isDemoMode", isDemo ? "false" : "true");
@@ -433,8 +443,12 @@ const Sidebar = () => {
               className="flex items-center justify-center cursor-pointer p-2 rounded-lg bg-blue-50 hover:bg-blue-100 border border-blue-200/50"
             >
               <span className="relative flex h-2.5 w-2.5">
-                <span className={`animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 ${localStorage.getItem("isDemoMode") === "true" ? "" : "hidden"}`}></span>
-                <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${localStorage.getItem("isDemoMode") === "true" ? "bg-emerald-500" : "bg-slate-400"}`}></span>
+                <span
+                  className={`animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 ${localStorage.getItem("isDemoMode") === "true" ? "" : "hidden"}`}
+                ></span>
+                <span
+                  className={`relative inline-flex rounded-full h-2.5 w-2.5 ${localStorage.getItem("isDemoMode") === "true" ? "bg-emerald-500" : "bg-slate-400"}`}
+                ></span>
               </span>
             </div>
           )}

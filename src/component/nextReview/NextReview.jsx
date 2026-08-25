@@ -213,7 +213,7 @@ function NextReview() {
                 className="flex items-center gap-3 px-6 rounded py-3.5 bg-white  text-slate-700 font-bold text-xs uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all duration-500 shadow-sm border border-slate-200  group"
               >
                 <Icon
-                  icon="solar:history-bold-duotone"
+                  icon="solar:history-linear"
                   width="20"
                   className="group-hover:scale-110 transition-transform"
                 />
@@ -235,7 +235,7 @@ function NextReview() {
                 bgGradient: "from-orange-500/10 to-amber-500/10",
                 iconBg: "bg-orange-500/10",
                 iconColor: "text-orange-600",
-                icon: "solar:calendar-bold-duotone",
+                icon: "solar:calendar-linear",
               },
               {
                 label: "Tomorrow",
@@ -245,7 +245,7 @@ function NextReview() {
                 bgGradient: "from-blue-500/10 to-indigo-500/10",
                 iconBg: "bg-blue-500/10",
                 iconColor: "text-blue-600",
-                icon: "solar:calendar-line-duotone",
+                icon: "solar:calendar-linear",
               },
               {
                 label: "This Week",
@@ -255,7 +255,7 @@ function NextReview() {
                 bgGradient: "from-emerald-500/10 to-teal-500/10",
                 iconBg: "bg-emerald-500/10",
                 iconColor: "text-emerald-600",
-                icon: "solar:calendar-mark-bold-duotone",
+                icon: "solar:calendar-mark-linear",
               },
               {
                 label: "Next Week",
@@ -265,7 +265,7 @@ function NextReview() {
                 bgGradient: "from-indigo-500/10 to-violet-500/10",
                 iconBg: "bg-indigo-500/10",
                 iconColor: "text-indigo-600",
-                icon: "solar:calendar-add-bold-duotone",
+                icon: "solar:calendar-add-linear",
               },
               {
                 label: "This Month",
@@ -275,7 +275,7 @@ function NextReview() {
                 bgGradient: "from-purple-500/10 to-fuchsia-500/10",
                 iconBg: "bg-purple-500/10",
                 iconColor: "text-purple-600",
-                icon: "solar:calendar-date-bold-duotone",
+                icon: "solar:calendar-date-linear",
               },
               {
                 label: "Next Month",
@@ -285,7 +285,7 @@ function NextReview() {
                 bgGradient: "from-rose-500/10 to-pink-500/10",
                 iconBg: "bg-rose-500/10",
                 iconColor: "text-rose-600",
-                icon: "solar:calendar-search-bold-duotone",
+                icon: "solar:calendar-search-linear",
               },
             ].map((c, i) => (
               <div
@@ -451,7 +451,7 @@ function NextReview() {
                                 title="View Address"
                               >
                                 <Icon
-                                  icon="solar:map-point-bold-duotone"
+                                  icon="solar:map-point-linear"
                                   width="20"
                                 />
                               </button>
@@ -496,7 +496,7 @@ function NextReview() {
         title={
           <div className="flex items-center gap-3 px-2 py-1">
             <div className="w-8 h-8 bg-blue-100  text-blue-600  rounded-lg flex items-center justify-center">
-              <Icon icon="solar:history-bold" width="18" />
+              <Icon icon="solar:history-linear" width="18" />
             </div>
             <span className="text-lg font-black tracking-tight text-slate-800  uppercase">
               Past Review History

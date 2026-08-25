@@ -58,11 +58,11 @@ const CARD_THEMES = {
 
 // Preset elegant avatars
 const PRESET_AVATARS = [
-  { id: "doc_m", label: "Male Doctor", icon: "solar:user-rounded-bold", color: "bg-blue-100 text-blue-600" },
-  { id: "doc_f", label: "Female Doctor", icon: "solar:user-rounded-bold", color: "bg-rose-100 text-rose-600" },
-  { id: "nurse", label: "Staff Nurse", icon: "solar:user-rounded-bold", color: "bg-teal-100 text-teal-600" },
-  { id: "reception", label: "Receptionist", icon: "solar:user-rounded-bold", color: "bg-purple-100 text-purple-600" },
-  { id: "patient", label: "Generic Patient", icon: "solar:user-rounded-bold", color: "bg-emerald-100 text-emerald-600" },
+  { id: "doc_m", label: "Male Doctor", icon: "solar:user-rounded-linear", color: "bg-blue-100 text-blue-600" },
+  { id: "doc_f", label: "Female Doctor", icon: "solar:user-rounded-linear", color: "bg-rose-100 text-rose-600" },
+  { id: "nurse", label: "Staff Nurse", icon: "solar:user-rounded-linear", color: "bg-teal-100 text-teal-600" },
+  { id: "reception", label: "Receptionist", icon: "solar:user-rounded-linear", color: "bg-purple-100 text-purple-600" },
+  { id: "patient", label: "Generic Patient", icon: "solar:user-rounded-linear", color: "bg-emerald-100 text-emerald-600" },
 ];
 
 const getImageUrl = (url) => {
@@ -543,11 +543,11 @@ function Identicards({ isPublic }) {
         `}</style>
         
         <div className="text-center max-w-md w-full bg-white p-8 rounded-2xl shadow-xl border border-slate-100 mb-8 no-print">
-          <Icon icon="solar:check-circle-bold-duotone" className="text-7xl text-emerald-500 mx-auto mb-4" />
+          <Icon icon="solar:check-circle-linear" className="text-7xl text-emerald-500 mx-auto mb-4" />
           <h2 className="text-2xl font-black text-slate-800 tracking-tight mb-2">ID Card Ready</h2>
           <p className="text-slate-500 font-medium mb-6">Your secure digital ID card has been generated. Use the button below to save it as a high-quality image.</p>
           <button onClick={handleDownloadImage} className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition-all w-full flex items-center justify-center gap-2">
-            <Icon icon="solar:download-bold" className="text-xl" />
+            <Icon icon="solar:download-linear" className="text-xl" />
             Download ID Card Image
           </button>
         </div>
@@ -567,7 +567,7 @@ function Identicards({ isPublic }) {
                   <div className="w-full">
                     <div className="flex justify-between items-start mb-6">
                       <div className="w-10 h-10 rounded-lg bg-white/30 flex items-center justify-center shadow-inner border border-white/30">
-                        <Icon icon="solar:health-bold" className="text-2xl text-white" />
+                        <Icon icon="solar:health-linear" className="text-2xl text-white" />
                       </div>
                       <div className="text-right">
                         <h3 className="font-black tracking-widest uppercase text-white/90" style={{ fontSize: "10px" }}>
@@ -666,7 +666,7 @@ function Identicards({ isPublic }) {
                         className={`flex-1 py-3 px-4 rounded-lg font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 border-0 cursor-pointer
                           ${cardType === "staff" ? "bg-white text-slate-900 shadow-md" : "text-slate-500 hover:text-slate-700 bg-transparent"}`}
                       >
-                        <Icon icon="solar:stethoscope-bold" className="text-lg text-blue-500" />
+                        <Icon icon="solar:stethoscope-linear" className="text-lg text-blue-500" />
                         Hospital Staff Directory ({users.length})
                       </button>
                       <button
@@ -675,7 +675,7 @@ function Identicards({ isPublic }) {
                         className={`flex-1 py-3 px-4 rounded-lg font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 border-0 cursor-pointer
                           ${cardType === "patient" ? "bg-white text-slate-900 shadow-md" : "text-slate-500 hover:text-slate-700 bg-transparent"}`}
                       >
-                        <Icon icon="solar:users-group-two-rounded-bold" className="text-lg text-rose-500" />
+                        <Icon icon="solar:users-group-two-rounded-linear" className="text-lg text-rose-500" />
                         Active Patients ({patients.length})
                       </button>
                     </div>
@@ -683,7 +683,7 @@ function Identicards({ isPublic }) {
                     {/* Live Search Directory */}
                     <div className="flex gap-3 mb-4">
                       <Button type="button" onClick={() => setIsScannerOpen(true)} variant="secondary" className="px-3 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-600 shadow-none">
-                        <Icon icon="solar:scanner-bold-duotone" className="text-xl" />
+                        <Icon icon="solar:scanner-linear" className="text-xl" />
                       </Button>
                       <div className="relative flex-1">
                         <Icon icon="solar:magnifer-linear" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg" />
@@ -696,7 +696,7 @@ function Identicards({ isPublic }) {
                         />
                       </div>
                       <Button type="button" onClick={fetchData} variant="secondary" className="px-3 bg-slate-100 hover:bg-slate-200 border border-slate-200 shadow-none">
-                        <Icon icon="solar:restart-bold" className={`text-xl text-slate-600 ${loading ? "animate-spin" : ""}`} />
+                        <Icon icon="solar:restart-linear" className={`text-xl text-slate-600 ${loading ? "animate-spin" : ""}`} />
                       </Button>
                     </div>
 
@@ -795,7 +795,7 @@ function Identicards({ isPublic }) {
                                 htmlFor="avatar-file-input"
                                 className="w-full py-2 px-3 border border-dashed border-slate-300 hover:border-blue-500 hover:bg-blue-50/20 rounded-xl cursor-pointer flex items-center justify-center gap-2 text-xs font-bold text-slate-600 transition-all"
                               >
-                                <Icon icon="solar:upload-bold" className="text-lg text-blue-500" />
+                                <Icon icon="solar:upload-linear" className="text-lg text-blue-500" />
                                 {formData.photo ? "Replace Photo" : "Upload Custom JPG/PNG"}
                               </label>
                             </div>
@@ -871,7 +871,7 @@ function Identicards({ isPublic }) {
                       variant="secondary"
                       className="rounded-xl px-5 py-2.5 flex items-center gap-2 border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 cursor-pointer text-xs uppercase tracking-widest font-black"
                     >
-                      <Icon icon="tabler:arrow-left" />
+                      <Icon icon="solar:arrow-left-linear" />
                       Back to Directory
                     </Button>
                   )}
@@ -884,7 +884,7 @@ function Identicards({ isPublic }) {
                       className="rounded-xl px-6 py-2.5 flex items-center gap-2 cursor-pointer text-xs uppercase tracking-widest font-black"
                     >
                       Customize Details
-                      <Icon icon="tabler:arrow-right" />
+                      <Icon icon="solar:arrow-right-linear" />
                     </Button>
                   ) : (
                     <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider pr-4">
@@ -915,7 +915,7 @@ function Identicards({ isPublic }) {
                       ${cardTheme === key ? "ring-2 ring-offset-2 ring-slate-900 scale-105" : ""}`}
                     title={t.name}
                   >
-                    {cardTheme === key && <Icon icon="solar:check-read-bold" className="text-white text-sm" />}
+                    {cardTheme === key && <Icon icon="solar:check-read-linear" className="text-white text-sm" />}
                   </button>
                 ))}
               </div>
@@ -928,7 +928,7 @@ function Identicards({ isPublic }) {
                 className={`py-2.5 px-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all border flex items-center justify-center gap-2
                   ${layout === "vertical" ? "bg-slate-900 text-white border-slate-900" : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"}`}
               >
-                <Icon icon="solar:smartphone-line-duotone" className="text-lg" />
+                <Icon icon="solar:smartphone-linear" className="text-lg" />
                 Vertical (CR80)
               </button>
               <button
@@ -936,7 +936,7 @@ function Identicards({ isPublic }) {
                 className={`py-2.5 px-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all border flex items-center justify-center gap-2
                   ${layout === "horizontal" ? "bg-slate-900 text-white border-slate-900" : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"}`}
               >
-                <Icon icon="solar:smartphone-rotate-orientation-bold-duotone" className="text-lg" />
+                <Icon icon="solar:smartphone-rotate-orientation-linear" className="text-lg" />
                 Horizontal
               </button>
             </div>
@@ -1004,7 +1004,7 @@ function Identicards({ isPublic }) {
 
                       {/* Hologram Graphic */}
                       <div className="flex justify-end items-center py-2">
-                        <Icon icon="solar:magnetic-card-bold-duotone" className="text-2xl text-white/30" />
+                        <Icon icon="solar:magnetic-card-linear" className="text-2xl text-white/30" />
                       </div>
 
                       {/* Profile Photo Area */}
@@ -1133,11 +1133,11 @@ function Identicards({ isPublic }) {
                         {/* Contact metadata */}
                         <div className="border-t border-slate-800 pt-2 flex flex-col gap-0.5 text-[8.5px] text-slate-400 text-left">
                           <div className="flex items-center gap-1.5">
-                            <Icon icon="solar:phone-bold" className="text-xs text-slate-500" />
+                            <Icon icon="solar:phone-linear" className="text-xs text-slate-500" />
                             <span>Phone: {formData.phone}</span>
                           </div>
                           <div className="flex items-center gap-1.5">
-                            <Icon icon="solar:letter-bold" className="text-xs text-slate-500" />
+                            <Icon icon="solar:letter-linear" className="text-xs text-slate-500" />
                             <span>Email: {formData.email}</span>
                           </div>
                         </div>
@@ -1170,11 +1170,11 @@ function Identicards({ isPublic }) {
                           
                           <div className="border-t border-slate-800 pt-1.5 flex flex-col gap-0.5 text-[8px] text-slate-400 mt-2">
                             <div className="flex items-center gap-1">
-                              <Icon icon="solar:phone-bold" className="text-[10px] text-slate-500" />
+                              <Icon icon="solar:phone-linear" className="text-[10px] text-slate-500" />
                               <span className="truncate">Phone: {formData.phone}</span>
                             </div>
                             <div className="flex items-center gap-1">
-                              <Icon icon="solar:letter-bold" className="text-[10px] text-slate-500" />
+                              <Icon icon="solar:letter-linear" className="text-[10px] text-slate-500" />
                               <span className="truncate">Email: {formData.email}</span>
                             </div>
                           </div>
@@ -1226,14 +1226,14 @@ function Identicards({ isPublic }) {
                 variant="secondary"
                 className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 shadow border border-slate-200 flex items-center justify-center gap-2 py-3 rounded-xl transition-all"
               >
-                <Icon icon="solar:refresh-square-bold-duotone" className="text-xl text-blue-500" />
+                <Icon icon="solar:refresh-square-linear" className="text-xl text-blue-500" />
                 <span className="font-extrabold text-sm">Flip Card Preview</span>
               </Button>
               <Button
                 onClick={handlePrint}
                 className="flex-1 bg-blue-600 hover:bg-blue-700 text-white shadow-xl shadow-blue-500/20 flex items-center justify-center gap-2 py-3 rounded-xl transition-all"
               >
-                <Icon icon="solar:printer-minimalistic-bold-duotone" className="text-xl" />
+                <Icon icon="solar:printer-minimalistic-linear" className="text-xl" />
                 <span className="font-extrabold text-sm">Print ID Card</span>
               </Button>
               <Button

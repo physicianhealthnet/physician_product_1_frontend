@@ -13,6 +13,13 @@ function PrescriptionFormatShow({
 }) {
   const theme = useSelector((state) => state.theme?.theme);
 
+  const user = JSON.parse(
+    sessionStorage.getItem("user") || sessionStorage.getItem("master") || "{}"
+  );
+  const doctorName = user.userName || "Dr. John Doe";
+  const doctorDept = user.department || "Chief Physician";
+  const clinicName = user.clinicName || "Physician Clinic";
+
   const handleShareWithPDF = async () => {
     const element = document.getElementById("prescription-content");
     const options = {
@@ -48,39 +55,29 @@ function PrescriptionFormatShow({
     }
   };
 
-  const downloadPDF = async () => {
+  const downloadPDF = () => {
     const element = document.getElementById("prescription-content");
-    if (!element) {
-      message.warning("Content not found for PDF generation.");
-      return;
-    }
-
-    try {
-      const options = {
-        margin: 10,
-        filename: `prescription-${prescription?.prescriptionId || "unknown"}.pdf`,
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { 
-          scale: 2,
-          useCORS: true,
-          onclone: (clonedDoc) => {
-            const content = clonedDoc.getElementById("prescription-content");
-            if (content) {
-              content.style.backgroundColor = "#ffffff";
-            }
-            const styleTags = clonedDoc.getElementsByTagName("style");
-            for (const tag of styleTags) {
-              tag.innerHTML = tag.innerHTML.replace(/oklch\([^)]+\)/g, "#333");
-            }
+    const options = {
+      margin: 10,
+      filename: `Prescription_${prescription?.prescriptionId || "unknown"}.pdf`,
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { 
+        scale: 2,
+        useCORS: true,
+        onclone: (clonedDoc) => {
+          const content = clonedDoc.getElementById("prescription-content");
+          if (content) {
+            content.style.backgroundColor = "#ffffff";
           }
-        },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-      };
-      html2pdf().from(element).set(options).save();
-    } catch (error) {
-      console.error("Error generating PDF:", error);
-      message.error("Error generating PDF. Please try again.");
-    }
+          const styleTags = clonedDoc.getElementsByTagName("style");
+          for (const tag of styleTags) {
+            tag.innerHTML = tag.innerHTML.replace(/oklch\([^)]+\)/g, "#333");
+          }
+        }
+      },
+      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+    };
+    html2pdf().from(element).set(options).save();
   };
 
   const handlePrint = () => {
@@ -126,17 +123,17 @@ function PrescriptionFormatShow({
         <div id="prescription-content" className={`p-4 flex flex-col gap-4 ${theme === 'dark' ? 'bg-slate-900 text-slate-100' : 'bg-white text-slate-900'}`}>
           <div className="flex flex-row items-start justify-between gap-2 border-b-2 border-slate-200  pb-4 mb-4">
             <div>
-              <h1 className="font-bold text-xl text-slate-900 ">Physician Clinic</h1>
+              <h1 className="font-bold text-xl text-slate-900 capitalize">{clinicName}</h1>
               <p className="text-slate-600 ">
-                Reg. No 12345, Physician Clinic, <br />
+                {user.registrationNumber ? `Reg. No ${user.registrationNumber}, ` : ''}{clinicName}, <br />
                 Central Medical Complex, Main Road, <br />
                 City, State - 123456.
               </p>
             </div>
             {/* Removed Logo */}
             <div className="text-right">
-              <h1 className="font-bold text-xl text-slate-900 ">Dr. John Doe, M.D., </h1>
-              <p className="text-slate-600 ">Chief Physician</p>
+              <h1 className="font-bold text-xl text-slate-900 capitalize">Dr. {doctorName}</h1>
+              <p className="text-slate-600 capitalize">{doctorDept}</p>
             </div>
           </div>
           <div className="flex flex-row justify-between">
@@ -217,8 +214,8 @@ function PrescriptionFormatShow({
             )}
           </div>
           <div className="flex flex-col items-end mt-20 text-slate-900 ">
-            <h1 className="font-bold text-xl">Dr. John Doe, M.D., </h1>
-            <p className="text-slate-600 ">Chief Physician</p>
+            <h1 className="font-bold text-xl capitalize">Dr. {doctorName}</h1>
+            <p className="text-slate-600 capitalize">{doctorDept}</p>
           </div>
         </div>
       </div>

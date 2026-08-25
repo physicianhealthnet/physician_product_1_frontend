@@ -28,6 +28,9 @@ import Reschedule from "../Reschedule";
 import { useNavigate } from "react-router-dom";
 import PatientClinicalDataModal from "../../../../component/dashboard/PatientClinicalDataModal";
 import { Icon } from "@iconify/react";
+import IncomingWebRequests from "./IncomingWebRequests";
+import LiveSchedule from "./LiveSchedule";
+import FollowUpTracker from "./FollowUpTracker";
 
 const { Option } = Select;
 
@@ -40,6 +43,7 @@ const ManageAppointments = ({
   onDoctorFilterChange,
 }) => {
   const [appointments, setAppointments] = useState([]);
+  const [pendingWebRequests, setPendingWebRequests] = useState([]);
   const [filterDate, setFilterDate] = useState(dayjs().format("YYYY-MM-DD"));
   const [filterStatus, setFilterStatus] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -96,19 +100,31 @@ const ManageAppointments = ({
         ),
       ]);
 
-      const internalAppts =
+      const internalApptsRaw =
         internalRes.status === "fulfilled"
           ? internalRes.value.data.data || []
           : [];
+          
+      // Flag internal appointments that originated from web so UI treats them properly
+      const internalAppts = internalApptsRaw.map(appt => 
+        appt.webAppointmentId ? { ...appt, isWebAppointment: true } : appt
+      );
       let webAppts =
         webRes.status === "fulfilled" ? webRes.value.data.data || [] : [];
 
-      // Filter web appointments by date (matching current internal logic roughly)
-      webAppts = webAppts
+      // Extract pending requests globally (not filtered by date)
+      const pendingWeb = webAppts.filter(appt => {
+        const s = appt.status?.toLowerCase();
+        return s === "pending" || (!s && !appt.localAppointmentId);
+      }).map(appt => ({ ...appt, isWebAppointment: true }));
+      setPendingWebRequests(pendingWeb);
+
+      // Filter approved web appointments by date for Live Schedule
+      let approvedWebAppts = webAppts
         .filter((appt) => {
           if (!appt.appointmentDate) return false;
           const apptDate = dayjs(appt.appointmentDate).format("YYYY-MM-DD");
-          if (apptDate !== date) return false;
+          if (date && apptDate !== date) return false;
 
           // Apply search if exists
           if (
@@ -118,7 +134,7 @@ const ManageAppointments = ({
             return false;
           }
 
-          // Only show approved web appointments in this view
+          // Only show approved web appointments in Live Schedule
           const webStatus = appt.status?.toLowerCase();
           if (webStatus !== "approve" && webStatus !== "approved") {
             return false;
@@ -127,8 +143,7 @@ const ManageAppointments = ({
           // Apply selected status filter if exists
           if (filterStatus) {
             const searchStatusLower = filterStatus.toLowerCase();
-            // Since we only have approved web appts now, they are mapped to "Completed"
-            if (searchStatusLower !== "completed") {
+            if (searchStatusLower !== "completed" && searchStatusLower !== "booked") {
               return false;
             }
           }
@@ -144,7 +159,6 @@ const ManageAppointments = ({
             isWebAppointment: true,
             localAppointmentId: localMatch?._id,
             localStatus: localMatch?.status,
-            // Map fields to match internal appointment format for rendering
             startTime: appt.selectedSlot
               ? appt.selectedSlot.split("-")[0].trim()
               : "TBD",
@@ -153,11 +167,9 @@ const ManageAppointments = ({
                 ? appt.selectedSlot.split("-")[1].trim()
                 : "TBD",
             doctor: appt.docName,
-            // Map status to internal visual states
             mappedStatus: (function () {
               if (localMatch) return localMatch.status;
               const s = appt.status?.toLowerCase();
-              if (s === "pending") return "Booked";
               if (s === "approve" || s === "approved") return "Booked";
               if (s === "reject" || s === "cancelled") return "Cancelled";
               return "Booked";
@@ -167,9 +179,9 @@ const ManageAppointments = ({
 
       // Filter out web appts that are already synced locally
       const syncedWebIds = new Set(internalAppts.map(l => l.webAppointmentId).filter(Boolean));
-      webAppts = webAppts.filter(w => !syncedWebIds.has(w._id));
+      approvedWebAppts = approvedWebAppts.filter(w => !syncedWebIds.has(w._id));
 
-      const combined = [...internalAppts, ...webAppts];
+      const combined = [...internalAppts, ...approvedWebAppts];
 
       setAppointments(combined);
       setTotal(combined.length);
@@ -226,8 +238,10 @@ const ManageAppointments = ({
     try {
       let appointmentId = appt._id;
 
-      // If it's a web appointment, we need to ensure it exists locally first
-      if (appt.isWebAppointment) {
+      // If it's a web appointment, we need to ensure it exists locally first.
+      // Internal appointments have 'appointmentId' string. Web appts with a local match have 'localAppointmentId'.
+      const isLocallyExisting = !!(appt.appointmentId || appt.localAppointmentId);
+      if (appt.isWebAppointment && !isLocallyExisting) {
         try {
           // Try to create/sync it locally
           const syncData = {
@@ -238,7 +252,7 @@ const ManageAppointments = ({
             doctorId: appt.doctorId || appt.docId,
             category: appt.category || "Consultation",
             date: appt.appointmentDate || appt.date,
-            startTime: appt.startTime,
+            startTime: appt.startTime || appt.selectedSlot,
             endTime: appt.endTime,
             clinicId: appt.clinicId || appt.cid || (sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user"))?.cid : ""),
             status: "Booked", // Initial local status
@@ -260,9 +274,11 @@ const ManageAppointments = ({
       if (appt.isWebAppointment || appt.webAppointmentId) {
         const hubId = appt.webAppointmentId || appt._id;
         try {
-          // Send status in lowercase to Hub for consistency (pending, approve, completed, etc.)
+          // Send status to Hub (map 'booked' to 'approve' for web appointments)
+          let hubStatus = status.toLowerCase();
+          if (hubStatus === "booked") hubStatus = "approve";
           await AxiosInstanceSecondryServer.patch(`/user-appointment/status/${hubId}`, {
-            status: status.toLowerCase()
+            status: hubStatus
           });
         } catch (hubErr) {
           console.error("Failed to sync status to Hub:", hubErr);
@@ -399,11 +415,25 @@ const ManageAppointments = ({
               <CalendarOutlined className="text-lg" />
             </div>
             <Input
-              type="date"
+              type={filterDate ? "date" : "text"}
+              placeholder="Select Date"
+              onFocus={(e) => (e.target.type = "date")}
+              onBlur={(e) => {
+                if (!e.target.value) e.target.type = "text";
+              }}
               value={filterDate}
               onChange={(e) => setFilterDate(e.target.value)}
-              className="w-full h-12 pl-12 bg-white  border-slate-200/60  rounded-[1.25rem] focus:ring-4 focus:ring-blue-500/10 transition-all font-bold tracking-tight"
+              className="w-full h-12 pl-12 pr-10 bg-white border-slate-200/60 rounded-[1.25rem] focus:ring-4 focus:ring-blue-500/10 transition-all font-bold tracking-tight"
             />
+            {filterDate && (
+              <button
+                onClick={() => setFilterDate("")}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-500 transition-colors z-10"
+                title="Clear Date"
+              >
+                <Icon icon="solar:close-circle-bold" className="text-lg" />
+              </button>
+            )}
           </div>
 
           <Select
@@ -468,264 +498,24 @@ const ManageAppointments = ({
         </div>
       </div>
 
-      {/* Appointment Table */}
-      <div className="overflow-x-auto custom-scrollbar max-h-[450px] border border-slate-200/50 rounded-xl">
-        <table className="w-full text-left border-collapse whitespace-nowrap min-w-max">
-          <thead className="sticky top-0 z-10">
-            <tr className="bg-slate-50/90 backdrop-blur-md text-[10px] uppercase font-black text-slate-500 tracking-widest border-b border-slate-200 shadow-sm">
-              <th className="p-4 pl-6 w-10"></th>
-              <th className="p-4">ID</th>
-              <th className="p-4">Name</th>
-              <th className="p-4">Mobile</th>
-              <th className="p-4">Primary Doctor</th>
-              <th className="p-4">Appointment Date</th>
-              <th className="p-4 text-center">Status</th>
-              <th className="p-4 text-center pr-6">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredAppointments.length === 0 ? (
-              <tr>
-                <td colSpan={8} className="p-10 text-center opacity-60">
-                  <div className="flex flex-col items-center justify-center gap-4 py-10">
-                    <div className="p-4 rounded-full bg-slate-100">
-                      <FolderOpenOutlined className="text-4xl text-slate-300" />
-                    </div>
-                    <div>
-                      <p className="text-slate-500 font-extrabold text-sm uppercase tracking-widest">
-                        No Appointments
-                      </p>
-                      <p className="text-xs text-slate-400">
-                        Everything looks clear for now
-                      </p>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            ) : (
-              filteredAppointments.map((appt, idx) => {
-                const pId = appt.patientId || appt.PHN_ID;
-                const detailsObj = patientDetails[pId] || {};
-                const detail = detailsObj.patientDetails || {};
-                const isExpanded = expandedRows.has(appt._id);
-
-                return (
-                  <React.Fragment key={idx}>
-                    <tr
-                      className="hover:bg-slate-50/80 border-b border-slate-100/50 transition-colors duration-200 group cursor-pointer"
-                      onClick={() => toggleRow(appt._id)}
-                    >
-                      <td className="p-4 pl-6">
-                        <button className="text-slate-400 hover:text-blue-500 transition-colors">
-                          {isExpanded ? <UpOutlined /> : <DownOutlined />}
-                        </button>
-                      </td>
-                      <td className="p-4">
-                        <span className="text-xs font-bold text-slate-500">{pId || "N/A"}</span>
-                      </td>
-                      <td className="p-4">
-                        <div className="flex flex-col">
-                          <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 rounded-full bg-slate-100 overflow-hidden shrink-0 flex items-center justify-center">
-                              {detail.photo ? (
-                                <img src={detail.photo} alt={appt.patientName} className="w-full h-full object-cover" />
-                              ) : (
-                                <Icon icon="solar:user-bold" className="text-slate-300 text-xs" />
-                              )}
-                            </div>
-                            <span className="font-extrabold text-slate-800 text-sm tracking-tight">
-                              {appt.patientName}
-                            </span>
-                            {appt.isWebAppointment && (
-                              <span className="bg-blue-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-widest shadow-sm">
-                                Web
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="p-4 text-sm font-medium text-slate-600">
-                        {appt.phoneNumber || appt.patientPhone || appt.patientPhno || "—"}
-                      </td>
-                      <td className="p-4 text-sm font-bold text-blue-600">
-                        {appt.doctor || appt.docName || appt.doctorName || "—"}
-                      </td>
-                      <td className="p-4 text-sm font-medium text-slate-600">
-                        <div className="flex items-center gap-1.5">
-                          <Icon icon="solar:calendar-mark-bold-duotone" className="text-purple-500" />
-                          <span className="font-bold text-slate-800">
-                            {appt.appointmentDate ? dayjs(appt.appointmentDate).format("DD MMM YYYY") : dayjs(appt.date).format("DD MMM YYYY")} | {appt.startTime}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="p-4 text-center">
-                        <div
-                          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm border ${getStatusColor(appt.mappedStatus || appt.status)}`}
-                        >
-                          <div className="scale-110">
-                            {getStatusIcon(appt.mappedStatus || appt.status)}
-                          </div>
-                          <span className="text-indent-[0.2em]">
-                            {appt.mappedStatus || appt.status}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="p-4 text-center" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center justify-center gap-2">
-                          {(appt.mappedStatus || appt.status) === "Booked" && (
-                            <>
-                              <Button
-                                size="sm"
-                                onClick={() => updateStatus(appt, "Checked-in")}
-                                className="text-[10px] px-3 py-1.5 h-auto uppercase tracking-widest"
-                              >
-                                Check In
-                              </Button>
-                              {!appt.isWebAppointment && (
-                                <Button
-                                  size="sm"
-                                  variant="secondary"
-                                  onClick={() => updateStatus(appt, "Cancelled")}
-                                  className="text-red-600 hover:text-red-700 text-[10px] px-3 py-1.5 h-auto uppercase tracking-widest"
-                                >
-                                  Cancel
-                                </Button>
-                              )}
-                            </>
-                          )}
-
-                          <Button
-                            size="sm"
-                            variant="secondary"
-                            onClick={() => openModal(appt)}
-                            className="text-[10px] px-3 py-1.5 h-auto uppercase tracking-widest"
-                          >
-                            Details
-                          </Button>
-
-                          {!appt.isWebAppointment && (appt.mappedStatus || appt.status) === "Booked" && (
-                            <Button
-                              size="sm"
-                              variant="secondary"
-                              onClick={() => openRescheduleModal(appt)}
-                              className="text-[10px] px-3 py-1.5 h-auto uppercase tracking-widest"
-                            >
-                              Reschedule
-                            </Button>
-                          )}
-                          {(appt.mappedStatus || appt.status) === "Checked-in" && (
-                            <Button
-                              size="sm"
-                              onClick={() => updateStatus(appt, "Engaged")}
-                              className="bg-purple-600 hover:bg-purple-700 shadow-none text-white border-0 text-[10px] px-3 py-1.5 h-auto uppercase tracking-widest"
-                            >
-                              Engage
-                            </Button>
-                          )}
-                          {(appt.mappedStatus || appt.status) === "Engaged" && (
-                            <Button
-                              size="sm"
-                              onClick={() => updateStatus(appt, "Completed")}
-                              className="bg-green-600 hover:bg-green-700 shadow-none text-white border-0 text-[10px] px-3 py-1.5 h-auto uppercase tracking-widest"
-                            >
-                              Complete
-                            </Button>
-                          )}
-                          {(appt.mappedStatus || appt.status) === "Completed" && (
-                            <Button
-                              size="sm"
-                              onClick={() => updateStatus(appt, "Checked-out")}
-                              className="bg-slate-600 hover:bg-slate-700 shadow-none text-white border-0 text-[10px] px-3 py-1.5 h-auto uppercase tracking-widest"
-                            >
-                              Check Out
-                            </Button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                    
-                    {/* Collapsible Details Row */}
-                    {isExpanded && (
-                      <tr className="bg-slate-50 border-b border-slate-200 shadow-[inset_0_4px_6px_-4px_rgba(0,0,0,0.05)]">
-                        <td colSpan={8} className="p-6">
-                          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                            {/* Demographics */}
-                            <div className="space-y-3">
-                              <h4 className="text-[10px] uppercase font-black text-slate-400 tracking-widest">Demographics</h4>
-                              <div className="flex flex-col gap-2 text-sm">
-                                <span className="text-slate-600"><strong className="text-slate-800">Gender:</strong> <span className="capitalize">{detail.gender || "-"}</span></span>
-                                <span className="text-slate-600"><strong className="text-slate-800">Age:</strong> {detail.age || "—"}</span>
-                                <span className="text-slate-600"><strong className="text-slate-800">Location:</strong> {detail.city || detail.location || "—"}</span>
-                                <span className="text-slate-600"><strong className="text-slate-800">Visited Date:</strong> {detail.createdAt ? dayjs(detail.createdAt).format("DD MMM YYYY") : "—"}</span>
-                              </div>
-                            </div>
-                            
-                            {/* Clinical Info */}
-                            <div className="space-y-3">
-                              <h4 className="text-[10px] uppercase font-black text-slate-400 tracking-widest">Clinical Info</h4>
-                              <div className="flex flex-col gap-3">
-                                <div className="text-sm">
-                                  <strong className="text-slate-800">Primary Complaint:</strong> 
-                                  <p className="text-slate-600 mt-1 line-clamp-2" title={detailsObj?.primaryComplaint || ""}>{detailsObj?.primaryComplaint || "—"}</p>
-                                </div>
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    navigate(`/assessment/${pId}`);
-                                  }}
-                                  className="bg-blue-100/50 text-blue-600 px-3 py-1.5 rounded-lg text-[10px] uppercase font-black tracking-widest hover:bg-blue-200 transition-colors shadow-sm active:scale-95 whitespace-nowrap flex items-center justify-center gap-1.5 w-max mt-1"
-                                >
-                                  <span>Ongoing Treatment</span>
-                                  <Icon icon="solar:alt-arrow-right-bold" />
-                                </button>
-                              </div>
-                            </div>
-                            
-                            {/* Attender Details */}
-                            <div className="space-y-3 bg-amber-50/50 p-4 rounded-xl border border-amber-100">
-                              <h4 className="text-[10px] uppercase font-black text-amber-600 tracking-widest">Attender Details</h4>
-                              <div className="flex flex-col gap-2 text-sm">
-                                <span className="text-slate-600"><strong className="text-slate-800">Name:</strong> {detailsObj.attenderName || "—"}</span>
-                                <span className="text-slate-600"><strong className="text-slate-800">Phone:</strong> {detailsObj.attenderPhone || "—"}</span>
-                                <span className="text-slate-600"><strong className="text-slate-800">Relationship:</strong> {detailsObj.attenderRelationship || "—"}</span>
-                              </div>
-                            </div>
-                            
-                            {/* Reports */}
-                            <div className="space-y-3">
-                              <h4 className="text-[10px] uppercase font-black text-slate-400 tracking-widest">Reports</h4>
-                              <div className="flex flex-col gap-2">
-                                <div className="flex items-center justify-between bg-blue-50/50 p-2.5 rounded-lg border border-blue-100/50">
-                                  <span className="text-xs font-bold text-slate-600">Prescriptions</span>
-                                  <button onClick={(e) => { e.stopPropagation(); setModalConfig({ isOpen: true, type: 'prescription', patientId: pId }); }} className="bg-white border border-blue-200 text-blue-600 px-3 py-1 rounded-full text-[10px] uppercase font-black tracking-widest hover:bg-blue-600 hover:text-white transition-colors shadow-sm active:scale-95">
-                                    {detailsObj.prescriptionsCount > 0 ? `View (${detailsObj.prescriptionsCount})` : "View"}
-                                  </button>
-                                </div>
-                                <div className="flex items-center justify-between bg-rose-50/50 p-2.5 rounded-lg border border-rose-100/50">
-                                  <span className="text-xs font-bold text-slate-600">Lab Reports</span>
-                                  <button onClick={(e) => { e.stopPropagation(); setModalConfig({ isOpen: true, type: 'lab', patientId: pId }); }} className="bg-white border border-rose-200 text-rose-600 px-3 py-1 rounded-full text-[10px] uppercase font-black tracking-widest hover:bg-rose-600 hover:text-white transition-colors shadow-sm active:scale-95">
-                                    {detailsObj.labReportsCount > 0 ? `View (${detailsObj.labReportsCount})` : "View"}
-                                  </button>
-                                </div>
-                                <div className="flex items-center justify-between bg-purple-50/50 p-2.5 rounded-lg border border-purple-100/50">
-                                  <span className="text-xs font-bold text-slate-600">Scan Reports</span>
-                                  <button onClick={(e) => { e.stopPropagation(); setModalConfig({ isOpen: true, type: 'scan', patientId: pId }); }} className="bg-white border border-purple-200 text-purple-600 px-3 py-1 rounded-full text-[10px] uppercase font-black tracking-widest hover:bg-purple-600 hover:text-white transition-colors shadow-sm active:scale-95">
-                                    {detailsObj.scanReportsCount > 0 ? `View (${detailsObj.scanReportsCount})` : "View"}
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </React.Fragment>
-                );
-              })
-            )}
-          </tbody>
-        </table>
+      <div className="flex flex-col gap-6 w-full">
+        <IncomingWebRequests
+          pendingRequests={pendingWebRequests}
+          onApprove={(appt) => updateStatus(appt, "Booked")}
+          onReschedule={(appt) => openRescheduleModal(appt)}
+        />
+        
+        <div className="flex flex-col lg:flex-row gap-6 w-full">
+          <LiveSchedule
+            appointments={filteredAppointments}
+            updateStatus={updateStatus}
+            getStatusIcon={getStatusIcon}
+            getStatusColor={getStatusColor}
+          />
+          <FollowUpTracker />
+        </div>
       </div>
+
 
       {/* Modal */}
       <Reschedule

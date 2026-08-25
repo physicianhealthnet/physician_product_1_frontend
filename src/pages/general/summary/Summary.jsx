@@ -250,7 +250,7 @@ function Summary({ patientId }) {
 
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 border-b border-slate-100  pb-4">
         <h1 className="font-bold text-slate-800  text-2xl m-0 flex items-center gap-2">
-          <Icon icon="solar:document-text-bold-duotone" className="text-blue-500" />
+          <Icon icon="solar:document-text-linear" className="text-blue-500" />
           Treatment & Patient Summary
         </h1>
         <Button
@@ -259,7 +259,7 @@ function Summary({ patientId }) {
           onClick={() => downloadPDF()}
           className="flex items-center gap-2"
         >
-          <Icon icon="solar:printer-bold" width={20} />
+          <Icon icon="solar:printer-linear" width={20} />
           Print / Download PDF
         </Button>
       </div>
@@ -274,7 +274,7 @@ function Summary({ patientId }) {
               key: "patient_details",
               label: (
                 <span className="text-lg font-bold text-slate-800 flex items-center gap-2">
-                  <Icon icon="solar:user-bold-duotone" className="text-blue-500" />
+                  <Icon icon="solar:user-linear" className="text-blue-500" />
                   Full Patient Details
                 </span>
               ),
@@ -292,7 +292,7 @@ function Summary({ patientId }) {
               key: "doctors",
               label: (
                 <span className="text-lg font-bold text-slate-800 flex items-center gap-2">
-                  <Icon icon="solar:stethoscope-bold-duotone" className="text-emerald-500" />
+                  <Icon icon="solar:stethoscope-linear" className="text-emerald-500" />
                   Handled Doctors
                 </span>
               ),
@@ -302,7 +302,7 @@ function Summary({ patientId }) {
                     <div className="flex flex-wrap gap-3">
                       {handledDoctors.map((doc, idx) => (
                         <div key={idx} className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full border border-emerald-100 font-semibold shadow-sm">
-                          <Icon icon="solar:user-id-bold" />
+                          <Icon icon="solar:user-id-linear" />
                           {doc}
                         </div>
                       ))}
@@ -317,7 +317,7 @@ function Summary({ patientId }) {
               key: "diagnosis",
               label: (
                 <span className="text-lg font-bold text-slate-800 flex items-center gap-2">
-                  <Icon icon="solar:clipboard-heart-bold-duotone" className="text-rose-500" />
+                  <Icon icon="solar:clipboard-heart-linear" className="text-rose-500" />
                   Diagnosis & Assessment
                 </span>
               ),
@@ -332,7 +332,7 @@ function Summary({ patientId }) {
               key: "reports",
               label: (
                 <span className="text-lg font-bold text-slate-800 flex items-center gap-2">
-                  <Icon icon="solar:test-tube-minimalistic-bold-duotone" className="text-purple-500" />
+                  <Icon icon="solar:test-tube-minimalistic-linear" className="text-purple-500" />
                   Reports, Tests & Timeline
                 </span>
               ),
@@ -356,7 +356,7 @@ function Summary({ patientId }) {
               key: "treatment",
               label: (
                 <span className="text-lg font-bold text-slate-800 flex items-center gap-2">
-                  <Icon icon="solar:heart-pulse-bold-duotone" className="text-orange-500" />
+                  <Icon icon="solar:heart-pulse-linear" className="text-orange-500" />
                   Treatment Data
                 </span>
               ),

@@ -166,32 +166,36 @@ const DoctorDashboard = () => {
                 <span className="text-[#2040B0] font-bold">{currentDate}</span>
               </p>
             </div>
-            <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 sm:gap-3 bg-slate-50/50 p-2 border border-slate-200 shadow-inner rounded w-full sm:w-auto">
-              <h1 className="text-slate-500 text-[10px] uppercase font-black tracking-widest pl-2 pr-1 w-full sm:w-auto text-center sm:text-left">
+            <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 sm:gap-3 rounded w-full sm:w-auto">
+              <h1 className="text-slate-500 text-[15px] uppercase font-black tracking-widest pl-2 pr-1 w-full sm:w-auto text-center sm:text-left">
                 Quick Links:
               </h1>
               <button
                 onClick={() => navigate("/book-appointment")}
-                className="w-full sm:w-auto px-5 py-2.5 text-[10px] uppercase font-black tracking-widest rounded transition-all duration-300 bg-white shadow-sm text-slate-800 border border-slate-200 hover:text-blue-600"
+                className="flex items-center justify-center gap-1.5 w-full sm:w-auto px-5 py-2.5 text-[10px] uppercase font-black tracking-widest rounded transition-all duration-300  shadow-sm border border-slate-200 hover:text-indigo-600 hover:border-indigo-200 group"
               >
+                <Icon icon="solar:calendar-add-bold-duotone" className="text-white bg-indigo-500 rounded-full group-hover:bg-indigo-600 transition-colors p-1" width={30} height={30} />
                 Internal Appointment
               </button>
               <button
                 onClick={() => navigate("/PHNAppointments")}
-                className="w-full sm:w-auto px-5 py-2.5 text-[10px] uppercase font-black tracking-widest rounded transition-all duration-300 bg-white shadow-sm text-slate-800 border border-slate-200 hover:text-blue-600"
+                className="flex items-center justify-center gap-1.5 w-full sm:w-auto px-5 py-2.5 text-[10px] uppercase font-black tracking-widest rounded transition-all duration-300 bg-white shadow-sm text-slate-800 border border-slate-200 hover:text-emerald-600 hover:border-emerald-200 group"
               >
+                <Icon icon="solar:globus-bold-duotone" className="text-white bg-emerald-500 rounded-full group-hover:bg-emerald-600 transition-colors p-1" width={30} height={30} />
                 Web Appointment
               </button>
               <button
                 onClick={() => navigate("/next-review")}
-                className="w-full sm:w-auto px-5 py-2.5 text-[10px] uppercase font-black tracking-widest rounded transition-all duration-300 bg-white shadow-sm text-slate-800 border border-slate-200 hover:text-blue-600"
+                className="flex items-center justify-center gap-1.5 w-full sm:w-auto px-5 py-2.5 text-[10px] uppercase font-black tracking-widest rounded transition-all duration-300 bg-white shadow-sm text-slate-800 border border-slate-200 hover:text-amber-600 hover:border-amber-200 group"
               >
+                <Icon icon="solar:chat-square-arrow-bold-duotone" className="text-white bg-amber-500 rounded-full group-hover:bg-amber-600 transition-colors p-1" width={30} height={30} />
                 Next Review & Apt
               </button>
               <button
                 onClick={() => navigate("/video-consult")}
-                className="w-full sm:w-auto px-5 py-2.5 text-[10px] uppercase font-black tracking-widest rounded transition-all duration-300 bg-white shadow-sm text-slate-800 border border-slate-200 hover:text-blue-600"
+                className="flex items-center justify-center gap-1.5 w-full sm:w-auto px-5 py-2.5 text-[10px] uppercase font-black tracking-widest rounded transition-all duration-300 bg-white shadow-sm text-slate-800 border border-slate-200 hover:text-rose-600 hover:border-rose-200 group"
               >
+                <Icon icon="solar:videocamera-record-bold-duotone" className="text-white bg-rose-500 rounded-full group-hover:bg-rose-600 transition-colors p-1" width={30} height={30} />
                 Video Chat
               </button>
             </div>
@@ -205,7 +209,7 @@ const DoctorDashboard = () => {
               title="Today's Appointment Total"
               subValue={patientStats?.todayCompletedAppointments || 0}
               total={patientStats?.todayTotalAppointments || 0}
-              icon="solar:clipboard-list-bold-duotone"
+              icon="solar:clipboard-list-linear"
               color="bg-blue-500"
               bgGradient="from-blue-500/10 to-indigo-500/10"
               iconBg="bg-blue-500/10"
@@ -262,7 +266,7 @@ const DoctorDashboard = () => {
               {
                 label: "This Week",
                 count: patientStats?.thisWeekCount || 0,
-                icon: "solar:calendar-bold-duotone",
+                icon: "solar:calendar-linear",
                 color: "bg-sky-500",
                 bgGradient: "from-sky-500/10 to-cyan-500/10",
                 iconBg: "bg-sky-500/10",
@@ -271,7 +275,7 @@ const DoctorDashboard = () => {
               {
                 label: "Next Week",
                 count: patientStats?.nextWeekCount || 0,
-                icon: "solar:calendar-line-duotone",
+                icon: "solar:calendar-linear",
                 color: "bg-amber-500",
                 bgGradient: "from-amber-500/10 to-orange-500/10",
                 iconBg: "bg-amber-500/10",
@@ -280,7 +284,7 @@ const DoctorDashboard = () => {
               {
                 label: "This Month",
                 count: patientStats?.thisMonthCount || 0,
-                icon: "solar:chart-square-bold-duotone",
+                icon: "solar:chart-square-linear",
                 color: "bg-indigo-500",
                 bgGradient: "from-indigo-500/10 to-violet-500/10",
                 iconBg: "bg-indigo-500/10",
@@ -343,7 +347,7 @@ const DoctorDashboard = () => {
                             />
                           ) : (
                             <Icon
-                              icon="solar:user-circle-bold-duotone"
+                              icon="solar:user-circle-linear"
                               className="text-slate-300 text-6xl"
                             />
                           )}
@@ -435,7 +439,7 @@ const DoctorDashboard = () => {
                   ) : (
                     <div className="flex-1 flex flex-col items-center justify-center text-blue-200/50 gap-4 mt-10">
                       <Icon
-                        icon="solar:user-block-bold-duotone"
+                        icon="solar:user-block-linear"
                         width={64}
                         className="opacity-20"
                       />
@@ -473,7 +477,7 @@ const DoctorDashboard = () => {
                 {
                   label: "Today",
                   count: patientStats?.webTodayCount || 0,
-                  icon: "solar:calendar-date-bold-duotone",
+                  icon: "solar:calendar-date-linear",
                   color: "bg-purple-500",
                   bgGradient: "from-purple-500/10 to-fuchsia-500/10",
                   iconBg: "bg-purple-500/10",
@@ -491,7 +495,7 @@ const DoctorDashboard = () => {
                 {
                   label: "This Week",
                   count: patientStats?.webThisWeekCount || 0,
-                  icon: "solar:calendar-bold-duotone",
+                  icon: "solar:calendar-linear",
                   color: "bg-emerald-500",
                   bgGradient: "from-emerald-500/10 to-teal-500/10",
                   iconBg: "bg-emerald-500/10",
@@ -500,7 +504,7 @@ const DoctorDashboard = () => {
                 {
                   label: "Next Week",
                   count: patientStats?.webNextWeekCount || 0,
-                  icon: "solar:calendar-line-duotone",
+                  icon: "solar:calendar-linear",
                   color: "bg-orange-500",
                   bgGradient: "from-orange-500/10 to-amber-500/10",
                   iconBg: "bg-orange-500/10",
@@ -509,7 +513,7 @@ const DoctorDashboard = () => {
                 {
                   label: "This Month",
                   count: patientStats?.webThisMonthCount || 0,
-                  icon: "solar:chart-square-bold-duotone",
+                  icon: "solar:chart-square-linear",
                   color: "bg-rose-500",
                   bgGradient: "from-rose-500/10 to-pink-500/10",
                   iconBg: "bg-rose-500/10",

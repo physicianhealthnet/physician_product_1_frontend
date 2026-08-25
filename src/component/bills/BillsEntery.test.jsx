@@ -6,7 +6,9 @@ import { AxiosInstance } from '../../utilities/AxiosInstance';
 
 // Mock React Router
 vi.mock('react-router-dom', () => ({
-  useParams: () => ({ patient_id: 'PT-123' })
+  useParams: () => ({ patient_id: 'PT-123' }),
+  useLocation: () => ({ pathname: '/bills', state: {} }),
+  useNavigate: () => vi.fn()
 }));
 
 // Mock Axios

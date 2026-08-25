@@ -296,7 +296,7 @@ const PatientInfoTable = () => {
                       <td className="py-4 px-6 text-center text-slate-500 font-medium relative">
                         <div className="flex items-center justify-center gap-2">
                           <Icon 
-                            icon={expandedRow === patient.patientId ? "solar:alt-arrow-down-bold" : "solar:alt-arrow-right-bold"} 
+                            icon={expandedRow === patient.patientId ? "solar:alt-arrow-down-linear" : "solar:alt-arrow-right-linear"} 
                             className="text-primary-500 transition-transform"
                           />
                           <span>{startIdx + index + 1}</span>
@@ -318,7 +318,7 @@ const PatientInfoTable = () => {
                               />
                             ) : (
                               <Icon
-                                icon="solar:user-bold"
+                                icon="solar:user-linear"
                                 className="text-slate-300 text-xs"
                               />
                             )}
@@ -360,7 +360,7 @@ const PatientInfoTable = () => {
                                 className="p-1.5 hover:bg-blue-50 rounded-full text-blue-600 transition-colors flex items-center justify-center shadow-sm border border-transparent hover:border-blue-200"
                                 title="Web Chat"
                               >
-                                <Icon icon="solar:chat-round-dots-bold-duotone" className="text-[16px]" />
+                                <Icon icon="solar:chat-round-dots-linear" className="text-[16px]" />
                               </button>
                             </div>
                           )}
@@ -381,7 +381,7 @@ const PatientInfoTable = () => {
                       <td className="py-4 px-6 text-sm font-medium text-slate-600">
                         <div className="flex items-center gap-1.5">
                           <Icon
-                            icon="solar:calendar-mark-bold-duotone"
+                            icon="solar:calendar-mark-linear"
                             className="text-purple-500"
                           />
                           <span className="font-bold text-slate-800">
@@ -420,7 +420,7 @@ const PatientInfoTable = () => {
                                 }}
                                 className="px-4 py-2 hover:bg-white rounded-lg text-slate-500 hover:text-primary-600 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider duration-300"
                               >
-                                <Icon icon="solar:pen-bold-duotone" width="16" height="16" />
+                                <Icon icon="solar:pen-linear" width="16" height="16" />
                                 <span>Edit</span>
                               </button>
 
@@ -432,7 +432,7 @@ const PatientInfoTable = () => {
                                 }}
                                 className="px-4 py-2 hover:bg-white rounded-lg text-slate-500 hover:text-blue-500 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider duration-300"
                               >
-                                <Icon icon="solar:document-bold-duotone" width="16" height="16" />
+                                <Icon icon="solar:document-linear" width="16" height="16" />
                                 <span>Fullscreen</span>
                               </button>
 
@@ -444,7 +444,7 @@ const PatientInfoTable = () => {
                                 }}
                                 className="px-4 py-2 hover:bg-white rounded-lg text-slate-500 hover:text-rose-500 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider duration-300"
                               >
-                                <Icon icon="solar:heart-pulse-bold-duotone" width="16" height="16" />
+                                <Icon icon="solar:heart-pulse-linear" width="16" height="16" />
                                 <span>Monitor</span>
                               </button>
 
@@ -456,7 +456,7 @@ const PatientInfoTable = () => {
                                 }}
                                 className="px-4 py-2 hover:bg-white rounded-lg text-slate-500 hover:text-emerald-600 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider duration-300"
                               >
-                                <Icon icon="solar:magic-stick-3-bold-duotone" width="16" height="16" />
+                                <Icon icon="solar:magic-stick-3-linear" width="16" height="16" />
                                 <span>AI Report</span>
                               </button>
                             </div>
@@ -512,12 +512,12 @@ const PatientInfoTable = () => {
             <div className="flex justify-between items-center p-6 border-b border-slate-100 bg-slate-50/50">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600">
-                  <Icon icon="solar:magic-stick-3-bold-duotone" className="text-xl" />
+                  <Icon icon="solar:magic-stick-3-linear" className="text-xl" />
                 </div>
                 <h2 className="text-xl font-black text-slate-800 tracking-tight">AI Health Summary for <span className="text-emerald-600">{aiReportPatientName}</span></h2>
               </div>
               <button onClick={() => setIsAIModalOpen(false)} className="text-slate-400 hover:text-red-500 transition-colors p-2 rounded-xl hover:bg-red-50">
-                <Icon icon="solar:close-circle-bold-duotone" className="text-2xl" />
+                <Icon icon="solar:close-circle-linear" className="text-2xl" />
               </button>
             </div>
             <div className="p-8 max-h-[70vh] overflow-y-auto custom-scrollbar bg-white">

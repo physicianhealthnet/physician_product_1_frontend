@@ -148,7 +148,7 @@ const AIGaugeReport = ({ items, title, icon, color }) => {
               <div className="flex items-center justify-between w-full py-1">
                 <div className="flex items-center gap-3">
                   <div className={`w-10 h-10 rounded-lg bg-${color}-50 text-${color}-500 flex items-center justify-center`}>
-                    <Icon icon={icon || "solar:health-bold-duotone"} className="text-xl" />
+                    <Icon icon={icon || "solar:health-linear"} className="text-xl" />
                   </div>
                   <div>
                     <h3 className="text-base font-bold text-slate-800 m-0 uppercase">
@@ -200,7 +200,7 @@ const AIGaugeReport = ({ items, title, icon, color }) => {
                 {item.drug_interactions && (
                   <div className="mt-6 p-4 bg-rose-50/50 rounded-xl border border-rose-100/50 w-full max-w-lg">
                     <div className="flex items-center gap-2 mb-2">
-                      <Icon icon="solar:danger-triangle-bold-duotone" className="text-rose-500 text-lg" />
+                      <Icon icon="solar:danger-triangle-linear" className="text-rose-500 text-lg" />
                       <h4 className="text-sm font-bold text-rose-900 m-0">Drug Interactions</h4>
                     </div>
                     <p className="text-sm font-medium text-rose-700/80 m-0 leading-relaxed">
@@ -211,7 +211,7 @@ const AIGaugeReport = ({ items, title, icon, color }) => {
                 {item.patient_solution && (
                   <div className="mt-6 p-4 bg-indigo-50/50 rounded-xl border border-indigo-100/50 w-full max-w-lg">
                     <div className="flex items-center gap-2 mb-2">
-                      <Icon icon="solar:info-circle-bold-duotone" className="text-indigo-500 text-lg" />
+                      <Icon icon="solar:info-circle-linear" className="text-indigo-500 text-lg" />
                       <h4 className="text-sm font-bold text-indigo-900 m-0">Patient Guide</h4>
                     </div>
                     <p className="text-sm font-medium text-indigo-700/80 m-0 leading-relaxed">
@@ -222,7 +222,7 @@ const AIGaugeReport = ({ items, title, icon, color }) => {
                 {item.treatment_suggestion && (
                   <div className="mt-4 p-4 bg-emerald-50/50 rounded-xl border border-emerald-100/50 w-full max-w-lg">
                     <div className="flex items-center gap-2 mb-2">
-                      <Icon icon="solar:pills-bold-duotone" className="text-emerald-500 text-lg" />
+                      <Icon icon="solar:pills-linear" className="text-emerald-500 text-lg" />
                       <h4 className="text-sm font-bold text-emerald-900 m-0">Treatment & Medicine Suggestion</h4>
                     </div>
                     <p className="text-sm font-medium text-emerald-700/80 m-0 leading-relaxed">

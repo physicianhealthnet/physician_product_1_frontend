@@ -182,17 +182,17 @@ const TodayAppointmentsTable = ({
   const slotStyles = {
     Morning: {
       bg: "bg-amber-50/80 text-amber-700 border-amber-200/50",
-      icon: "solar:sun-2-bold-duotone",
+      icon: "solar:sun-2-linear",
       iconColor: "text-amber-500"
     },
     Afternoon: {
       bg: "bg-sky-50/80 text-sky-700 border-sky-200/50",
-      icon: "solar:clouds-bold-duotone",
+      icon: "solar:clouds-linear",
       iconColor: "text-sky-500"
     },
     Evening: {
       bg: "bg-indigo-50/80 text-indigo-700 border-indigo-200/50",
-      icon: "solar:moon-bold-duotone",
+      icon: "solar:moon-linear",
       iconColor: "text-indigo-600"
     }
   };
@@ -203,7 +203,7 @@ const TodayAppointmentsTable = ({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 xl:mb-5">
         <div className="flex items-center gap-2">
           <div className="p-1.5 bg-blue-50 text-blue-600 rounded-xl shrink-0">
-            <Icon icon="solar:calendar-date-bold-duotone" width={18} />
+            <Icon icon="solar:calendar-date-linear" width={18} />
           </div>
           <div>
             <h3 className="text-slate-800 font-black text-base leading-tight">Today's Appointments</h3>
@@ -232,10 +232,10 @@ const TodayAppointmentsTable = ({
       {/* Tabs Row */}
       <div className="flex flex-nowrap items-center overflow-x-auto whitespace-nowrap gap-1.5 mb-4 xl:mb-5 border-b border-slate-100 pb-3 custom-scrollbar shrink-0">
         {[
-          { id: "all", label: "All Today", count: allTodayAppointments.length, icon: "solar:users-group-two-rounded-bold-duotone", activeBg: "bg-blue-600 text-white" },
-          { id: "morning", label: "Morning", count: morningAppointments.length, icon: "solar:sun-2-bold-duotone", activeBg: "bg-amber-500 text-white" },
-          { id: "afternoon", label: "Afternoon", count: afternoonAppointments.length, icon: "solar:clouds-bold-duotone", activeBg: "bg-sky-500 text-white" },
-          { id: "evening", label: "Evening", count: eveningAppointments.length, icon: "solar:moon-bold-duotone", activeBg: "bg-indigo-600 text-white" }
+          { id: "all", label: "All Today", count: allTodayAppointments.length, icon: "solar:users-group-two-rounded-linear", activeBg: "bg-blue-600 text-white" },
+          { id: "morning", label: "Morning", count: morningAppointments.length, icon: "solar:sun-2-linear", activeBg: "bg-amber-500 text-white" },
+          { id: "afternoon", label: "Afternoon", count: afternoonAppointments.length, icon: "solar:clouds-linear", activeBg: "bg-sky-500 text-white" },
+          { id: "evening", label: "Evening", count: eveningAppointments.length, icon: "solar:moon-linear", activeBg: "bg-indigo-600 text-white" }
         ].map(tab => (
           <button
             key={tab.id}
@@ -389,7 +389,7 @@ const TodayAppointmentsTable = ({
                                 }}
                                 className="px-4 py-2 hover:bg-white rounded-lg text-slate-500 hover:text-primary-600 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider duration-300"
                               >
-                                <Icon icon="solar:pen-bold-duotone" width="16" height="16" />
+                                <Icon icon="solar:pen-linear" width="16" height="16" />
                                 <span>Edit</span>
                               </button>
 
@@ -401,7 +401,7 @@ const TodayAppointmentsTable = ({
                                 }}
                                 className="px-4 py-2 hover:bg-white rounded-lg text-slate-500 hover:text-blue-500 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider duration-300"
                               >
-                                <Icon icon="solar:document-bold-duotone" width="16" height="16" />
+                                <Icon icon="solar:document-linear" width="16" height="16" />
                                 <span>Fullscreen</span>
                               </button>
 
@@ -413,7 +413,7 @@ const TodayAppointmentsTable = ({
                                 }}
                                 className="px-4 py-2 hover:bg-white rounded-lg text-slate-500 hover:text-rose-500 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider duration-300"
                               >
-                                <Icon icon="solar:heart-pulse-bold-duotone" width="16" height="16" />
+                                <Icon icon="solar:heart-pulse-linear" width="16" height="16" />
                                 <span>Monitor</span>
                               </button>
 
@@ -425,7 +425,7 @@ const TodayAppointmentsTable = ({
                                 }}
                                 className="px-4 py-2 hover:bg-white rounded-lg text-slate-500 hover:text-emerald-600 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider duration-300"
                               >
-                                <Icon icon="solar:magic-stick-3-bold-duotone" width="16" height="16" />
+                                <Icon icon="solar:magic-stick-3-linear" width="16" height="16" />
                                 <span>AI Report</span>
                               </button>
                             </div>
@@ -497,12 +497,12 @@ const TodayAppointmentsTable = ({
             <div className="flex justify-between items-center p-6 border-b border-slate-100 bg-slate-50/50">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600">
-                  <Icon icon="solar:magic-stick-3-bold-duotone" className="text-xl" />
+                  <Icon icon="solar:magic-stick-3-linear" className="text-xl" />
                 </div>
                 <h2 className="text-xl font-black text-slate-800 tracking-tight">AI Health Summary for <span className="text-emerald-600">{aiReportPatientName}</span></h2>
               </div>
               <button onClick={() => setIsAIModalOpen(false)} className="text-slate-400 hover:text-red-500 transition-colors p-2 rounded-xl hover:bg-red-50">
-                <Icon icon="solar:close-circle-bold-duotone" className="text-2xl" />
+                <Icon icon="solar:close-circle-linear" className="text-2xl" />
               </button>
             </div>
             <div className="p-8 max-h-[70vh] overflow-y-auto custom-scrollbar bg-white">

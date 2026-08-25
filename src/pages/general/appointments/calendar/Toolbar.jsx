@@ -61,7 +61,7 @@ export default function Toolbar({
           onClick={onPrev}
           className="flex items-center justify-center p-2.5 rounded hover:bg-slate-100 :bg-slate-800 text-slate-400 hover:text-[#14BEF0] transition-all active:scale-90"
         >
-          <Icon icon="solar:alt-arrow-left-bold" width="24" />
+          <Icon icon="solar:alt-arrow-left-linear" width="24" />
         </button>
         <div className="flex flex-col items-center justify-center min-w-[160px] text-center">
           <span className="text-[10px] font-black uppercase text-[#14BEF0] tracking-[0.4em] mb-1.5 leading-none text-indent-[0.4em]">
@@ -77,7 +77,7 @@ export default function Toolbar({
           onClick={onNext}
           className="flex items-center justify-center p-2.5 hover:bg-slate-100 :bg-slate-800 text-slate-400 hover:text-[#14BEF0] transition-all active:scale-90"
         >
-          <Icon icon="solar:alt-arrow-right-bold" width="24" />
+          <Icon icon="solar:alt-arrow-right-linear" width="24" />
         </button>
       </div>
 

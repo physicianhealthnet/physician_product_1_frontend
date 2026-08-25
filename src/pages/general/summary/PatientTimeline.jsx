@@ -35,7 +35,7 @@ export default function PatientTimeline({
         title: "Patient Registered",
         description: `Patient ID: ${patientMinimalData.PHN_ID || 'N/A'}, Phone: ${patientMinimalData.patientPhone || 'N/A'}`,
         color: "blue",
-        icon: "solar:user-bold-duotone",
+        icon: "solar:user-linear",
       });
     }
 
@@ -48,7 +48,7 @@ export default function PatientTimeline({
           ? `Chief Complaint: ${assessmentData.chiefComplaints}`
           : "Assessment details recorded.",
         color: "purple",
-        icon: "solar:clipboard-check-bold-duotone",
+        icon: "solar:clipboard-check-linear",
       });
     }
 
@@ -61,7 +61,7 @@ export default function PatientTimeline({
             title: "Medical Prescription Added",
             description: `Prescribed ${p.medicinesData?.length || 0} medicine(s).`,
             color: "green",
-            icon: "solar:pill-bold-duotone",
+            icon: "solar:pill-linear",
             data: p,
             type: "prescription",
           });
@@ -78,7 +78,7 @@ export default function PatientTimeline({
             title: "Lab Test Ordered",
             description: `Test: ${l.raw?.labType || l.labType || 'N/A'}`,
             color: "orange",
-            icon: "solar:test-tube-bold-duotone",
+            icon: "solar:test-tube-linear",
             extra: l.status || l.raw?.status,
             data: l.raw || l,
             type: "lab",
@@ -96,7 +96,7 @@ export default function PatientTimeline({
             title: "Scan Ordered",
             description: `Scan: ${s.raw?.scanType || s.scanType || 'N/A'}`,
             color: "orange",
-            icon: "solar:scanner-bold-duotone",
+            icon: "solar:scanner-linear",
             extra: s.status || s.raw?.status,
             data: s.raw || s,
             type: "scan",
@@ -115,7 +115,7 @@ export default function PatientTimeline({
             title: "Session Note Added",
             description: `Recorded session progress.`,
             color: "teal",
-            icon: "solar:notes-bold-duotone",
+            icon: "solar:notes-linear",
             data: n,
             type: "sessionNote",
           });
@@ -133,7 +133,7 @@ export default function PatientTimeline({
             title: "Treatment Tracked",
             description: `Treatment logged.`,
             color: "cyan",
-            icon: "solar:heart-pulse-bold-duotone",
+            icon: "solar:heart-pulse-linear",
             data: t,
             type: "treatment",
           });
@@ -151,7 +151,7 @@ export default function PatientTimeline({
             title: "Exercise Logged",
             description: `Exercise summary added.`,
             color: "volcano",
-            icon: "solar:dumbbell-large-bold-duotone",
+            icon: "solar:dumbbell-large-linear",
             data: e,
             type: "exercise",
           });
@@ -169,7 +169,7 @@ export default function PatientTimeline({
             title: "Bill Generated",
             description: `Total: ₹${b.totalAmount || 0} (${b.modeOfPayment || 'Unknown mode'})`,
             color: "gold",
-            icon: "solar:bill-list-bold-duotone",
+            icon: "solar:bill-list-linear",
             extra: `ID: ${b.treatmentBillId || 'N/A'}`,
             data: b,
             type: "bill",
@@ -198,7 +198,7 @@ export default function PatientTimeline({
     return (
       <Card className="mt-8 shadow-sm">
         <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-          <Icon icon="solar:history-bold-duotone" className="text-blue-500" />
+          <Icon icon="solar:history-linear" className="text-blue-500" />
           Patient Timeline
         </h2>
         <p className="text-slate-500">No timeline data available for this patient.</p>
@@ -209,7 +209,7 @@ export default function PatientTimeline({
   return (
     <Card className="mt-8 shadow-sm" data-html2canvas-ignore="false">
       <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2 border-b border-slate-100 pb-4">
-        <Icon icon="solar:history-bold-duotone" className="text-blue-500" />
+        <Icon icon="solar:history-linear" className="text-blue-500" />
         Patient Activity Timeline
       </h2>
       <div className="px-4 py-2">
@@ -228,7 +228,7 @@ export default function PatientTimeline({
                   <div className="flex items-center gap-3">
                     {event.data && (
                       <span className="text-xs text-blue-500 font-semibold uppercase tracking-wider flex items-center gap-1">
-                        View <Icon icon="solar:arrow-right-line-duotone" />
+                        View <Icon icon="solar:alt-arrow-right-linear" />
                       </span>
                     )}
                     <span className="text-xs font-semibold text-slate-500 bg-white px-2 py-1 rounded shadow-sm border border-slate-100">

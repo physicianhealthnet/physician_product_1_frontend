@@ -40,6 +40,6 @@ describe('Input Component', () => {
     const input = screen.getByPlaceholderText('Custom');
     expect(input).toHaveClass('custom-input');
     // Check container
-    expect(input.parentElement).toHaveClass('custom-container');
+    expect(input.closest('.flex')).toHaveClass('custom-container');
   });
 });

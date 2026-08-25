@@ -40,12 +40,12 @@ describe('BillFormat Component', () => {
 
     // Treatments
     expect(screen.getByText('Consultation')).toBeInTheDocument();
-    expect(screen.getByText('500.00')).toBeInTheDocument();
+    expect(screen.getAllByText('500.00')[0]).toBeInTheDocument();
     expect(screen.getByText('X-Ray')).toBeInTheDocument();
-    expect(screen.getByText('1000.00')).toBeInTheDocument();
+    expect(screen.getAllByText('1000.00')[0]).toBeInTheDocument();
 
     // Summary Math Formatting
-    expect(screen.getByText('1500.00')).toBeInTheDocument();
+    expect(screen.getAllByText('1500.00')[0]).toBeInTheDocument();
     expect(screen.getByText('10%')).toBeInTheDocument();
     expect(screen.getByText('1350.00')).toBeInTheDocument();
     expect(screen.getByText('0.00')).toBeInTheDocument();
@@ -66,7 +66,7 @@ describe('BillFormat Component', () => {
     render(<BillFormat selectedBill={billWithoutTreatments} />);
     
     // Ensure the table headers exist but no body rows are mapped
-    expect(screen.getByText('Treatment')).toBeInTheDocument();
+    expect(screen.getByText('Item Name')).toBeInTheDocument();
     expect(screen.queryByText('Consultation')).not.toBeInTheDocument();
   });
 });

@@ -41,7 +41,7 @@ const SearchPicker = ({ label, options, value, onChange, placeholder }) => {
           </span>
         )}
         <Icon
-          icon="solar:alt-arrow-down-bold-duotone"
+          icon="solar:alt-arrow-down-linear"
           className={`text-slate-400 transition-transform ${isOpen ? "rotate-180 text-blue-500" : ""}`}
         />
       </div>
@@ -300,7 +300,7 @@ function ScanAppointmentCreateForm() {
                 onClick={() => setIsModalOpen(true)}
                 className="flex items-center gap-2 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-5 py-3 rounded-xl text-sm font-black shadow-lg shadow-blue-500/30 transition-all hover:scale-105 uppercase tracking-widest"
               >
-                <Icon icon="solar:file-send-bold-duotone" className="text-lg" />{" "}
+                <Icon icon="solar:file-send-linear" className="text-lg" />{" "}
                 Create Appointment
               </button>
             </div>
@@ -393,7 +393,7 @@ function ScanAppointmentCreateForm() {
                               title="Schedule Now"
                             >
                               <Icon
-                                icon="solar:calendar-add-bold-duotone"
+                                icon="solar:calendar-add-linear"
                                 className="text-sm"
                               />{" "}
                               Schedule
@@ -404,14 +404,14 @@ function ScanAppointmentCreateForm() {
                             className="flex items-center gap-1 w-8 h-8 justify-center rounded-lg text-emerald-600 bg-emerald-50 border border-emerald-100 hover:bg-emerald-100 hover:scale-110 transition-all"
                             title="Edit"
                           >
-                            <Icon icon="solar:pen-bold-duotone" />
+                            <Icon icon="solar:pen-linear" />
                           </button>
                           <button
                             onClick={() => handleDelete(row._id)}
                             className="flex items-center gap-1 w-8 h-8 justify-center rounded-lg text-rose-600 bg-rose-50 border border-rose-100 hover:bg-rose-100 hover:scale-110 transition-all"
                             title="Delete"
                           >
-                            <Icon icon="solar:trash-bin-trash-bold-duotone" />
+                            <Icon icon="solar:trash-bin-trash-linear" />
                           </button>
                         </div>
                       </td>
@@ -422,7 +422,7 @@ function ScanAppointmentCreateForm() {
                     <td colSpan="5" className="px-6 py-24 text-center">
                       <div className="flex flex-col items-center justify-center gap-2 text-slate-400">
                         <Icon
-                          icon="solar:folder-open-bold-duotone"
+                          icon="solar:folder-open-linear"
                           className="text-4xl opacity-50"
                         />
                         <span className="font-medium">
@@ -451,7 +451,7 @@ function ScanAppointmentCreateForm() {
                 className="text-slate-400 hover:text-red-500 transition-colors p-2 rounded-xl hover:bg-red-50"
               >
                 <Icon
-                  icon="solar:close-circle-bold-duotone"
+                  icon="solar:close-circle-linear"
                   className="text-2xl"
                 />
               </button>

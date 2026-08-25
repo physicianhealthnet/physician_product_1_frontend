@@ -286,7 +286,7 @@ const PatientDetailsTable = ({
                       <td className="p-4 text-sm font-medium text-slate-600">
                         <div className="flex items-center gap-1.5">
                           <Icon
-                            icon="solar:calendar-mark-bold-duotone"
+                            icon="solar:calendar-mark-linear"
                             className={
                               priorityApt
                                 ? todayApt
@@ -346,7 +346,7 @@ const PatientDetailsTable = ({
                                 }}
                                 className="px-4 py-2 hover:bg-white rounded-lg text-slate-500 hover:text-primary-600 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider duration-300"
                               >
-                                <Icon icon="solar:pen-bold-duotone" width="16" height="16" />
+                                <Icon icon="solar:pen-linear" width="16" height="16" />
                                 <span>Edit</span>
                               </button>
 
@@ -358,7 +358,7 @@ const PatientDetailsTable = ({
                                 }}
                                 className="px-4 py-2 hover:bg-white rounded-lg text-slate-500 hover:text-blue-500 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider duration-300"
                               >
-                                <Icon icon="solar:document-bold-duotone" width="16" height="16" />
+                                <Icon icon="solar:document-linear" width="16" height="16" />
                                 <span>Fullscreen</span>
                               </button>
 
@@ -370,7 +370,7 @@ const PatientDetailsTable = ({
                                 }}
                                 className="px-4 py-2 hover:bg-white rounded-lg text-slate-500 hover:text-rose-500 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider duration-300"
                               >
-                                <Icon icon="solar:heart-pulse-bold-duotone" width="16" height="16" />
+                                <Icon icon="solar:heart-pulse-linear" width="16" height="16" />
                                 <span>Monitor</span>
                               </button>
 
@@ -382,7 +382,7 @@ const PatientDetailsTable = ({
                                 }}
                                 className="px-4 py-2 hover:bg-white rounded-lg text-slate-500 hover:text-emerald-600 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider duration-300"
                               >
-                                <Icon icon="solar:magic-stick-3-bold-duotone" width="16" height="16" />
+                                <Icon icon="solar:magic-stick-3-linear" width="16" height="16" />
                                 <span>AI Report</span>
                               </button>
                             </div>
@@ -423,12 +423,12 @@ const PatientDetailsTable = ({
             <div className="flex justify-between items-center p-6 border-b border-slate-100 bg-slate-50/50">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600">
-                  <Icon icon="solar:magic-stick-3-bold-duotone" className="text-xl" />
+                  <Icon icon="solar:magic-stick-3-linear" className="text-xl" />
                 </div>
                 <h2 className="text-xl font-black text-slate-800 tracking-tight">AI Health Summary for <span className="text-emerald-600">{aiReportPatientName}</span></h2>
               </div>
               <button onClick={() => setIsAIModalOpen(false)} className="text-slate-400 hover:text-red-500 transition-colors p-2 rounded-xl hover:bg-red-50">
-                <Icon icon="solar:close-circle-bold-duotone" className="text-2xl" />
+                <Icon icon="solar:close-circle-linear" className="text-2xl" />
               </button>
             </div>
             <div className="p-8 max-h-[70vh] overflow-y-auto custom-scrollbar bg-white">

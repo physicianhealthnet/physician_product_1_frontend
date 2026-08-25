@@ -13,6 +13,7 @@ import Prescription from "../prescription/Prescription";
 import PrescriptionFormatShow from "../prescription/PrescriptionFormatShow";
 import PatientDocuments from "../../../component/patientDetails/PatientDocuments";
 import chatSocketService from "../../../utilities/chatSocketService";
+import DentalAssessment from "./DentalAssessment";
 import { anesthesiologistAssessmentSections } from "./seperate_assessments/anesthesiologistAssessment";
 import { cardiologistSections } from "./seperate_assessments/cardiologistAssessment";
 import { cardiothoracicSurgeonSections } from "./seperate_assessments/cardiothoracicSurgeonAssessment";
@@ -266,7 +267,7 @@ export default function PhysicianAssessmentSheet({ patientId }) {
       categories.push("Cardiology History", "Respiratory History");
     } else if (normalizedDept.includes("dermatologist")) {
       categories.push("Dermatology History");
-    } else if (normalizedDept.includes("ent") || normalizedDept.includes("otolaryngologist")) {
+    } else if (/\bent\b/.test(normalizedDept) || normalizedDept.includes("otolaryngologist")) {
       categories.push("ENT History");
     } else if (normalizedDept.includes("ophthalmologist")) {
       categories.push("Ophthalmology History");
@@ -280,7 +281,7 @@ export default function PhysicianAssessmentSheet({ patientId }) {
       categories.push("Endocrinology History");
     } else if (normalizedDept.includes("psychiatrist")) {
       categories.push("Psychiatric History");
-    } else if (normalizedDept.includes("dentist")) {
+    } else if (normalizedDept.includes("dentist") || normalizedDept.includes("dental")) {
       categories.push("Dental History");
     } else if (normalizedDept.includes("gastroenterologist")) {
       categories.push("Gastroenterology History");
@@ -1240,6 +1241,42 @@ export default function PhysicianAssessmentSheet({ patientId }) {
 
   const renderSpecialistAssessmentContent = () => {
     const activeDept = specialistAssessment.selectedDept || "General Physician";
+    
+    // CUSTOM OVERRIDE FOR DENTIST
+    if (activeDept === "Dentist") {
+      return (
+        <div className="p-4 bg-white rounded-b-xl space-y-6">
+          <div className="mb-6 flex flex-col md:flex-row md:items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
+            <div className="flex-1">
+              <label className="text-[10px] font-black tracking-widest uppercase text-slate-400 pl-1 mb-2 block">
+                Active Assessment Specialty (Department)
+              </label>
+              <select
+                className="w-full md:w-80 rounded-xl border border-slate-200 p-3 text-sm font-medium focus:border-blue-500 focus:outline-none bg-white shadow-sm transition-all"
+                value={activeDept}
+                disabled={isReadOnlyView}
+                onChange={(e) => {
+                  setSpecialistAssessment({ ...specialistAssessment, selectedDept: e.target.value });
+                  setSpecialistStep(0);
+                }}
+              >
+                {departmentList.map((dep) => (
+                  <option key={dep} value={dep}>{dep}</option>
+                ))}
+              </select>
+            </div>
+            <div className="text-xs text-slate-500 bg-white p-3 rounded-lg border border-slate-100 max-w-sm">
+              Toggle departments to view/fill assessment protocols. Stored data persists across all selected specialties.
+            </div>
+          </div>
+          
+          <div className="border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+            <DentalAssessment isEmbedded={true} />
+          </div>
+        </div>
+      );
+    }
+    
     const rawSections = departmentSectionsMap[activeDept] || generalPhysicianSections;
     const sections = rawSections.filter(sec => 
       !sec.title.toLowerCase().includes("patient info") && 
@@ -1474,36 +1511,6 @@ export default function PhysicianAssessmentSheet({ patientId }) {
   return (
     <div className="p-6 bg-slate-50  min-h-screen">
       <Card className="max-w-7xl mx-auto shadow-sm">
-        {/* PATIENT INFO */}
-        <h2 className="text-xl font-bold mb-4 text-slate-800  border-b border-slate-200  pb-2">
-          Patient Information
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          {loading
-            ? [...Array(6)].map((_, i) => (
-                <div key={i} className="space-y-2">
-                  <Skeleton className="h-4 w-1/4" />
-                  <Skeleton className="h-10 w-full" />
-                </div>
-              ))
-            : Object.entries(patientInfo).map(([k, v]) =>
-                k === "PHN_ID" ? (
-                  ""
-                ) : (
-                  <div
-                    key={k}
-                    className="flex flex-col bg-white p-3 rounded-lg border border-slate-200 shadow-sm"
-                  >
-                    <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
-                      {k}
-                    </span>
-                    <span className="text-base font-medium text-slate-800">
-                      {v || "N/A"}
-                    </span>
-                  </div>
-                ),
-              )}
-        </div>
 
         {/* DOCTOR ASSESSMENT TABS */}
         <Tabs
@@ -1533,13 +1540,13 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                 id: 1,
                 title: "History & Primary Complaint",
                 subtitle: "Medical history, primary complaint, and vitals",
-                icon: "solar:notes-bold-duotone",
+                icon: "solar:notes-linear",
               },
               {
                 id: 2,
                 title: "Diagnosis & Treatment Plan",
                 subtitle: "Diagnosis, prescriptions, lab orders, and clinical notes",
-                icon: "solar:medical-kit-bold-duotone",
+                icon: "solar:medical-kit-linear",
               },
             ].map((step) => {
               const isActive = assessmentSlideStep === step.id;
@@ -2779,10 +2786,10 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                                     {item.label === "Prescription" && item.val === "Yes" && (
                                       <div className="flex gap-2 mt-3 w-full justify-center">
                                         <button type="button" onClick={() => setPrescriptionModalVisible(true)} className="text-[10px] bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded font-bold transition-all shadow-sm flex items-center gap-1">
-                                          <Icon icon="solar:add-circle-bold" /> Create
+                                          <Icon icon="solar:add-circle-linear" /> Create
                                         </button>
                                         <button type="button" onClick={() => handleViewReport("Prescription")} className="text-[10px] bg-white border border-slate-200 hover:bg-slate-100 text-slate-600 px-2 py-1 rounded font-bold transition-all shadow-sm flex items-center gap-1">
-                                          <Icon icon="solar:eye-bold" /> View
+                                          <Icon icon="solar:eye-linear" /> View
                                         </button>
                                       </div>
                                     )}
@@ -2795,7 +2802,7 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                                   onClick={addDiagnosis}
                                   className="h-[50px] px-8 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20"
                                 >
-                                  <Icon icon="solar:add-circle-bold-duotone" className="text-lg" />
+                                  <Icon icon="solar:add-circle-linear" className="text-lg" />
                                   Add Diagnosis
                                 </Button>
                               </div>
@@ -2823,14 +2830,14 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                                         <td className="px-4 py-3 font-semibold text-slate-800">{i + 1}</td>
                                         <td className="px-4 py-3 whitespace-nowrap">
                                           <div className="flex items-center gap-1.5 bg-slate-50 px-2 py-1 rounded-md border border-slate-200 w-fit">
-                                            <Icon icon="solar:calendar-bold-duotone" className="text-slate-400" />
+                                            <Icon icon="solar:calendar-linear" className="text-slate-400" />
                                             {d.date}
                                           </div>
                                         </td>
                                         <td className="px-4 py-3 whitespace-nowrap">
                                           {d.doctorName ? (
                                             <span className="text-[10px] font-black tracking-widest uppercase text-blue-600 bg-blue-50 px-2 py-1 rounded-md border border-blue-100 flex items-center gap-1 w-fit">
-                                              <Icon icon="solar:user-md-bold-duotone" className="text-blue-500" />
+                                              <Icon icon="solar:user-md-linear" className="text-blue-500" />
                                               Dr. {d.doctorName}
                                             </span>
                                           ) : "-"}
@@ -2854,7 +2861,7 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                                               { label: "MRI", val: d.mriGiven }
                                             ].map(item => (
                                               <div key={item.label} className="text-[10px] font-bold flex items-center gap-1">
-                                                <Icon icon={item.val === "Yes" ? "solar:check-circle-bold-duotone" : "solar:close-circle-bold-duotone"} className={item.val === "Yes" ? "text-green-500" : "text-slate-300"} />
+                                                <Icon icon={item.val === "Yes" ? "solar:check-circle-linear" : "solar:close-circle-linear"} className={item.val === "Yes" ? "text-green-500" : "text-slate-300"} />
                                                 <span className={item.val === "Yes" ? "text-green-700" : "text-slate-400"}> {item.label} </span>
                                               </div>
                                             ))}
@@ -2867,7 +2874,7 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                                               onClick={() => removeDiagnosis(i)}
                                               title="Remove Diagnosis"
                                             >
-                                              <Icon icon="solar:trash-bin-trash-bold-duotone" className="text-lg" />
+                                              <Icon icon="solar:trash-bin-trash-linear" className="text-lg" />
                                             </button>
                                           </td>
                                         )}
@@ -3002,7 +3009,7 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                                         handleViewReport(item.label, latestActiveDiagnosis.date);
                                       }}
                                     >
-                                      <Icon icon={item.isReady ? "solar:eye-bold-duotone" : "solar:clock-circle-bold-duotone"} />
+                                      <Icon icon={item.isReady ? "solar:eye-linear" : "solar:clock-circle-linear"} />
                                       {item.isReady ? "View" : "Pending"}
                                     </button>
                                   </div>
@@ -3051,10 +3058,10 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                                     {item.label === "Prescription" && item.val === "Yes" && (
                                       <div className="flex gap-2 mt-3 w-full justify-center">
                                         <button type="button" onClick={() => setPrescriptionModalVisible(true)} className="text-[10px] bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded font-bold transition-all shadow-sm flex items-center gap-1">
-                                          <Icon icon="solar:add-circle-bold" /> Create
+                                          <Icon icon="solar:add-circle-linear" /> Create
                                         </button>
                                         <button type="button" onClick={() => handleViewReport("Prescription")} className="text-[10px] bg-white border border-slate-200 hover:bg-slate-100 text-slate-600 px-2 py-1 rounded font-bold transition-all shadow-sm flex items-center gap-1">
-                                          <Icon icon="solar:eye-bold" /> View
+                                          <Icon icon="solar:eye-linear" /> View
                                         </button>
                                       </div>
                                     )}
@@ -3093,7 +3100,7 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                                   onClick={addTreatmentPlan}
                                   className="h-[50px] px-8 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20"
                                 >
-                                  <Icon icon="solar:add-circle-bold-duotone" className="text-lg" />
+                                  <Icon icon="solar:add-circle-linear" className="text-lg" />
                                   Add Treatment Plan
                                 </Button>
                               </div>
@@ -3135,7 +3142,7 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                                             handleViewReport(label, p.date);
                                           }}
                                         >
-                                          <Icon icon="solar:eye-bold-duotone" /> Ready to pickup
+                                          <Icon icon="solar:eye-linear" /> Ready to pickup
                                         </button>
                                       );
                                     };
@@ -3145,14 +3152,14 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                                       <td className="px-4 py-3 font-semibold text-slate-800">{i + 1}</td>
                                       <td className="px-4 py-3 whitespace-nowrap">
                                         <div className="flex items-center gap-1.5 bg-slate-50 px-2 py-1 rounded-md border border-slate-200 w-fit">
-                                          <Icon icon="solar:calendar-bold-duotone" className="text-slate-400" />
+                                          <Icon icon="solar:calendar-linear" className="text-slate-400" />
                                           {p.date}
                                         </div>
                                       </td>
                                       <td className="px-4 py-3 whitespace-nowrap">
                                         {p.doctorName ? (
                                           <span className="text-[10px] font-black tracking-widest uppercase text-blue-600 bg-blue-50 px-2 py-1 rounded-md border border-blue-100 flex items-center gap-1 w-fit">
-                                            <Icon icon="solar:user-md-bold-duotone" className="text-blue-500" />
+                                            <Icon icon="solar:user-md-linear" className="text-blue-500" />
                                             Dr. {p.doctorName}
                                           </span>
                                         ) : "-"}
@@ -3196,7 +3203,7 @@ export default function PhysicianAssessmentSheet({ patientId }) {
                                             onClick={() => removeTreatmentPlan(i)}
                                             title="Remove Treatment Plan"
                                           >
-                                            <Icon icon="solar:trash-bin-trash-bold-duotone" className="text-lg" />
+                                            <Icon icon="solar:trash-bin-trash-linear" className="text-lg" />
                                           </button>
                                         </td>
                                       )}
@@ -3398,7 +3405,7 @@ export default function PhysicianAssessmentSheet({ patientId }) {
       <Modal
         title={
           <div className="flex items-center gap-2 text-lg font-black text-slate-800 uppercase tracking-widest border-b border-slate-100 pb-3">
-            <Icon icon="solar:pill-bold-duotone" className="text-2xl text-blue-500" />
+            <Icon icon="solar:pill-linear" className="text-2xl text-blue-500" />
             Create / Edit Prescription
           </div>
         }
@@ -3408,7 +3415,7 @@ export default function PhysicianAssessmentSheet({ patientId }) {
           getDocsData();
         }}
         footer={null}
-        width={1000}
+        width={1300}
         centered
         destroyOnClose
       >

@@ -40,6 +40,30 @@ const handleMockRequest = (config) => {
     return mockDashboardData;
   }
 
+  // 1.5. Login Mock
+  if (lowerUrl.includes("/user/login")) {
+    let payload = {};
+    try {
+      if (config.data) payload = JSON.parse(config.data);
+    } catch (e) {}
+    
+    return {
+      success: true,
+      message: "Login successful",
+      user: {
+        _id: "demo-user-123",
+        userId: "USER-DEMO",
+        userName: payload.userType === "master" ? "Demo Master Admin" : "Demo User",
+        userType: payload.userType || "master",
+        email: payload.email || "demo@phn.com",
+        phone: "9999999999",
+        clinicId: "PHN-C-DEMO",
+        department: payload.department || "General",
+        isFirstLogin: false
+      }
+    };
+  }
+
   // 2. Doctor / Staff APIs
   if (lowerUrl.includes("/get-doctor") || lowerUrl.includes("/doctor") || lowerUrl.includes("/staff") || lowerUrl.includes("/user/get-all")) {
     return {
@@ -616,8 +640,7 @@ const standardAdapter = typeof axios.getAdapter === "function"
 const customAdapter = async (config) => {
   const isDemo = localStorage.getItem("isDemoMode") === "true";
   const url = config.url || "";
-  const isAuthOrCheckRoute = url.includes("/user/login") || 
-                             url.includes("/user/check-new-account") || 
+  const isAuthOrCheckRoute = url.includes("/user/check-new-account") || 
                              url.includes("/user/set-password");
 
   if (isDemo && !isAuthOrCheckRoute) {

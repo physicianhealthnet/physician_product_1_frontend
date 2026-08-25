@@ -52,6 +52,7 @@ const PHNAppointments = lazy(
   () => import("./pages/general/appointments/PHNAppointments"),
 );
 const PatientChat = lazy(() => import("./component/chat/PatientChat"));
+const WhatsappChat = lazy(() => import("./component/chat/WhatsappChat"));
 const Pharmacy = lazy(() => import("./pages/general/pharmacy/Pharmacy"));
 const ScanPrescriptionFromTheDoctor = lazy(
   () => import("./component/scan/ScanPrescriptionFromTheDoctor"),
@@ -311,6 +312,14 @@ const AppContent = () => {
             element={
               <PageTransition>
                 <PatientChat />
+              </PageTransition>
+            }
+          />
+          <Route
+            path="/whatsapp-chat"
+            element={
+              <PageTransition>
+                <WhatsappChat />
               </PageTransition>
             }
           />

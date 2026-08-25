@@ -238,10 +238,10 @@ function Bill() {
             <StaggerItem>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
                 {[
-                  { label: "Today's Billing", count: todayMetrics.amount, total: todayMetrics.count, isCurrency: true, isCustomTotal: true, color: "bg-blue-500", bgGradient: "from-blue-500/10 to-indigo-500/10", iconBg: "bg-blue-500/10", iconColor: "text-blue-600", icon: "solar:calendar-date-bold-duotone" },
-                  { label: "This Week", count: weekMetrics.amount, total: weekMetrics.count, isCurrency: true, isCustomTotal: true, color: "bg-emerald-500", bgGradient: "from-emerald-500/10 to-teal-500/10", iconBg: "bg-emerald-500/10", iconColor: "text-emerald-600", icon: "solar:calendar-minimalistic-bold-duotone" },
-                  { label: "This Month", count: monthMetrics.amount, total: monthMetrics.count, isCurrency: true, isCustomTotal: true, color: "bg-purple-500", bgGradient: "from-purple-500/10 to-fuchsia-500/10", iconBg: "bg-purple-500/10", iconColor: "text-purple-600", icon: "solar:calendar-mark-bold-duotone" },
-                  { label: "Total Collected", count: totalCollected, total: totalBilledAmount, isCurrency: true, color: "bg-orange-500", bgGradient: "from-orange-500/10 to-amber-500/10", iconBg: "bg-orange-500/10", iconColor: "text-orange-600", icon: "solar:wallet-money-bold-duotone" },
+                  { label: "Today's Billing", count: todayMetrics.amount, total: todayMetrics.count, isCurrency: true, isCustomTotal: true, color: "bg-blue-500", bgGradient: "from-blue-500/10 to-indigo-500/10", iconBg: "bg-blue-500/10", iconColor: "text-blue-600", icon: "solar:calendar-date-linear" },
+                  { label: "This Week", count: weekMetrics.amount, total: weekMetrics.count, isCurrency: true, isCustomTotal: true, color: "bg-emerald-500", bgGradient: "from-emerald-500/10 to-teal-500/10", iconBg: "bg-emerald-500/10", iconColor: "text-emerald-600", icon: "solar:calendar-minimalistic-linear" },
+                  { label: "This Month", count: monthMetrics.amount, total: monthMetrics.count, isCurrency: true, isCustomTotal: true, color: "bg-purple-500", bgGradient: "from-purple-500/10 to-fuchsia-500/10", iconBg: "bg-purple-500/10", iconColor: "text-purple-600", icon: "solar:calendar-mark-linear" },
+                  { label: "Total Collected", count: totalCollected, total: totalBilledAmount, isCurrency: true, color: "bg-orange-500", bgGradient: "from-orange-500/10 to-amber-500/10", iconBg: "bg-orange-500/10", iconColor: "text-orange-600", icon: "solar:wallet-money-linear" },
                 ].map((c, i) => (
                   <div key={i} className={`group relative overflow-hidden bg-linear-to-br ${c.bgGradient} backdrop-blur-xl border border-slate-200/60 rounded-xl hover:scale-[1.02] transition-all duration-300`}>
                     <div className={`absolute -top-12 -right-12 w-32 h-32 rounded-full blur-2xl opacity-10 transition-opacity group-hover:opacity-20 ${c.color}`} />
@@ -288,9 +288,9 @@ function Bill() {
             <div className="flex flex-col gap-8">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[
-                  { label: "Today's Billing", count: todayMetrics.count, amount: todayMetrics.amount, color: "bg-blue-500", bgGradient: "from-blue-500/10 to-indigo-500/10", iconBg: "bg-blue-500/10", iconColor: "text-blue-600", icon: "solar:calendar-date-bold-duotone" },
-                  { label: "This Week", count: weekMetrics.count, amount: weekMetrics.amount, color: "bg-emerald-500", bgGradient: "from-emerald-500/10 to-teal-500/10", iconBg: "bg-emerald-500/10", iconColor: "text-emerald-600", icon: "solar:calendar-minimalistic-bold-duotone" },
-                  { label: "This Month", count: monthMetrics.count, amount: monthMetrics.amount, color: "bg-purple-500", bgGradient: "from-purple-500/10 to-fuchsia-500/10", iconBg: "bg-purple-500/10", iconColor: "text-purple-600", icon: "solar:calendar-mark-bold-duotone" },
+                  { label: "Today's Billing", count: todayMetrics.count, amount: todayMetrics.amount, color: "bg-blue-500", bgGradient: "from-blue-500/10 to-indigo-500/10", iconBg: "bg-blue-500/10", iconColor: "text-blue-600", icon: "solar:calendar-date-linear" },
+                  { label: "This Week", count: weekMetrics.count, amount: weekMetrics.amount, color: "bg-emerald-500", bgGradient: "from-emerald-500/10 to-teal-500/10", iconBg: "bg-emerald-500/10", iconColor: "text-emerald-600", icon: "solar:calendar-minimalistic-linear" },
+                  { label: "This Month", count: monthMetrics.count, amount: monthMetrics.amount, color: "bg-purple-500", bgGradient: "from-purple-500/10 to-fuchsia-500/10", iconBg: "bg-purple-500/10", iconColor: "text-purple-600", icon: "solar:calendar-mark-linear" },
                 ].map((c, i) => (
                   <div key={i} className={`group relative overflow-hidden bg-linear-to-br ${c.bgGradient} backdrop-blur-xl border border-slate-200/60 rounded-2xl hover:scale-[1.02] transition-all duration-300`}>
                     <div className={`absolute -top-12 -right-12 w-32 h-32 rounded-full blur-2xl opacity-10 transition-opacity group-hover:opacity-20 ${c.color}`} />
@@ -343,7 +343,7 @@ function Bill() {
           <StaggerItem>
             <div className="flex flex-col items-center justify-center p-20 bg-slate-50/50 rounded border border-slate-200 shadow-inner">
               <div className="w-20 h-20 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mb-6">
-                <Icon icon="solar:documents-minimalistic-bold-duotone" className="text-4xl" />
+                <Icon icon="solar:documents-minimalistic-linear" className="text-4xl" />
               </div>
               <h2 className="text-2xl font-black text-slate-800 mb-2">Reports Generating Module</h2>
               <p className="text-slate-500 font-medium tracking-wide">Premium reports generator will be available soon.</p>
@@ -420,14 +420,14 @@ function Bill() {
                               className="p-3 bg-white text-slate-400 hover:text-blue-600 rounded-xl transition-all shadow-sm border border-slate-200 hover:scale-110 active:scale-95"
                               title="View"
                             >
-                              <Icon icon="solar:eye-bold-duotone" width="20" />
+                              <Icon icon="solar:eye-linear" width="20" />
                             </button>
                             <button 
                               onClick={() => setSelectedBill(b)}
                               className="p-3 bg-orange-50 text-orange-600 hover:bg-orange-600 hover:text-white rounded-xl transition-all shadow-sm border border-orange-100 hover:scale-110 active:scale-95"
                               title="Edit"
                             >
-                              <Icon icon="solar:pen-bold-duotone" width="20" />
+                              <Icon icon="solar:pen-linear" width="20" />
                             </button>
                           </div>
                         </td>

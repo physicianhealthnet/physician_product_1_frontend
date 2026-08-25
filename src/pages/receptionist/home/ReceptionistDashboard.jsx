@@ -103,7 +103,7 @@ const ReceptionistDashboard = () => {
           <StaggerItem>
             <div className="flex flex-col items-center justify-center py-40 bg-white rounded-[40px] border border-slate-200 border-dashed gap-6">
               <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center">
-                <Icon icon="solar:users-group-two-rounded-bold-duotone" width={60} className="text-slate-200" />
+                <Icon icon="solar:users-group-two-rounded-linear" width={60} className="text-slate-200" />
               </div>
               <p className="font-black text-slate-400 uppercase tracking-widest text-sm text-center px-10">
                 Please select a physician to access the clinical dashboard
@@ -166,7 +166,7 @@ const DoctorDashboardContent = ({ dashboardData, doctorName }) => {
           title="Daily Total"
           subValue={patientStats?.todayCompletedAppointments || 0}
           total={patientStats?.todayTotalAppointments || 0}
-          icon="solar:clipboard-list-bold-duotone"
+          icon="solar:clipboard-list-linear"
           color="bg-blue-500"
           bgGradient="from-blue-500/10 to-indigo-500/10"
           iconBg="bg-blue-500/10"
@@ -176,7 +176,7 @@ const DoctorDashboardContent = ({ dashboardData, doctorName }) => {
           title="Morning Shift"
           subValue={patientStats?.morning?.completed || 0}
           total={patientStats?.morning?.total || 0}
-          icon="solar:sun-2-bold-duotone"
+          icon="solar:sun-2-linear"
           color="bg-amber-500"
           bgGradient="from-amber-500/10 to-orange-500/10"
           iconBg="bg-amber-500/10"
@@ -186,7 +186,7 @@ const DoctorDashboardContent = ({ dashboardData, doctorName }) => {
           title="Afternoon Shift"
           subValue={patientStats?.afternoon?.completed || 0}
           total={patientStats?.afternoon?.total || 0}
-          icon="solar:clouds-bold-duotone"
+          icon="solar:clouds-linear"
           color="bg-sky-500"
           bgGradient="from-sky-500/10 to-cyan-500/10"
           iconBg="bg-sky-500/10"
@@ -196,7 +196,7 @@ const DoctorDashboardContent = ({ dashboardData, doctorName }) => {
           title="Evening Shift"
           subValue={patientStats?.evening?.completed || 0}
           total={patientStats?.evening?.total || 0}
-          icon="solar:moon-bold-duotone"
+          icon="solar:moon-linear"
           color="bg-indigo-500"
           bgGradient="from-indigo-500/10 to-violet-500/10"
           iconBg="bg-indigo-500/10"
@@ -209,19 +209,19 @@ const DoctorDashboardContent = ({ dashboardData, doctorName }) => {
         <PatientListColumn
           title="Morning Appointments"
           appointments={morningAppointments}
-          icon="solar:sun-2-bold-duotone"
+          icon="solar:sun-2-linear"
           accentColor="bg-amber-500"
         />
         <PatientListColumn
           title="Afternoon Appointments"
           appointments={afternoonAppointments}
-          icon="solar:clouds-bold-duotone"
+          icon="solar:clouds-linear"
           accentColor="bg-sky-500"
         />
         <PatientListColumn
           title="Evening Appointments"
           appointments={eveningAppointments}
-          icon="solar:moon-bold-duotone"
+          icon="solar:moon-linear"
           accentColor="bg-indigo-600"
         />
       </div>
@@ -266,7 +266,7 @@ const PatientListColumn = ({ title, appointments, icon, accentColor }) => (
         appointments.map((apt, i) => (
           <div key={apt._id || i} className="flex items-center gap-4 p-4 rounded-3xl bg-slate-50/50 border border-slate-100 hover:border-blue-200 hover:bg-white hover:shadow-lg hover:shadow-blue-500/5 transition-all cursor-pointer group">
             <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center border border-slate-100 shadow-sm overflow-hidden shrink-0 group-hover:scale-110 transition-transform">
-              <Icon icon="solar:user-circle-bold-duotone" className="text-slate-300 text-4xl" />
+              <Icon icon="solar:user-circle-linear" className="text-slate-300 text-4xl" />
             </div>
             <div className="flex flex-col min-w-0 flex-1">
               <span className="text-slate-800 text-sm font-black truncate">{apt.name}</span>

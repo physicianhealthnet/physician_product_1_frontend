@@ -442,7 +442,7 @@ function PHNAppointments() {
           {
             label: "Today",
             count: counts.today,
-            icon: "solar:calendar-date-bold-duotone",
+            icon: "solar:calendar-date-linear",
             color: "bg-purple-500",
             bgGradient: "from-purple-500/10 to-fuchsia-500/10",
             iconBg: "bg-purple-500/10",
@@ -460,7 +460,7 @@ function PHNAppointments() {
           {
             label: "This Week",
             count: counts.this_week,
-            icon: "solar:calendar-bold-duotone",
+            icon: "solar:calendar-linear",
             color: "bg-emerald-500",
             bgGradient: "from-emerald-500/10 to-teal-500/10",
             iconBg: "bg-emerald-500/10",
@@ -469,7 +469,7 @@ function PHNAppointments() {
           {
             label: "Next Week",
             count: counts.next_week,
-            icon: "solar:calendar-line-duotone",
+            icon: "solar:calendar-linear",
             color: "bg-orange-500",
             bgGradient: "from-orange-500/10 to-amber-500/10",
             iconBg: "bg-orange-500/10",
@@ -478,7 +478,7 @@ function PHNAppointments() {
           {
             label: "This Month",
             count: counts.this_month,
-            icon: "solar:chart-square-bold-duotone",
+            icon: "solar:chart-square-linear",
             color: "bg-rose-500",
             bgGradient: "from-rose-500/10 to-pink-500/10",
             iconBg: "bg-rose-500/10",
@@ -733,7 +733,7 @@ function PHNAppointments() {
                           <div className="flex flex-col gap-1">
                             <div className="flex items-center gap-2 text-slate-600 text-xs">
                               <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-500">
-                                <Icon icon="solar:calendar-mark-bold-duotone" className="w-3 h-3" />
+                                <Icon icon="solar:calendar-mark-linear" className="w-3 h-3" />
                               </div>
                               <span className="font-bold">
                                 {new Date(appt.appointmentDate).toLocaleDateString("en-IN", { day: '2-digit', month: 'short', year: 'numeric' })}

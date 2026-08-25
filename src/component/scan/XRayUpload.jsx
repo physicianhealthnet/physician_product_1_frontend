@@ -105,7 +105,7 @@ const XRayUpload = () => {
                 ) : (
                   <label className="cursor-pointer w-full h-full flex flex-col items-center justify-center gap-4">
                     <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
-                      <Icon icon="solar:upload-minimalistic-bold-duotone" width={32} />
+                      <Icon icon="solar:upload-minimalistic-linear" width={32} />
                     </div>
                     <div className="text-center">
                       <span className="text-blue-600 font-bold">Click to upload</span>
@@ -124,7 +124,7 @@ const XRayUpload = () => {
               {/* Custom Prompt Area */}
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                  <Icon icon="solar:pen-new-square-bold-duotone" className="text-blue-500" />
+                  <Icon icon="solar:pen-new-square-linear" className="text-blue-500" />
                   Additional Instructions (Optional)
                 </label>
                 <textarea
@@ -150,7 +150,7 @@ const XRayUpload = () => {
                   </>
                 ) : (
                   <>
-                    <Icon icon="solar:magic-stick-3-bold-duotone" width={24} />
+                    <Icon icon="solar:magic-stick-3-linear" width={24} />
                     <span>Analyze X-Ray</span>
                   </>
                 )}
@@ -170,7 +170,7 @@ const XRayUpload = () => {
             <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm min-h-[400px] flex flex-col">
               <div className="flex items-center gap-2 mb-6 pb-4 border-b border-slate-100">
                 <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600">
-                  <Icon icon="solar:document-text-bold-duotone" width={20} />
+                  <Icon icon="solar:document-text-linear" width={20} />
                 </div>
                 <h2 className="font-black text-slate-800 text-lg">AI Report Summary</h2>
               </div>
@@ -195,7 +195,7 @@ const XRayUpload = () => {
                 </div>
               ) : (
                 <div className="flex-1 flex flex-col items-center justify-center text-slate-400 space-y-3">
-                  <Icon icon="solar:notes-minimalistic-line-duotone" width={48} className="opacity-20" />
+                  <Icon icon="solar:notes-minimalistic-linear" width={48} className="opacity-20" />
                   <p className="text-sm font-medium">Report will appear here after analysis</p>
                 </div>
               )}

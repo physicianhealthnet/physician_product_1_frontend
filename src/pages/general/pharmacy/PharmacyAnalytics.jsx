@@ -67,10 +67,10 @@ const PharmacyAnalytics = ({ prescriptions = [], inventory = [] }) => {
   const overduePrescriptions = prescriptions.filter(p => dayjs(p.createdAt).isBefore(today, 'day') && p.dispenseStatus !== "Fully Dispensed");
 
   const metrics = [
-    { label: "Today Total", value: todayPrescriptions.length, total: todayPrescriptions.length, icon: "solar:clipboard-list-bold-duotone", color: "bg-blue-500", bgGradient: "from-blue-500/10 to-indigo-500/10", iconBg: "bg-blue-500/10", iconColor: "text-blue-600" },
-    { label: "Pending", value: todayPrescriptions.filter(p => p.dispenseStatus !== "Fully Dispensed").length, total: todayPrescriptions.length, icon: "solar:clock-circle-bold-duotone", color: "bg-amber-500", bgGradient: "from-amber-500/10 to-orange-500/10", iconBg: "bg-amber-500/10", iconColor: "text-amber-600" },
-    { label: "Delivered", value: todayPrescriptions.filter(p => p.dispenseStatus === "Fully Dispensed").length, total: todayPrescriptions.length, icon: "solar:check-circle-bold-duotone", color: "bg-emerald-500", bgGradient: "from-emerald-500/10 to-teal-500/10", iconBg: "bg-emerald-500/10", iconColor: "text-emerald-600" },
-    { label: "Today Refill", value: todayPrescriptions.filter(p => p.isRefillable).length, total: todayPrescriptions.length, icon: "solar:refresh-bold-duotone", color: "bg-indigo-500", bgGradient: "from-indigo-500/10 to-violet-500/10", iconBg: "bg-indigo-500/10", iconColor: "text-indigo-600" },
+    { label: "Today Total", value: todayPrescriptions.length, total: todayPrescriptions.length, icon: "solar:clipboard-list-linear", color: "bg-blue-500", bgGradient: "from-blue-500/10 to-indigo-500/10", iconBg: "bg-blue-500/10", iconColor: "text-blue-600" },
+    { label: "Pending", value: todayPrescriptions.filter(p => p.dispenseStatus !== "Fully Dispensed").length, total: todayPrescriptions.length, icon: "solar:clock-circle-linear", color: "bg-amber-500", bgGradient: "from-amber-500/10 to-orange-500/10", iconBg: "bg-amber-500/10", iconColor: "text-amber-600" },
+    { label: "Delivered", value: todayPrescriptions.filter(p => p.dispenseStatus === "Fully Dispensed").length, total: todayPrescriptions.length, icon: "solar:check-circle-linear", color: "bg-emerald-500", bgGradient: "from-emerald-500/10 to-teal-500/10", iconBg: "bg-emerald-500/10", iconColor: "text-emerald-600" },
+    { label: "Today Refill", value: todayPrescriptions.filter(p => p.isRefillable).length, total: todayPrescriptions.length, icon: "solar:refresh-linear", color: "bg-indigo-500", bgGradient: "from-indigo-500/10 to-violet-500/10", iconBg: "bg-indigo-500/10", iconColor: "text-indigo-600" },
   ];
 
   const handleGenerateReport = async () => {
@@ -183,7 +183,7 @@ const PharmacyAnalytics = ({ prescriptions = [], inventory = [] }) => {
           <div className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-sm flex flex-col gap-6">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">Top 5 Medications</h3>
-              <Icon icon="solar:chart-square-bold-duotone" className="text-blue-500 text-xl" />
+              <Icon icon="solar:chart-square-linear" className="text-blue-500 text-xl" />
             </div>
             <div className="h-[300px] w-full text-[10px]">
               <ResponsiveContainer width="100%" height="100%">
@@ -205,7 +205,7 @@ const PharmacyAnalytics = ({ prescriptions = [], inventory = [] }) => {
           <div className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-sm flex flex-col gap-6">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">Weekly Trend</h3>
-              <Icon icon="solar:graph-bold-duotone" className="text-indigo-500 text-xl" />
+              <Icon icon="solar:graph-linear" className="text-indigo-500 text-xl" />
             </div>
             <div className="h-[300px] w-full text-[10px]">
               <ResponsiveContainer width="100%" height="100%">
@@ -226,7 +226,7 @@ const PharmacyAnalytics = ({ prescriptions = [], inventory = [] }) => {
           <div className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-sm flex flex-col gap-6 lg:col-span-1">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">Stock Health</h3>
-              <Icon icon="solar:pie-chart-bold-duotone" className="text-emerald-500 text-xl" />
+              <Icon icon="solar:pie-chart-linear" className="text-emerald-500 text-xl" />
             </div>
             <div className="h-[300px] w-full flex items-center text-[10px]">
               <ResponsiveContainer width="100%" height="100%">

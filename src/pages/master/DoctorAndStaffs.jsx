@@ -8,10 +8,10 @@ import Button from "../../component/ui/Button";
 import { StaggerContainer, StaggerItem } from "../../component/ui/Transitions";
 
 const ROLE_OPTIONS = [
-  { id: "doctor", label: "Doctor / Specialist", icon: "solar:user-md-bold-duotone", color: "blue" },
-  { id: "receptionist", label: "Receptionist / Front Desk", icon: "solar:user-bold-duotone", color: "rose" },
-  { id: "accountant", label: "Accountant / Finance", icon: "solar:calculator-bold-duotone", color: "emerald" },
-  { id: "generalManager", label: "General Manager / Admin", icon: "solar:shield-user-bold-duotone", color: "amber" },
+  { id: "doctor", label: "Doctor / Specialist", icon: "solar:user-md-linear", color: "blue" },
+  { id: "receptionist", label: "Receptionist / Front Desk", icon: "solar:user-linear", color: "rose" },
+  { id: "accountant", label: "Accountant / Finance", icon: "solar:calculator-linear", color: "emerald" },
+  { id: "generalManager", label: "General Manager / Admin", icon: "solar:shield-user-linear", color: "amber" },
 ];
 
 const STAFF_FIELD_SLIDES = [
@@ -306,7 +306,7 @@ function DoctorAndStaffs() {
               <div className="flex items-center justify-between border-b border-slate-100 pb-5">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center font-bold text-xl border border-blue-100 shadow-sm">
-                    <Icon icon={isEditMode ? "tabler:user-edit" : "solar:user-plus-bold-duotone"} />
+                    <Icon icon={isEditMode ? "tabler:user-edit" : "solar:user-plus-linear"} />
                   </div>
                   <div>
                     <h2 className="text-xl font-black text-slate-800 m-0">
@@ -386,7 +386,7 @@ function DoctorAndStaffs() {
                   <div className="max-w-2xl mx-auto space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
                     <div className="text-center space-y-2">
                       <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto text-2xl border border-blue-100 shadow-sm">
-                        <Icon icon="solar:shield-user-bold-duotone" />
+                        <Icon icon="solar:shield-user-linear" />
                       </div>
                       <h3 className="text-2xl font-black text-slate-800">Select Member Role</h3>
                       <p className="text-xs text-slate-500 font-medium max-w-md mx-auto">
@@ -429,7 +429,7 @@ function DoctorAndStaffs() {
                   <div className="max-w-2xl mx-auto space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
                     <div className="text-center space-y-2">
                       <div className="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto text-2xl border border-emerald-100 shadow-sm">
-                        <Icon icon="solar:user-bold-duotone" />
+                        <Icon icon="solar:user-linear" />
                       </div>
                       <h3 className="text-2xl font-black text-slate-800">Member Full Name</h3>
                       <p className="text-xs text-slate-500 font-medium max-w-md mx-auto">
@@ -459,7 +459,7 @@ function DoctorAndStaffs() {
                   <div className="max-w-2xl mx-auto space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
                     <div className="text-center space-y-2">
                       <div className="w-14 h-14 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center mx-auto text-2xl border border-purple-100 shadow-sm">
-                        <Icon icon="solar:stethoscope-bold-duotone" />
+                        <Icon icon="solar:stethoscope-linear" />
                       </div>
                       <h3 className="text-2xl font-black text-slate-800">Clinical Department</h3>
                       <p className="text-xs text-slate-500 font-medium max-w-md mx-auto">
@@ -494,7 +494,7 @@ function DoctorAndStaffs() {
                   <div className="max-w-2xl mx-auto space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
                     <div className="text-center space-y-2">
                       <div className="w-14 h-14 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mx-auto text-2xl border border-amber-100 shadow-sm">
-                        <Icon icon="solar:lock-keyhole-bold-duotone" />
+                        <Icon icon="solar:lock-keyhole-linear" />
                       </div>
                       <h3 className="text-2xl font-black text-slate-800">Contact & Login Credentials</h3>
                       <p className="text-xs text-slate-500 font-medium max-w-md mx-auto">
@@ -558,7 +558,7 @@ function DoctorAndStaffs() {
                   <div className="max-w-2xl mx-auto space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
                     <div className="text-center space-y-2">
                       <div className="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto text-2xl border border-emerald-100 shadow-sm">
-                        <Icon icon="solar:clipboard-check-bold-duotone" />
+                        <Icon icon="solar:clipboard-check-linear" />
                       </div>
                       <h3 className="text-2xl font-black text-slate-800">Review Member Account</h3>
                       <p className="text-xs text-slate-500 font-medium max-w-md mx-auto">
@@ -632,7 +632,7 @@ function DoctorAndStaffs() {
                       disabled={addLoading}
                       className="px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-lg shadow-emerald-500/20 flex items-center gap-2 cursor-pointer transition-all border-none uppercase tracking-wider disabled:opacity-50"
                     >
-                      <Icon icon="solar:check-circle-bold" className="text-lg" />
+                      <Icon icon="solar:check-circle-linear" className="text-lg" />
                       <span>{isEditMode ? "Update Member Details" : "Confirm & Sync Member"}</span>
                     </button>
                   )}

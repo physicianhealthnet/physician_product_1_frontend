@@ -4,6 +4,7 @@ import { Tabs } from "antd";
 import TabPane from "antd/es/tabs/TabPane";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import PhysicianAssessmentSheet from "./PhysicianAssessmentSheet";
+import DentalAssessment from "./DentalAssessment";
 import { AxiosInstance } from "../../../utilities/AxiosInstance";
 import Button from "../../../component/ui/Button";
 
@@ -12,6 +13,11 @@ import { StaggerContainer, StaggerItem } from "../../../component/ui/Transitions
 const Assessment = () => {
   const navigate = useNavigate();
   const { patient_id } = useParams();
+
+  const user = JSON.parse(
+    sessionStorage.getItem("user") || sessionStorage.getItem("master") || "{}"
+  );
+  const isDentist = user.department === "Dentist";
 
   return (
     <StaggerContainer>
@@ -30,7 +36,7 @@ const Assessment = () => {
 
         <StaggerItem>
           <div className="flex flex-col gap-4">
-            <PhysicianAssessmentSheet />
+            {isDentist ? <DentalAssessment /> : <PhysicianAssessmentSheet />}
           </div>
         </StaggerItem>
       </div>

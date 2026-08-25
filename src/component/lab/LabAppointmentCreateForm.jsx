@@ -30,7 +30,7 @@ const SearchPicker = ({ label, options, value, onChange, placeholder }) => {
         ) : (
           <span className={selectedObj ? "text-slate-800" : "text-slate-400 font-medium"}>{selectedObj ? selectedObj.label : placeholder}</span>
         )}
-        <Icon icon="solar:alt-arrow-down-bold-duotone" className={`text-slate-400 transition-transform ${isOpen ? 'rotate-180 text-blue-500' : ''}`} />
+        <Icon icon="solar:alt-arrow-down-linear" className={`text-slate-400 transition-transform ${isOpen ? 'rotate-180 text-blue-500' : ''}`} />
       </div>
       {isOpen && (
         <div className="absolute top-full mt-1 w-full max-h-48 overflow-y-auto bg-white border border-slate-200 rounded-xl shadow-xl z-50 py-1 hide-scrollbar">
@@ -228,7 +228,7 @@ function LabAppointmentCreateForm() {
             onClick={() => setIsModalOpen(true)}
             className="flex items-center gap-2 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-5 py-3 rounded-xl text-sm font-black shadow-lg shadow-blue-500/30 transition-all hover:scale-105 uppercase tracking-widest"
           >
-            <Icon icon="solar:file-send-bold-duotone" className="text-lg" /> Create Prescription
+            <Icon icon="solar:file-send-linear" className="text-lg" /> Create Prescription
           </button>
         </div>
       </div>
@@ -284,14 +284,14 @@ function LabAppointmentCreateForm() {
                     <div className="flex items-center justify-end gap-3">
                       {row.status === "Not Scheduled" && (
                         <button onClick={() => setSchedulingId(row._id)} className="flex items-center gap-2 px-4 py-2 rounded-lg text-white font-bold text-xs uppercase tracking-widest bg-blue-600 hover:bg-blue-700 hover:scale-105 transition-all shadow-md shadow-blue-500/20" title="Schedule Now">
-                          <Icon icon="solar:calendar-add-bold-duotone" className="text-sm" /> Schedule
+                          <Icon icon="solar:calendar-add-linear" className="text-sm" /> Schedule
                         </button>
                       )}
                       <button onClick={() => message.info("Edit modal placeholder")} className="flex items-center gap-1 w-8 h-8 justify-center rounded-lg text-emerald-600 bg-emerald-50 border border-emerald-100 hover:bg-emerald-100 hover:scale-110 transition-all" title="Edit">
-                        <Icon icon="solar:pen-bold-duotone" />
+                        <Icon icon="solar:pen-linear" />
                       </button>
                       <button onClick={() => handleDelete(row._id)} className="flex items-center gap-1 w-8 h-8 justify-center rounded-lg text-rose-600 bg-rose-50 border border-rose-100 hover:bg-rose-100 hover:scale-110 transition-all" title="Delete">
-                        <Icon icon="solar:trash-bin-trash-bold-duotone" />
+                        <Icon icon="solar:trash-bin-trash-linear" />
                       </button>
                     </div>
                   </td>
@@ -300,7 +300,7 @@ function LabAppointmentCreateForm() {
                 <tr>
                   <td colSpan="5" className="px-6 py-24 text-center">
                     <div className="flex flex-col items-center justify-center gap-2 text-slate-400">
-                      <Icon icon="solar:folder-open-bold-duotone" className="text-4xl opacity-50" />
+                      <Icon icon="solar:folder-open-linear" className="text-4xl opacity-50" />
                       <span className="font-medium">No actions pending for status "{activeTab}".</span>
                     </div>
                   </td>
@@ -319,7 +319,7 @@ function LabAppointmentCreateForm() {
             <div className="flex justify-between items-center p-6 border-b border-slate-100 bg-white/50">
               <h2 className="text-2xl font-black text-slate-800 tracking-tight">New <span className="text-blue-600">Lab Prescription</span></h2>
               <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-red-500 transition-colors p-2 rounded-xl hover:bg-red-50">
-                <Icon icon="solar:close-circle-bold-duotone" className="text-2xl" />
+                <Icon icon="solar:close-circle-linear" className="text-2xl" />
               </button>
             </div>
             

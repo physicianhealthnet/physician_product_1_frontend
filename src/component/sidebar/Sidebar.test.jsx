@@ -70,22 +70,19 @@ describe('Sidebar Component', () => {
     );
 
     // Verify Doctor specific menu items exist
-    expect(screen.getByText('Scan Center')).toBeInTheDocument();
+    expect(screen.getByText('Diagnostic Center')).toBeInTheDocument();
     
-    // Scan Center has a submenu. The "For Doctor" link inside it should not be visible initially (because it's animated/hidden)
-    // Actually Framer motion might not hide it entirely from the DOM but it animates height to 0.
-    // We can test if clicking the parent toggles the submenu state.
-    const scanCenterTab = screen.getByText('Scan Center');
+    const diagnosticTab = screen.getByText('Diagnostic Center');
     
-    fireEvent.click(scanCenterTab);
+    fireEvent.click(diagnosticTab);
     
     // Now the submenu items should be present in the document
-    expect(screen.getByText('For Technician')).toBeInTheDocument();
+    expect(screen.getByText('Scan Center')).toBeInTheDocument();
+    expect(screen.getByText('Laboratory')).toBeInTheDocument();
   });
 
-  it('handles chat toggle button', () => {
+  it('renders demo mode toggle', () => {
     sessionStorage.setItem('user', JSON.stringify({ userType: 'master' }));
-    mockUnreadCount = 5;
     
     render(
       <MemoryRouter>
@@ -93,16 +90,8 @@ describe('Sidebar Component', () => {
       </MemoryRouter>
     );
 
-    // Verify Clinic Support button exists
-    const supportButton = screen.getByText('Clinic Support');
-    expect(supportButton).toBeInTheDocument();
-
-    // Verify unread count badge is rendered
-    expect(screen.getByText('5')).toBeInTheDocument();
-
-    // Click it
-    fireEvent.click(supportButton);
-    expect(mockDispatch).toHaveBeenCalledWith({ type: 'chat/toggleChat' });
+    // Verify Demo Mode element exists
+    expect(screen.getByText('Demo Mode')).toBeInTheDocument();
   });
 
   it('renders in closed state when isOpen is false', () => {
@@ -115,12 +104,6 @@ describe('Sidebar Component', () => {
       </MemoryRouter>
     );
 
-    // The text 'Clinic Support' should NOT be rendered when closed
-    expect(screen.queryByText('Clinic Support')).not.toBeInTheDocument();
-    
-    // We should just have the icon, but unread count badge should still be there if > 0
-    // wait, if mockUnreadCount = 0 here, let's verify brand changes
-    // When open, it renders 'PHN', when closed it renders 'PHN' but differently styled.
     expect(screen.getAllByText('PHN')).toHaveLength(1);
   });
 });

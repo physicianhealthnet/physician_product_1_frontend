@@ -516,7 +516,7 @@ const PatientHealthDashboard = () => {
                     <div className="mt-6 p-4 bg-indigo-50/50 rounded-xl border border-indigo-100/50 w-full max-w-lg">
                       <div className="flex items-center gap-2 mb-2">
                         <Icon
-                          icon="solar:info-circle-bold-duotone"
+                          icon="solar:info-circle-linear"
                           className="text-indigo-500 text-lg"
                         />
                         <h4 className="text-sm font-bold text-indigo-900 m-0">
@@ -532,7 +532,7 @@ const PatientHealthDashboard = () => {
                     <div className="mt-4 p-4 bg-emerald-50/50 rounded-xl border border-emerald-100/50 w-full max-w-lg">
                       <div className="flex items-center gap-2 mb-2">
                         <Icon
-                          icon="solar:pills-bold-duotone"
+                          icon="solar:pills-linear"
                           className="text-emerald-500 text-lg"
                         />
                         <h4 className="text-sm font-bold text-emerald-900 m-0">
@@ -562,7 +562,7 @@ const PatientHealthDashboard = () => {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600">
-                <Icon icon="solar:health-bold-duotone" className="text-3xl" />
+                <Icon icon="solar:health-linear" className="text-3xl" />
               </div>
               <div>
                 <h1 className="font-black text-slate-800 text-2xl tracking-tight m-0">
@@ -596,7 +596,7 @@ const PatientHealthDashboard = () => {
             {analyzing && <div className="ai-scan-line"></div>}
             <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
               <Icon
-                icon="solar:magic-stick-3-bold-duotone"
+                icon="solar:magic-stick-3-linear"
                 className="text-8xl text-indigo-500"
               />
             </div>
@@ -607,8 +607,8 @@ const PatientHealthDashboard = () => {
                 <Icon
                   icon={
                     analyzing
-                      ? "solar:radar-bold-duotone"
-                      : "solar:folder-with-files-bold-duotone"
+                      ? "solar:radar-linear"
+                      : "solar:folder-with-files-linear"
                   }
                   className={`text-3xl ${analyzing ? "animate-spin" : ""}`}
                 />
@@ -626,7 +626,7 @@ const PatientHealthDashboard = () => {
                 disabled={analyzing}
                 className="px-8 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold flex justify-center items-center gap-2 shadow-lg shadow-indigo-500/30 transition-all relative overflow-hidden"
               >
-                <Icon icon="solar:cpu-bolt-bold-duotone" className="text-xl" />
+                <Icon icon="solar:cpu-bolt-linear" className="text-xl" />
                 {analyzing ? "Analyzing Reports..." : "Run Analysis"}
               </Button>
             </div>
@@ -651,7 +651,7 @@ const PatientHealthDashboard = () => {
                     key={`ai-${idx}`}
                     title={metric.title}
                     value={metric.value}
-                    icon="solar:test-tube-bold-duotone"
+                    icon="solar:test-tube-linear"
                     color={color}
                     flag={metric.flag}
                   />
@@ -664,13 +664,13 @@ const PatientHealthDashboard = () => {
               value={
                 vitalsData?.temperature ? `${vitalsData.temperature}` : "N/A"
               }
-              icon="solar:thermometer-bold-duotone"
+              icon="solar:thermometer-linear"
               color="orange"
             />
             <MetricCard
               title="Pulse Rate (bpm)"
               value={vitalsData?.pulseRate ? `${vitalsData.pulseRate}` : "N/A"}
-              icon="solar:heart-pulse-bold-duotone"
+              icon="solar:heart-pulse-linear"
               color="rose"
             />
             <MetricCard
@@ -680,7 +680,7 @@ const PatientHealthDashboard = () => {
                   ? `${vitalsData.respiratoryRate}`
                   : "N/A"
               }
-              icon="solar:lungs-bold-duotone"
+              icon="solar:lungs-linear"
               color="emerald"
             />
             <MetricCard
@@ -690,43 +690,43 @@ const PatientHealthDashboard = () => {
                   ? `${vitalsData.bloodPressure}`
                   : "N/A"
               }
-              icon="solar:health-bold-duotone"
+              icon="solar:health-linear"
               color="red"
             />
             <MetricCard
               title="SpO2 (%)"
               value={vitalsData?.spO2 ? `${vitalsData.spO2}` : "N/A"}
-              icon="solar:wind-bold-duotone"
+              icon="solar:wind-linear"
               color="cyan"
             />
             <MetricCard
               title="Height (cm)"
               value={vitalsData?.height ? `${vitalsData.height}` : "N/A"}
-              icon="solar:ruler-bold-duotone"
+              icon="solar:ruler-linear"
               color="purple"
             />
             <MetricCard
               title="Weight (kg)"
               value={vitalsData?.weight ? `${vitalsData.weight}` : "N/A"}
-              icon="solar:user-rounded-bold-duotone"
+              icon="solar:user-rounded-linear"
               color="blue"
             />
             <MetricCard
               title="BMI (kg/m²)"
               value={vitalsData?.bmi ? `${vitalsData.bmi}` : "N/A"}
-              icon="solar:calculator-bold-duotone"
+              icon="solar:calculator-linear"
               color="indigo"
             />
             <MetricCard
               title="Blood Sugar (Fasting) mg/dL"
               value={vitalsData?.bloodSugarFasting || "N/A"}
-              icon="solar:drop-bold-duotone"
+              icon="solar:drop-linear"
               color="red"
             />
             <MetricCard
               title="Blood Sugar (After Food) mg/dL"
               value={vitalsData?.bloodSugarAfterFood || "N/A"}
-              icon="solar:drop-bold-duotone"
+              icon="solar:drop-linear"
               color="red"
             />
           </StaggerItem>
@@ -739,9 +739,9 @@ const PatientHealthDashboard = () => {
             <StaggerItem className="flex flex-col gap-6">
               {aiGaugeItems.length > 0 && (
                 <>
-                  {renderGaugeGroup(aiGaugeItems.filter(i => i.type === 'vital'), "Vital Signs Analysis", "solar:health-bold-duotone", "rose")}
-                  {renderGaugeGroup(aiGaugeItems.filter(i => i.type === 'lab'), "Laboratory Results", "solar:test-tube-bold-duotone", "indigo")}
-                  {renderGaugeGroup(aiGaugeItems.filter(i => i.type === 'scan'), "Scan & Imaging Insights", "solar:scanner-bold-duotone", "emerald")}
+                  {renderGaugeGroup(aiGaugeItems.filter(i => i.type === 'vital'), "Vital Signs Analysis", "solar:health-linear", "rose")}
+                  {renderGaugeGroup(aiGaugeItems.filter(i => i.type === 'lab'), "Laboratory Results", "solar:test-tube-linear", "indigo")}
+                  {renderGaugeGroup(aiGaugeItems.filter(i => i.type === 'scan'), "Scan & Imaging Insights", "solar:scanner-linear", "emerald")}
                 </>
               )}
             </StaggerItem>
@@ -754,7 +754,7 @@ const PatientHealthDashboard = () => {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 relative z-10">
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-600 shadow-sm border border-white shrink-0">
-                  <Icon icon="solar:document-medicine-bold-duotone" className="text-3xl" />
+                  <Icon icon="solar:document-medicine-linear" className="text-3xl" />
                 </div>
                 <div>
                   <h2 className="font-black text-slate-800 text-xl m-0 tracking-tight">Overall Clinical Solution</h2>
@@ -770,7 +770,7 @@ const PatientHealthDashboard = () => {
                   disabled={generatingSolution}
                   className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold flex items-center gap-2 shadow-md shadow-blue-500/20 transition-all shrink-0 whitespace-nowrap"
                 >
-                  <Icon icon="solar:magic-stick-3-bold-duotone" className="text-lg" />
+                  <Icon icon="solar:magic-stick-3-linear" className="text-lg" />
                   {generatingSolution ? "Synthesizing..." : "Generate Solution"}
                 </Button>
               )}
@@ -789,7 +789,7 @@ const PatientHealthDashboard = () => {
                     variant="outline"
                     className="px-5 py-2 rounded-xl text-blue-600 border-blue-200 hover:bg-blue-50 font-bold flex items-center gap-2"
                   >
-                    <Icon icon="solar:refresh-bold-duotone" className="text-lg" />
+                    <Icon icon="solar:refresh-linear" className="text-lg" />
                     Regenerate Solution
                   </Button>
                 </div>
@@ -797,7 +797,7 @@ const PatientHealthDashboard = () => {
             )}
             
             <div className="absolute -bottom-10 -right-10 opacity-[0.03] pointer-events-none">
-               <Icon icon="solar:medical-kit-bold-duotone" className="text-[200px] text-blue-600" />
+               <Icon icon="solar:medical-kit-linear" className="text-[200px] text-blue-600" />
             </div>
           </Card>
         </StaggerItem>

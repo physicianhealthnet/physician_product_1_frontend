@@ -111,7 +111,7 @@ const SearchPicker = ({ label, options, value, onChange, placeholder }) => {
           </span>
         )}
         <Icon
-          icon="solar:alt-arrow-down-bold-duotone"
+          icon="solar:alt-arrow-down-linear"
           className={`text-slate-400 transition-transform ${
             isOpen ? "rotate-180 text-blue-600" : ""
           }`}
@@ -476,7 +476,7 @@ function LabPrescriptionFromTheDoctor() {
             className="rounded-2xl px-6 h-11 bg-blue-600 hover:bg-blue-700 text-white font-black text-xs shadow-lg shadow-blue-500/20 flex items-center gap-2 transition-all cursor-pointer border-none uppercase tracking-wider"
           >
             <Icon
-              icon={isWizardMode ? "tabler:arrow-left" : "solar:add-circle-bold"}
+              icon={isWizardMode ? "tabler:arrow-left" : "solar:add-circle-linear"}
               className="text-lg"
             />
             <span>{isWizardMode ? "Back to Dashboard" : "+ CREATE PRESCRIPTION"}</span>
@@ -487,7 +487,7 @@ function LabPrescriptionFromTheDoctor() {
               type="button"
               className="rounded-2xl px-5 h-11 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs border border-slate-200 flex items-center gap-2 transition-all cursor-pointer"
             >
-              <Icon icon="solar:export-bold" className="text-base text-slate-500" />
+              <Icon icon="solar:export-linear" className="text-base text-slate-500" />
               <span>EXPORT LISTS</span>
             </button>
           )}
@@ -843,7 +843,7 @@ function LabPrescriptionFromTheDoctor() {
                 <span className="text-2xl font-black text-slate-800 mt-1 block">{metrics.todayTotal}</span>
               </div>
               <div className="p-3 bg-blue-500 text-white rounded-xl shadow-md shadow-blue-500/20">
-                <Icon icon="solar:trash-bin-trash-bold" className="text-xl" />
+                <Icon icon="solar:trash-bin-trash-linear" className="text-xl" />
               </div>
             </div>
             <div className="bg-amber-50/60 p-5 rounded-2xl border border-amber-100 flex justify-between items-center">
@@ -852,7 +852,7 @@ function LabPrescriptionFromTheDoctor() {
                 <span className="text-2xl font-black text-slate-800 mt-1 block">{metrics.morning}</span>
               </div>
               <div className="p-3 bg-amber-500 text-white rounded-xl shadow-md shadow-amber-500/20">
-                <Icon icon="solar:sun-2-bold" className="text-xl" />
+                <Icon icon="solar:sun-2-linear" className="text-xl" />
               </div>
             </div>
             <div className="bg-teal-50/60 p-5 rounded-2xl border border-teal-100 flex justify-between items-center">
@@ -861,7 +861,7 @@ function LabPrescriptionFromTheDoctor() {
                 <span className="text-2xl font-black text-slate-800 mt-1 block">{metrics.afternoon}</span>
               </div>
               <div className="p-3 bg-teal-500 text-white rounded-xl shadow-md shadow-teal-500/20">
-                <Icon icon="solar:clouds-bold" className="text-xl" />
+                <Icon icon="solar:clouds-linear" className="text-xl" />
               </div>
             </div>
             <div className="bg-indigo-50/60 p-5 rounded-2xl border border-indigo-100 flex justify-between items-center">
@@ -870,7 +870,7 @@ function LabPrescriptionFromTheDoctor() {
                 <span className="text-2xl font-black text-slate-800 mt-1 block">{metrics.evening}</span>
               </div>
               <div className="p-3 bg-indigo-500 text-white rounded-xl shadow-md shadow-indigo-500/20">
-                <Icon icon="solar:moon-bold" className="text-xl" />
+                <Icon icon="solar:moon-linear" className="text-xl" />
               </div>
             </div>
           </div>
@@ -886,28 +886,28 @@ function LabPrescriptionFromTheDoctor() {
                   <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">YESTERDAY</span>
                   <span className="text-xl font-black text-slate-800 mt-1 block">{metrics.yesterday}</span>
                 </div>
-                <Icon icon="solar:calendar-minimalistic-bold" className="text-slate-400 text-xl" />
+                <Icon icon="solar:calendar-minimalistic-linear" className="text-slate-400 text-xl" />
               </div>
               <div className="bg-emerald-50/60 p-4 rounded-2xl border border-emerald-100 flex justify-between items-center">
                 <div>
                   <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest block">THIS WEEK</span>
                   <span className="text-xl font-black text-slate-800 mt-1 block">{metrics.thisWeek}</span>
                 </div>
-                <Icon icon="solar:case-bold" className="text-emerald-500 text-xl" />
+                <Icon icon="solar:case-linear" className="text-emerald-500 text-xl" />
               </div>
               <div className="bg-purple-50/60 p-4 rounded-2xl border border-purple-100 flex justify-between items-center">
                 <div>
                   <span className="text-[10px] font-black text-purple-600 uppercase tracking-widest block">THIS MONTH</span>
                   <span className="text-xl font-black text-slate-800 mt-1 block">{metrics.thisMonth}</span>
                 </div>
-                <Icon icon="solar:box-bold" className="text-purple-500 text-xl" />
+                <Icon icon="solar:box-linear" className="text-purple-500 text-xl" />
               </div>
               <div className="bg-rose-50/60 p-4 rounded-2xl border border-rose-100 flex justify-between items-center">
                 <div>
                   <span className="text-[10px] font-black text-rose-600 uppercase tracking-widest block">LAST 3 MONTHS</span>
                   <span className="text-xl font-black text-slate-800 mt-1 block">{metrics.last3Months}</span>
                 </div>
-                <Icon icon="solar:chart-2-bold" className="text-rose-500 text-xl" />
+                <Icon icon="solar:chart-2-linear" className="text-rose-500 text-xl" />
               </div>
             </div>
           </div>
@@ -975,15 +975,15 @@ function LabPrescriptionFromTheDoctor() {
                             className="p-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-600 hover:text-white border-none cursor-pointer transition-all"
                             title="Delete"
                           >
-                            <Icon icon="solar:trash-bin-trash-bold" className="text-sm" />
+                            <Icon icon="solar:trash-bin-trash-linear" className="text-sm" />
                           </button>
                           <button
                             type="button"
-                            onClick={() => downloadPrescriptionPDF(row)}
+                            onClick={() => generatePrescriptionPDF(row)}
                             className="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 border-none cursor-pointer transition-all"
                             title="Print PDF"
                           >
-                            <Icon icon="solar:printer-bold" className="text-sm" />
+                            <Icon icon="solar:printer-linear" className="text-sm" />
                           </button>
                         </div>
                       </td>

@@ -171,11 +171,11 @@ const VideoConsult = () => {
               </div>
               <div className="text-xs text-slate-500 mt-0.5 flex items-center gap-3">
                 <span className="flex items-center gap-1">
-                  <Icon icon="solar:phone-bold" className="text-emerald-500" /> {p.patientPhone}
+                  <Icon icon="solar:phone-linear" className="text-emerald-500" /> {p.patientPhone}
                 </span>
                 {p.patientId && (
                   <span className="flex items-center gap-1">
-                    <Icon icon="solar:id-card-bold" className="text-purple-500" /> ID: {p.patientId}
+                    <Icon icon="solar:id-card-linear" className="text-purple-500" /> ID: {p.patientId}
                   </span>
                 )}
               </div>
@@ -316,7 +316,7 @@ const VideoConsult = () => {
         <div className="flex flex-col sm:flex-row justify-between items-center bg-slate-900 px-6 py-4 rounded-t-2xl border-b border-slate-800 text-white gap-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-red-500/10 text-red-500 rounded-xl flex items-center justify-center border border-red-500/20">
-              <Icon icon="solar:videocamera-record-bold" className="text-xl animate-pulse" />
+              <Icon icon="solar:videocamera-record-linear" className="text-xl animate-pulse" />
             </div>
             <div>
               <h1 className="text-base font-bold text-white mb-0">Active Consultation</h1>
@@ -332,11 +332,11 @@ const VideoConsult = () => {
             >
               {copied ? (
                 <>
-                  <Icon icon="solar:check-circle-bold" className="text-sm" /> Copied Link
+                  <Icon icon="solar:check-circle-linear" className="text-sm" /> Copied Link
                 </>
               ) : (
                 <>
-                  <Icon icon="solar:copy-bold-duotone" className="text-sm" /> Copy Call Link
+                  <Icon icon="solar:copy-linear" className="text-sm" /> Copy Call Link
                 </>
               )}
             </button>
@@ -883,7 +883,7 @@ const VideoConsult = () => {
                                   onClick={() => handleDeleteMeeting(meet._id)}
                                   className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-red-50 hover:text-red-600 text-slate-400 flex items-center justify-center transition-all border-none cursor-pointer"
                                 >
-                                  <Icon icon="solar:trash-bin-trash-bold" className="text-sm" />
+                                  <Icon icon="solar:trash-bin-trash-linear" className="text-sm" />
                                 </button>
                               </Tooltip>
 
@@ -893,7 +893,7 @@ const VideoConsult = () => {
                                     onClick={() => handleStatusChange(meet._id, "Completed")}
                                     className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-emerald-50 hover:text-emerald-600 text-slate-400 flex items-center justify-center transition-all border-none cursor-pointer"
                                   >
-                                    <Icon icon="solar:check-circle-bold" className="text-sm" />
+                                    <Icon icon="solar:check-circle-linear" className="text-sm" />
                                   </button>
                                 </Tooltip>
                               )}
@@ -902,15 +902,15 @@ const VideoConsult = () => {
 
                           <div className="space-y-1.5 text-xs text-slate-600">
                             <div className="flex items-center gap-2">
-                              <Icon icon="solar:calendar-bold" className="text-blue-500" />
+                              <Icon icon="solar:calendar-linear" className="text-blue-500" />
                               <span>{dayjs(meet.date).format("DD MMM YYYY")}</span>
                               <span>•</span>
-                              <Icon icon="solar:clock-circle-bold" className="text-blue-500" />
+                              <Icon icon="solar:clock-circle-linear" className="text-blue-500" />
                               <span>{meet.time} ({meet.duration}m)</span>
                             </div>
                             {meet.patientPhone && (
                               <div className="flex items-center gap-2 text-slate-500">
-                                <Icon icon="solar:phone-bold" className="text-emerald-500" />
+                                <Icon icon="solar:phone-linear" className="text-emerald-500" />
                                 <span>{meet.patientPhone}</span>
                               </div>
                             )}

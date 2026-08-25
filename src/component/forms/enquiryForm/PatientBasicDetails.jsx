@@ -303,10 +303,10 @@ function PatientBasicDetails({
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <Icon icon="solar:user-bold-duotone" className="text-3xl text-slate-400" />
+                  <Icon icon="solar:user-linear" className="text-3xl text-slate-400" />
                 )}
                 <label className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-                  <Icon icon="solar:camera-add-bold-duotone" className="text-white text-xl mb-0.5" />
+                  <Icon icon="solar:camera-add-linear" className="text-white text-xl mb-0.5" />
                   <span className="text-white text-[9px] font-bold tracking-wider">UPLOAD</span>
                   <input
                     type="file"

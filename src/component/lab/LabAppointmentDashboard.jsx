@@ -72,10 +72,10 @@ function LabAppointmentDashboard() {
           <div className="flex flex-col gap-4">
             <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Today's Appointment Traffic</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
-              <StatCard title="Today Total" value={metrics.todayTotal} icon="solar:clipboard-list-bold-duotone" color="bg-blue-500" bgGradient="from-blue-500/10 to-indigo-500/10" iconBg="bg-blue-500/10" iconColor="text-blue-600" />
-              <StatCard title="Morning (M)" value={metrics.morning} icon="solar:sun-2-bold-duotone" color="bg-amber-500" bgGradient="from-amber-500/10 to-orange-500/10" iconBg="bg-amber-500/10" iconColor="text-amber-600" />
-              <StatCard title="Afternoon (A)" value={metrics.afternoon} icon="solar:clouds-bold-duotone" color="bg-sky-500" bgGradient="from-sky-500/10 to-cyan-500/10" iconBg="bg-sky-500/10" iconColor="text-sky-600" />
-              <StatCard title="Evening (E)" value={metrics.evening} icon="solar:moon-bold-duotone" color="bg-indigo-500" bgGradient="from-indigo-500/10 to-violet-500/10" iconBg="bg-indigo-500/10" iconColor="text-indigo-600" />
+              <StatCard title="Today Total" value={metrics.todayTotal} icon="solar:clipboard-list-linear" color="bg-blue-500" bgGradient="from-blue-500/10 to-indigo-500/10" iconBg="bg-blue-500/10" iconColor="text-blue-600" />
+              <StatCard title="Morning (M)" value={metrics.morning} icon="solar:sun-2-linear" color="bg-amber-500" bgGradient="from-amber-500/10 to-orange-500/10" iconBg="bg-amber-500/10" iconColor="text-amber-600" />
+              <StatCard title="Afternoon (A)" value={metrics.afternoon} icon="solar:clouds-linear" color="bg-sky-500" bgGradient="from-sky-500/10 to-cyan-500/10" iconBg="bg-sky-500/10" iconColor="text-sky-600" />
+              <StatCard title="Evening (E)" value={metrics.evening} icon="solar:moon-linear" color="bg-indigo-500" bgGradient="from-indigo-500/10 to-violet-500/10" iconBg="bg-indigo-500/10" iconColor="text-indigo-600" />
             </div>
           </div>
         </StaggerItem>
@@ -85,10 +85,10 @@ function LabAppointmentDashboard() {
           <div className="flex flex-col gap-4 mt-8">
             <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1 mt-4 border-t border-slate-200 pt-6">Operation Buckets & Alerts</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <PipelineBucket title="Not Scheduled" count={metrics.notScheduled} description="Prescriptions waiting for an assigned slot." icon="solar:calendar-broken-bold-duotone" color="bg-orange-500" />
-              <PipelineBucket title="Missing" count={metrics.missing} description="Patients who did not show up for labs." icon="solar:user-cross-bold-duotone" color="bg-red-500" />
-              <PipelineBucket title="Report Not Ready" count={metrics.reportNotReady} description="Labs completed but pending final report." icon="solar:document-text-bold-duotone" color="bg-purple-500" />
-              <PipelineBucket title="Not Reviewed" count={metrics.notReviewed} description="Reports ready but pending doctor review." icon="solar:eye-broken-bold-duotone" color="bg-pink-500" />
+              <PipelineBucket title="Not Scheduled" count={metrics.notScheduled} description="Prescriptions waiting for an assigned slot." icon="solar:calendar-broken-linear" color="bg-orange-500" />
+              <PipelineBucket title="Missing" count={metrics.missing} description="Patients who did not show up for labs." icon="solar:user-cross-linear" color="bg-red-500" />
+              <PipelineBucket title="Report Not Ready" count={metrics.reportNotReady} description="Labs completed but pending final report." icon="solar:document-text-linear" color="bg-purple-500" />
+              <PipelineBucket title="Not Reviewed" count={metrics.notReviewed} description="Reports ready but pending doctor review." icon="solar:eye-broken-linear" color="bg-pink-500" />
             </div>
           </div>
         </StaggerItem>

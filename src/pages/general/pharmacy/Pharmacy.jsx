@@ -25,14 +25,14 @@ function Pharmacy() {
   const [isSavingStatus, setIsSavingStatus] = useState(false);
   const [activeTab, setActiveTab] = useState("queue");
   const [inventoryList, setInventoryList] = useState([]);
-  const clinicId = JSON.parse(sessionStorage.getItem("user"))?.clinicId;
+  const sessionData = JSON.parse(sessionStorage.getItem("user") || sessionStorage.getItem("master") || "{}");
+  const clinicId = sessionData?.clinicId;
 
   const fetchPrescriptions = async () => {
     try {
       setLoading(true);
-      const response = await AxiosInstance.get(
-        `/prescription/get-for-pharmacy?clinicId=${clinicId}`,
-      );
+      const url = clinicId ? `/prescription/get-for-pharmacy?clinicId=${clinicId}` : `/prescription/get-for-pharmacy`;
+      const response = await AxiosInstance.get(url);
       setPrescriptions(response.data.data || []);
     } catch (error) {
       console.error("Error fetching prescriptions:", error);
@@ -72,10 +72,30 @@ function Pharmacy() {
   const handleDispense = async () => {
     if (!selectedPrescription) return;
 
-    const dispenseData = selectedPrescription.medicinesData.map((med) => ({
-      medication: med.medication,
-      quantity: calculateQuantity(med),
-    }));
+    let canDispense = true;
+    let outOfStockMed = "";
+
+    const dispenseData = selectedPrescription.medicinesData.map((med) => {
+      const reqQty = calculateQuantity(med);
+      const inv = inventoryList.find(
+        (i) => i.productName?.trim().toLowerCase() === med.medication?.trim().toLowerCase()
+      );
+
+      if (!inv || inv.productCurrentCount < reqQty) {
+        canDispense = false;
+        outOfStockMed = med.medication;
+      }
+
+      return {
+        medication: med.medication,
+        quantity: reqQty,
+      };
+    });
+
+    if (!canDispense) {
+      message.error(`Cannot dispense: Insufficient stock for ${outOfStockMed}.`);
+      return;
+    }
 
     try {
       setIsSubmitting(true);
@@ -277,7 +297,7 @@ function Pharmacy() {
                   : "text-slate-500 hover:text-slate-700 hover:bg-slate-100/50"
               }`}
             >
-              <Icon icon="solar:clipboard-list-bold-duotone" width="16" />
+              <Icon icon="solar:clipboard-list-linear" width="16" />
               Queue
             </button>
             <button
@@ -288,7 +308,7 @@ function Pharmacy() {
                   : "text-slate-500 hover:text-slate-700 hover:bg-slate-100/50"
               }`}
             >
-              <Icon icon="solar:box-bold-duotone" width="16" />
+              <Icon icon="solar:box-linear" width="16" />
               Stock
             </button>
             <button
@@ -299,7 +319,7 @@ function Pharmacy() {
                   : "text-slate-500 hover:text-slate-700 hover:bg-slate-100/50"
               }`}
             >
-              <Icon icon="solar:chart-square-bold-duotone" width="16" />
+              <Icon icon="solar:chart-square-linear" width="16" />
               Analytics
             </button>
           </div>
@@ -311,10 +331,10 @@ function Pharmacy() {
             <StaggerItem>
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8">
             {[
-              { label: "Today Total", count: metrics.todayTotal, total: metrics.todayTotal, color: "bg-blue-500", bgGradient: "from-blue-500/10 to-indigo-500/10", iconBg: "bg-blue-500/10", iconColor: "text-blue-600", icon: "solar:clipboard-list-bold-duotone" },
-              { label: "Pending", count: metrics.pending, total: metrics.todayTotal, color: "bg-amber-500", bgGradient: "from-amber-500/10 to-orange-500/10", iconBg: "bg-amber-500/10", iconColor: "text-amber-600", icon: "solar:clock-circle-bold-duotone" },
-              { label: "Delivered", count: metrics.delivered, total: metrics.todayTotal, color: "bg-emerald-500", bgGradient: "from-emerald-500/10 to-teal-500/10", iconBg: "bg-emerald-500/10", iconColor: "text-emerald-600", icon: "solar:check-circle-bold-duotone" },
-              { label: "Today Refill", count: metrics.todayRefill, total: metrics.todayTotal, color: "bg-indigo-500", bgGradient: "from-indigo-500/10 to-violet-500/10", iconBg: "bg-indigo-500/10", iconColor: "text-indigo-600", icon: "solar:refresh-bold-duotone" },
+              { label: "Today Total", count: metrics.todayTotal, total: metrics.todayTotal, color: "bg-blue-500", bgGradient: "from-blue-500/10 to-indigo-500/10", iconBg: "bg-blue-500/10", iconColor: "text-blue-600", icon: "solar:clipboard-list-linear" },
+              { label: "Pending", count: metrics.pending, total: metrics.todayTotal, color: "bg-amber-500", bgGradient: "from-amber-500/10 to-orange-500/10", iconBg: "bg-amber-500/10", iconColor: "text-amber-600", icon: "solar:clock-circle-linear" },
+              { label: "Delivered", count: metrics.delivered, total: metrics.todayTotal, color: "bg-emerald-500", bgGradient: "from-emerald-500/10 to-teal-500/10", iconBg: "bg-emerald-500/10", iconColor: "text-emerald-600", icon: "solar:check-circle-linear" },
+              { label: "Today Refill", count: metrics.todayRefill, total: metrics.todayTotal, color: "bg-indigo-500", bgGradient: "from-indigo-500/10 to-violet-500/10", iconBg: "bg-indigo-500/10", iconColor: "text-indigo-600", icon: "solar:refresh-linear" },
             ].map((c, i) => (
               <div key={i} className={`group relative overflow-hidden bg-linear-to-br ${c.bgGradient} backdrop-blur-xl border border-slate-200/60 rounded-xl hover:scale-[1.02] transition-all duration-300`}>
                  <div className={`absolute -top-12 -right-12 w-32 h-32 rounded-full blur-2xl opacity-10 transition-opacity group-hover:opacity-20 ${c.color}`} />
@@ -342,10 +362,10 @@ function Pharmacy() {
               <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 mb-6">
             <div className="flex flex-wrap items-center gap-2 bg-slate-50/50 p-2 border border-slate-200 shadow-inner rounded">
               {[
-                { id: "all", label: "All Queue", icon: "solar:list-bold-duotone" },
-                { id: "delivered", label: "Delivered", icon: "solar:check-circle-bold-duotone" },
-                { id: "out_of_stock", label: "Out of Stock", icon: "solar:box-bold-duotone" },
-                { id: "refills", label: "Refills", icon: "solar:refresh-bold-duotone" },
+                { id: "all", label: "All Queue", icon: "solar:list-linear" },
+                { id: "delivered", label: "Delivered", icon: "solar:check-circle-linear" },
+                { id: "out_of_stock", label: "Out of Stock", icon: "solar:box-linear" },
+                { id: "refills", label: "Refills", icon: "solar:refresh-linear" },
               ].map((tab) => (
                 <button
                   key={tab.id}
@@ -365,7 +385,7 @@ function Pharmacy() {
             <div className="flex items-center gap-4">
               <div className="relative group">
                 <Icon
-                  icon="solar:magnifer-bold-duotone"
+                  icon="solar:magnifer-linear"
                   width="18"
                   className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors"
                 />
@@ -511,7 +531,7 @@ function Pharmacy() {
                               className="p-3 bg-white text-slate-400 hover:text-emerald-600 rounded-xl transition-all shadow-sm border border-slate-200 hover:scale-110 active:scale-95"
                               title="Notify via WhatsApp"
                             >
-                              <Icon icon="solar:chat-round-line-bold-duotone" width="20" />
+                              <Icon icon="solar:chat-round-line-linear" width="20" />
                             </button>
                             {p.aiPharmacyReport && (
                               <button
@@ -523,7 +543,7 @@ function Pharmacy() {
                                 className="p-3 bg-emerald-50 text-emerald-600 rounded-xl transition-all shadow-sm border border-emerald-100 hover:scale-110 active:scale-95"
                                 title="View Stored AI Report"
                               >
-                                <Icon icon="solar:magic-stick-3-bold-duotone" width="20" />
+                                <Icon icon="solar:magic-stick-3-linear" width="20" />
                               </button>
                             )}
                             <button
@@ -539,7 +559,7 @@ function Pharmacy() {
                               className="p-3 bg-purple-50 text-purple-600 rounded-xl transition-all shadow-sm border border-purple-100 hover:scale-110 active:scale-95"
                               title="View Medicines"
                             >
-                              <Icon icon="solar:pills-bold-duotone" width="20" />
+                              <Icon icon="solar:pills-linear" width="20" />
                             </button>
                             <button
                               onClick={() => {
@@ -572,7 +592,7 @@ function Pharmacy() {
                       <td colSpan="6" className="py-20 text-center">
                         <div className="flex flex-col items-center gap-4 text-slate-300">
                           <Icon
-                            icon="solar:clipboard-remove-bold-duotone"
+                            icon="solar:clipboard-remove-linear"
                             width="48"
                           />
                           <span className="text-[10px] font-black uppercase tracking-widest">
@@ -602,7 +622,7 @@ function Pharmacy() {
         title={
           <div className="flex items-center gap-3 p-4 border-b border-slate-100 -mx-6 -mt-5 mb-6">
             <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500">
-              <Icon icon="solar:pill-bold-duotone" className="text-xl" />
+              <Icon icon="solar:pill-linear" className="text-xl" />
             </div>
             <div>
               <h2 className="text-lg font-black text-slate-800 leading-tight">
@@ -662,7 +682,7 @@ function Pharmacy() {
                   {isAnalyzing ? (
                     <><Icon icon="line-md:loading-twotone-loop" className="text-sm" /> Analyzing...</>
                   ) : (
-                    <><Icon icon="solar:magic-stick-3-bold-duotone" className="text-sm" /> AI Summary</>
+                    <><Icon icon="solar:magic-stick-3-linear" className="text-sm" /> AI Summary</>
                   )}
                 </button>
               </div>
@@ -670,7 +690,7 @@ function Pharmacy() {
               {aiReport && (
                 <div className="p-6 bg-emerald-50/50 border border-emerald-100 rounded-3xl animate-in fade-in zoom-in duration-300 no-print" data-html2canvas-ignore="true">
                   <div className="flex items-center gap-2 mb-3 text-emerald-700">
-                    <Icon icon="solar:magic-stick-3-bold-duotone" className="text-lg" />
+                    <Icon icon="solar:magic-stick-3-linear" className="text-lg" />
                     <span className="text-xs font-black uppercase tracking-widest">AI Pharmacist Note</span>
                   </div>
                   {(() => {
@@ -702,7 +722,7 @@ function Pharmacy() {
                           <AIGaugeReport 
                             items={mappedItems} 
                             color="emerald" 
-                            icon="solar:pill-bold-duotone" 
+                            icon="solar:pill-linear" 
                           />
                         </div>
                       );
@@ -772,7 +792,7 @@ function Pharmacy() {
 
       {/* View Medicines Modal */}
       <Modal
-        title={<div className="flex items-center gap-2 text-purple-700 font-black tracking-widest uppercase"><Icon icon="solar:pills-bold-duotone" width="24" /> Prescription Medicines</div>}
+        title={<div className="flex items-center gap-2 text-purple-700 font-black tracking-widest uppercase"><Icon icon="solar:pills-linear" width="24" /> Prescription Medicines</div>}
         open={isViewMedModalOpen}
         onCancel={() => setIsViewMedModalOpen(false)}
         footer={

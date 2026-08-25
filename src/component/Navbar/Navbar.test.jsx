@@ -13,12 +13,13 @@ vi.mock('react-router-dom', () => ({
 // Mock Redux
 const mockDispatch = vi.fn();
 vi.mock('react-redux', () => ({
-  useSelector: vi.fn((selector) => selector({ theme: { theme: 'light' } })),
+  useSelector: vi.fn((selector) => selector({ theme: { theme: 'light' }, chat: { isOpen: false, unreadCount: 0 } })),
   useDispatch: () => mockDispatch
 }));
 
 // Mock Redux Actions
 vi.mock('../../redux/slices/toggleSlice', () => ({
+  default: (state = {}) => state,
   toggleSidebar: vi.fn(() => ({ type: 'toggle/toggleSidebar' }))
 }));
 

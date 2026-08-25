@@ -803,7 +803,7 @@ function Expenditure({ targetedData, setSwaper, swaper, refresh }) {
                 onClick={formData?._id ? handleUpdate : handleSubmit}
                 className="px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-lg shadow-emerald-500/20 flex items-center gap-2 cursor-pointer transition-all border-none uppercase tracking-wider"
               >
-                <Icon icon="solar:check-circle-bold" className="text-lg" />
+                <Icon icon="solar:check-circle-linear" className="text-lg" />
                 <span>{formData?._id ? "Update Purchase Record" : "Submit Purchase Order"}</span>
               </button>
             )}

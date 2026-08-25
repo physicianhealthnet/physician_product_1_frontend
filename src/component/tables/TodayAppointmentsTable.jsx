@@ -61,7 +61,7 @@ const TodayAppointmentsTable = () => {
       <div className="flex items-center justify-between p-6 border-b border-slate-100">
         <div>
           <h2 className="text-xl font-black text-slate-800 flex items-center gap-2">
-            <Icon icon="solar:calendar-date-bold-duotone" className="text-blue-500" />
+            <Icon icon="solar:calendar-date-linear" className="text-blue-500" />
             Today's Appointments
           </h2>
           <p className="text-sm font-medium text-slate-500 mt-1">
@@ -75,14 +75,14 @@ const TodayAppointmentsTable = () => {
            onClick={fetchAppointments} 
            disabled={loading}
         >
-          <Icon icon="solar:refresh-bold" className={loading ? "animate-spin" : ""} />
+          <Icon icon="solar:refresh-linear" className={loading ? "animate-spin" : ""} />
         </Button>
       </div>
 
       {appointments.length === 0 && !loading && !error ? (
         <div className="py-12 text-center flex flex-col items-center justify-center border-none">
           <div className="w-16 h-16 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 mb-4">
-            <Icon icon="solar:inbox-line-bold" className="text-3xl" />
+            <Icon icon="solar:inbox-line-linear" className="text-3xl" />
           </div>
           <p className="text-slate-500 font-bold">No appointments for today</p>
         </div>
@@ -139,7 +139,7 @@ const TodayAppointmentsTable = () => {
                           ${isApproved ? 'bg-emerald-50 text-emerald-600' : ''}
                           ${!isPending && !isApproved ? 'bg-red-50 text-red-600' : ''}
                         `}>
-                          <Icon icon={isPending ? 'solar:clock-circle-bold' : isApproved ? 'solar:check-circle-bold' : 'solar:close-circle-bold'} />
+                          <Icon icon={isPending ? 'solar:clock-circle-linear' : isApproved ? 'solar:check-circle-linear' : 'solar:close-circle-linear'} />
                           {(() => {
                              if (appt.status === "doctor_rescheduled") return "Dr. Rescheduled";
                              if (appt.status === "reject") return "Dr. Cancelled";

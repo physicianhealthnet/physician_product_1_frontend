@@ -102,9 +102,9 @@ function Navbar() {
       <div className="flex items-center gap-4 md:gap-6">
         {/* PHN Chat Button */}
         <div className="p-4 border-t border-[#e0e0e0]">
-          <Button
+          <button
             onClick={handleChatToggle}
-            className="w-full flex items-center gap-3 px-3 py-3 bg-primary-500 hover:bg-primary-600 text-white transition-all duration-200 shadow-md shadow-primary-500/30 relative"
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-full bg-primary-500/10 hover:bg-primary-500 text-primary-500 hover:text-white transition-all duration-200 relative"
           >
             <div className="flex items-center justify-center">
               <Icon icon="tabler:headset" width={24} height={24} />
@@ -118,7 +118,7 @@ function Navbar() {
                 {unreadCount > 9 ? "9+" : unreadCount}
               </div>
             )}
-          </Button>
+          </button>
         </div>
         <Dropdown
           menu={dropdownItems}

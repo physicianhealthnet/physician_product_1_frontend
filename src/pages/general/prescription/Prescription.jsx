@@ -562,7 +562,7 @@ function Prescription({ history, treatment_id, data, patientId }) {
             <div key={docName} className="bg-slate-50/50 p-6 rounded-2xl border border-slate-200/50">
               <h4 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-3">
                 <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center shadow-inner">
-                  <Icon icon="solar:shield-user-bold-duotone" width="24" />
+                  <Icon icon="solar:shield-user-linear" width="24" />
                 </div>
                 Prescribed by: {docName}
               </h4>
@@ -591,7 +591,7 @@ function Prescription({ history, treatment_id, data, patientId }) {
                               className="p-2 bg-slate-100 text-slate-700 rounded-xl hover:bg-slate-200 transition-all active:scale-95"
                               title="View"
                             >
-                              <Icon icon="solar:eye-bold-duotone" width="18" />
+                              <Icon icon="solar:eye-linear" width="18" />
                             </button>
                             {!history && (
                               <button
@@ -599,7 +599,7 @@ function Prescription({ history, treatment_id, data, patientId }) {
                                 className="p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all active:scale-95 shadow-sm"
                                 title="Edit"
                               >
-                                <Icon icon="solar:pen-bold-duotone" width="18" />
+                                <Icon icon="solar:pen-linear" width="18" />
                               </button>
                             )}
                             {data.aiPharmacyReport ? (
@@ -608,7 +608,7 @@ function Prescription({ history, treatment_id, data, patientId }) {
                                   className="p-2 bg-emerald-50 text-emerald-600 rounded-xl hover:bg-emerald-600 hover:text-white transition-all active:scale-95 shadow-sm"
                                   title="View AI Report"
                                 >
-                                  <Icon icon="solar:document-text-bold-duotone" width="18" />
+                                  <Icon icon="solar:document-text-linear" width="18" />
                               </button>
                             ) : (
                               <button
@@ -616,7 +616,7 @@ function Prescription({ history, treatment_id, data, patientId }) {
                                   className="p-2 bg-violet-50 text-violet-600 rounded-xl hover:bg-violet-600 hover:text-white transition-all active:scale-95 shadow-sm"
                                   title="Generate AI Report"
                                 >
-                                  <Icon icon="solar:magic-stick-3-bold-duotone" width="18" />
+                                  <Icon icon="solar:magic-stick-3-linear" width="18" />
                               </button>
                             )}
                             <button
@@ -665,7 +665,7 @@ function Prescription({ history, treatment_id, data, patientId }) {
                               {sharing && targetData?._id === data._id ? (
                                 <Icon icon="line-md:loading-twotone-loop" width="18" />
                               ) : (
-                                <Icon icon="solar:share-bold-duotone" width="18" />
+                                <Icon icon="solar:share-linear" width="18" />
                               )}
                             </button>
                           </div>
@@ -698,7 +698,7 @@ function Prescription({ history, treatment_id, data, patientId }) {
 
                 <div className="flex items-center gap-4 mb-8">
                   <div className="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center shadow-[0_8px_16px_-4px_rgba(37,99,235,0.4)]">
-                    <Icon icon="solar:bolt-bold-duotone" width="24" />
+                    <Icon icon="solar:bolt-linear" width="24" />
                   </div>
                   <h4 className="text-xl font-black text-slate-800  tracking-tight">Quick Template</h4>
                 </div>
@@ -755,7 +755,7 @@ function Prescription({ history, treatment_id, data, patientId }) {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 bg-emerald-100  text-emerald-600  rounded-xl flex items-center justify-center font-black transition-all">
-                    <Icon icon="solar:pill-bold-duotone" width="20" />
+                    <Icon icon="solar:pill-linear" width="20" />
                   </div>
                   <h4 className="text-lg font-black text-slate-800  tracking-wider">Medicine Entry</h4>
                 </div>
@@ -942,14 +942,14 @@ function Prescription({ history, treatment_id, data, patientId }) {
                             className="p-3 bg-white  text-slate-400  hover:text-blue-600 hover:scale-110 active:scale-95 transition-all shadow-sm border border-slate-200/50  rounded-xl"
                             title="Edit Row"
                           >
-                            <Icon icon="solar:pen-bold-duotone" width="18" />
+                            <Icon icon="solar:pen-linear" width="18" />
                           </button>
                           <button
                             onClick={() => handleDeleteRow(index)}
                             className="p-3 bg-rose-50  text-rose-600  hover:bg-rose-600 hover:text-white hover:scale-110 active:scale-95 transition-all shadow-sm border border-rose-100/50  rounded-xl"
                             title="Delete Row"
                           >
-                            <Icon icon="solar:trash-bin-trash-bold-duotone" width="18" />
+                            <Icon icon="solar:trash-bin-trash-linear" width="18" />
                           </button>
                         </div>
                       </td>
@@ -1002,7 +1002,7 @@ function Prescription({ history, treatment_id, data, patientId }) {
         title={
           <div className="flex items-center gap-3 p-4 border-b border-slate-100 -mx-6 -mt-5 mb-6">
             <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">
-              <Icon icon="solar:magic-stick-3-bold-duotone" className="text-xl" />
+              <Icon icon="solar:magic-stick-3-linear" className="text-xl" />
             </div>
             <div>
               <h2 className="text-lg font-black text-slate-800 leading-tight">
@@ -1057,7 +1057,7 @@ function Prescription({ history, treatment_id, data, patientId }) {
                     <AIGaugeReport 
                       items={mappedItems} 
                       color="emerald" 
-                      icon="solar:pill-bold-duotone" 
+                      icon="solar:pill-linear" 
                     />
                   );
                 }

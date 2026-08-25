@@ -56,7 +56,6 @@ const PatientClinicalDataModal = ({ isOpen, onClose, patientId, dataType, type, 
     };
 
     fetchData();
-    fetchData();
   }, [isOpen, patientId, actualType, filterDate]);
 
   const toggleMedicineStatus = async (prescriptionId, medicineId, currentStatus) => {

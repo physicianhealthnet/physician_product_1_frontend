@@ -263,10 +263,10 @@ IMPORTANT: "flag" MUST be one of: "low", "normal", "high", "critical", "warning"
 
       {/* Row 1: Doctor-like Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-        <StatCard title="Today's Appointments" subValue={metrics.todayTotal} total={9} icon="solar:clipboard-list-bold-duotone" color="bg-blue-500" bgGradient="from-blue-500/10 to-indigo-500/10" iconBg="bg-blue-500/10" iconColor="text-blue-600" />
-        <StatCard title="Morning (M)" subValue={metrics.morning} total={2} icon="solar:sun-2-bold-duotone" color="bg-amber-500" bgGradient="from-amber-500/10 to-orange-500/10" iconBg="bg-amber-500/10" iconColor="text-amber-600" />
-        <StatCard title="Afternoon (A)" subValue={metrics.afternoon} total={3} icon="solar:clouds-bold-duotone" color="bg-sky-500" bgGradient="from-sky-500/10 to-cyan-500/10" iconBg="bg-sky-500/10" iconColor="text-sky-600" />
-        <StatCard title="Evening (E)" subValue={metrics.evening} total={4} icon="solar:moon-bold-duotone" color="bg-indigo-500" bgGradient="from-indigo-500/10 to-violet-500/10" iconBg="bg-indigo-500/10" iconColor="text-indigo-600" />
+        <StatCard title="Today's Appointments" subValue={metrics.todayTotal} total={9} icon="solar:clipboard-list-linear" color="bg-blue-500" bgGradient="from-blue-500/10 to-indigo-500/10" iconBg="bg-blue-500/10" iconColor="text-blue-600" />
+        <StatCard title="Morning (M)" subValue={metrics.morning} total={2} icon="solar:sun-2-linear" color="bg-amber-500" bgGradient="from-amber-500/10 to-orange-500/10" iconBg="bg-amber-500/10" iconColor="text-amber-600" />
+        <StatCard title="Afternoon (A)" subValue={metrics.afternoon} total={3} icon="solar:clouds-linear" color="bg-sky-500" bgGradient="from-sky-500/10 to-cyan-500/10" iconBg="bg-sky-500/10" iconColor="text-sky-600" />
+        <StatCard title="Evening (E)" subValue={metrics.evening} total={4} icon="solar:moon-linear" color="bg-indigo-500" bgGradient="from-indigo-500/10 to-violet-500/10" iconBg="bg-indigo-500/10" iconColor="text-indigo-600" />
       </div>
 
       {/* Main Workspace Table */}
@@ -318,17 +318,17 @@ IMPORTANT: "flag" MUST be one of: "low", "normal", "high", "critical", "warning"
                     <div className="flex items-center justify-end gap-2">
                       {row.status === "Scheduled" && (
                         <button onClick={() => handleMarkArrived(row._id)} className="flex items-center justify-center gap-1 w-8 h-8 rounded-lg text-emerald-600 bg-emerald-50 border border-emerald-100 hover:bg-emerald-100 hover:scale-110 transition-all" title="Mark Arrived">
-                          <Icon icon="solar:check-circle-bold-duotone" />
+                          <Icon icon="solar:check-circle-linear" />
                         </button>
                       )}
                       {(row.status === "Not Scheduled" || row.status === "Missing") && (
                         <button onClick={() => setSchedulingId(row._id)} className="flex items-center gap-1 w-8 h-8 justify-center rounded-lg text-blue-600 bg-blue-50 border border-blue-100 hover:bg-blue-100 hover:scale-110 transition-all" title="Schedule Appointment">
-                          <Icon icon="solar:calendar-add-bold-duotone" />
+                          <Icon icon="solar:calendar-add-linear" />
                         </button>
                       )}
                       {row.status === "Report Not Ready" && (
                         <button onClick={() => openReportModal(row)} className="flex items-center justify-center gap-2 px-3 h-8 rounded-lg text-blue-600 bg-blue-50 border border-blue-100 hover:bg-blue-100 hover:scale-105 transition-all text-[10px] font-black uppercase tracking-wider" title="Write Final Report">
-                          <Icon icon="solar:document-add-bold-duotone" className="text-sm" /> Add Report
+                          <Icon icon="solar:document-add-linear" className="text-sm" /> Add Report
                         </button>
                       )}
                       {row.status === "Completed" && (
@@ -338,17 +338,17 @@ IMPORTANT: "flag" MUST be one of: "low", "normal", "high", "critical", "warning"
                             const url = formattedPath.startsWith('http') ? formattedPath : `${AxiosInstance.defaults.baseURL}${formattedPath}`;
                             return (
                               <button key={index} onClick={() => setPreviewUrl(url)} className="flex items-center gap-2 px-3 h-8 justify-center rounded-lg text-indigo-600 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 hover:scale-105 transition-all font-black text-[10px] uppercase tracking-wider" title={`View Uploaded Document ${index + 1}`}>
-                                <Icon icon="solar:document-bold-duotone" className="text-sm" /> View Doc {index > 0 ? index + 1 : ''}
+                                <Icon icon="solar:document-linear" className="text-sm" /> View Doc {index > 0 ? index + 1 : ''}
                               </button>
                             );
                           })}
                            {row.finalReportNotes ? (
                             <div className="flex items-center gap-2">
                               <button onClick={() => setSelectedReportNotes(row.finalReportNotes)} className="flex items-center gap-2 px-3 h-8 justify-center rounded-lg text-emerald-600 bg-emerald-50 border border-emerald-100 hover:bg-emerald-100 hover:scale-105 transition-all font-black text-[10px] uppercase tracking-wider" title="View AI Generated Report">
-                                <Icon icon="solar:magic-stick-3-bold-duotone" className="text-sm" /> AI Report
+                                <Icon icon="solar:magic-stick-3-linear" className="text-sm" /> AI Report
                               </button>
                               <button onClick={() => openReportModal(row)} className="flex items-center justify-center gap-1 w-8 h-8 rounded-lg text-blue-600 bg-blue-50 border border-blue-100 hover:bg-blue-100 hover:scale-110 transition-all" title="Edit Report">
-                                <Icon icon="solar:pen-bold-duotone" />
+                                <Icon icon="solar:pen-linear" />
                               </button>
                             </div>
                           ) : (
@@ -358,7 +358,7 @@ IMPORTANT: "flag" MUST be one of: "low", "normal", "high", "critical", "warning"
                               className={`flex items-center gap-2 px-3 h-8 justify-center rounded-lg transition-all font-black text-[10px] uppercase tracking-wider ${isGeneratingAI[row._id] ? 'bg-slate-100 text-slate-400' : 'text-emerald-600 bg-emerald-50 border border-emerald-100 hover:bg-emerald-100 hover:scale-105'}`} 
                               title="Generate AI Report"
                             >
-                              <Icon icon={isGeneratingAI[row._id] ? "line-md:loading-twotone-loop" : "solar:magic-stick-3-bold-duotone"} className="text-sm" /> 
+                              <Icon icon={isGeneratingAI[row._id] ? "line-md:loading-twotone-loop" : "solar:magic-stick-3-linear"} className="text-sm" /> 
                               {isGeneratingAI[row._id] ? "Generating..." : "Generate AI Report"}
                             </button>
                           )}
@@ -366,7 +366,7 @@ IMPORTANT: "flag" MUST be one of: "low", "normal", "high", "critical", "warning"
                       )}
                       {row.status !== "Completed" && (
                         <button onClick={() => handleDelete(row._id)} className="flex items-center justify-center gap-1 w-8 h-8 rounded-lg text-rose-600 bg-rose-50 border border-rose-100 hover:bg-rose-100 hover:scale-110 transition-all" title="Delete">
-                          <Icon icon="solar:trash-bin-trash-bold-duotone" />
+                          <Icon icon="solar:trash-bin-trash-linear" />
                         </button>
                       )}
                     </div>
@@ -376,7 +376,7 @@ IMPORTANT: "flag" MUST be one of: "low", "normal", "high", "critical", "warning"
                 <tr>
                   <td colSpan="5" className="px-6 py-24 text-center">
                     <div className="flex flex-col items-center justify-center gap-2 text-slate-400">
-                      <Icon icon="solar:calendar-broken-bold-duotone" className="text-4xl opacity-50" />
+                      <Icon icon="solar:calendar-broken-linear" className="text-4xl opacity-50" />
                       <span className="font-medium">No appointments currently registered for "{activeTab}".</span>
                     </div>
                   </td>
@@ -393,7 +393,7 @@ IMPORTANT: "flag" MUST be one of: "low", "normal", "high", "critical", "warning"
             <div className="flex justify-between items-center p-6 border-b border-slate-100 bg-white/50">
               <h2 className="text-2xl font-black text-slate-800 tracking-tight">Final Diagnostics <span className="text-blue-600">Report</span></h2>
               <button disabled={isSubmitting} onClick={() => setIsReportModalOpen(false)} className="text-slate-400 hover:text-red-500 transition-colors p-2 rounded-xl hover:bg-red-50">
-                <Icon icon="solar:close-circle-bold-duotone" className="text-2xl" />
+                <Icon icon="solar:close-circle-linear" className="text-2xl" />
               </button>
             </div>
             <form onSubmit={handleCompleteReport} className="p-8">
@@ -402,7 +402,7 @@ IMPORTANT: "flag" MUST be one of: "low", "normal", "high", "critical", "warning"
                   <label className="text-xs font-black text-slate-500 uppercase tracking-widest pl-1">Attach Final Report Document</label>
                   <label className="flex items-center gap-3 w-full bg-slate-50 border border-slate-200 border-dashed rounded-xl px-5 py-4 cursor-pointer hover:bg-slate-100 hover:border-blue-300 transition-all group">
                     <div className="w-10 h-10 rounded-xl bg-blue-100/50 flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform">
-                      <Icon icon="solar:document-medicine-bold-duotone" className="text-xl" />
+                      <Icon icon="solar:document-medicine-linear" className="text-xl" />
                     </div>
                     <div className="flex flex-col flex-1">
                       <span className="text-sm font-black text-slate-700">{reportFiles.length > 0 ? reportFiles.map(f => f.name).join(", ") : "Choose file(s)..."}</span>
@@ -446,7 +446,7 @@ IMPORTANT: "flag" MUST be one of: "low", "normal", "high", "critical", "warning"
                         </>
                       ) : (
                         <>
-                          <Icon icon="solar:magic-stick-3-bold-duotone" className="text-lg" />
+                          <Icon icon="solar:magic-stick-3-linear" className="text-lg" />
                           Generate AI Diagnostic Draft
                         </>
                       )}
@@ -471,7 +471,7 @@ IMPORTANT: "flag" MUST be one of: "low", "normal", "high", "critical", "warning"
                   Cancel
                 </button>
                 <button type="submit" disabled={isSubmitting} className="flex items-center gap-2 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-3 rounded-xl text-sm font-black shadow-lg shadow-blue-500/30 transition-all hover:scale-105 uppercase tracking-widest disabled:opacity-50">
-                  {isSubmitting ? "Uploading..." : "Complete Scan"} <Icon icon="solar:verified-check-bold-duotone" className="text-lg" />
+                  {isSubmitting ? "Uploading..." : "Complete Scan"} <Icon icon="solar:verified-check-linear" className="text-lg" />
                 </button>
               </div>
             </form>
@@ -486,12 +486,12 @@ IMPORTANT: "flag" MUST be one of: "low", "normal", "high", "critical", "warning"
             <div className="flex justify-between items-center p-6 border-b border-slate-100 bg-slate-50/50">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600">
-                  <Icon icon="solar:magic-stick-3-bold-duotone" className="text-xl" />
+                  <Icon icon="solar:magic-stick-3-linear" className="text-xl" />
                 </div>
                 <h2 className="text-xl font-black text-slate-800 tracking-tight">AI Generated <span className="text-emerald-600">Report</span></h2>
               </div>
               <button onClick={() => setSelectedReportNotes(null)} className="text-slate-400 hover:text-red-500 transition-colors p-2 rounded-xl hover:bg-red-50">
-                <Icon icon="solar:close-circle-bold-duotone" className="text-2xl" />
+                <Icon icon="solar:close-circle-linear" className="text-2xl" />
               </button>
             </div>
             <div className="p-8 max-h-[70vh] overflow-y-auto custom-scrollbar bg-white">
@@ -523,7 +523,7 @@ IMPORTANT: "flag" MUST be one of: "low", "normal", "high", "critical", "warning"
                     <AIGaugeReport 
                       items={mappedItems} 
                       color="emerald" 
-                      icon="solar:scanner-bold-duotone" 
+                      icon="solar:scanner-linear" 
                     />
                   );
                 }
@@ -538,7 +538,7 @@ IMPORTANT: "flag" MUST be one of: "low", "normal", "high", "critical", "warning"
               })()}
               <div className="mt-6 p-4 bg-amber-50 border border-amber-100 rounded-xl">
                 <div className="flex items-center gap-2 text-amber-700 font-bold text-xs mb-1 uppercase tracking-wider">
-                  <Icon icon="solar:danger-bold-duotone" width={16} />
+                  <Icon icon="solar:danger-linear" width={16} />
                   <span>Medical Disclaimer</span>
                 </div>
                 <p className="text-[11px] text-amber-600 leading-tight">

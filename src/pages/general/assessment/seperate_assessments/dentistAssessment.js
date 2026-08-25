@@ -1,3 +1,97 @@
+export const medicalHistory = [
+  "Diabetes",
+  "Hypertension",
+  "Heart Issues",
+  "Allergies",
+  "Current Medications",
+];
+
+export const initialExtraoral = {
+  facialSymmetry: { status: "Normal", notes: "" },
+  lymphNodes: { status: "Normal", notes: "" },
+  softTissueSwelling: { status: "Normal", notes: "" },
+  tmj: {
+    right: {
+      crepitus: false,
+      clicking: false,
+      tenderness: false,
+    },
+    left: {
+      crepitus: false,
+      clicking: false,
+      tenderness: false,
+    },
+  },
+  muscles: {
+    deviationOnOpening: { checked: false, notes: "" },
+    deviationOnClosing: { checked: false, notes: "" },
+  },
+  overallNotes: "",
+};
+
+export const intraoralStructures = [
+  "Buccal Mucosa",
+  "Tongue",
+  "Gingiva",
+  "Palate",
+  "Floor of Mouth",
+];
+
+export const symptoms = [
+  { label: "Toothache", key: "toothache" },
+  { label: "Sensitivity", key: "sensitivity" },
+  { label: "Swelling", key: "swelling" },
+  { label: "Bleeding Gums", key: "bleeding" },
+  { label: "Pain on Biting", key: "bitingPain" },
+];
+
+export const initialHardTissue = {
+  occlusion: "",
+  calculus: "",
+  plaque: "",
+  bleeding_on_probing: "",
+  probing_depth: "",
+  oral_hygiene: "",
+};
+
+export const hardTissueAssessments = [
+  {
+    title: "Occlusion:",
+    name: "occlusion",
+    type: "radio",
+    list: ["Class 1", "Class 2 Div 1", "Class 2 Div 2", "Class 3"],
+  },
+  {
+    title: "Calculus:",
+    name: "calculus",
+    type: "radio",
+    list: ["None", "Grade 1", "Grade 2", "Grade 3"],
+  },
+  {
+    title: "Plaque:",
+    name: "plaque",
+    type: "radio",
+    list: ["None", "Mild", "Moderate", "Severe"],
+  },
+  {
+    title: "Bleeding on Probing:",
+    name: "bleeding_on_probing",
+    type: "radio",
+    list: ["None", "Localized", "Generalized", "Severe"],
+  },
+  {
+    title: "Probing Depth:",
+    name: "probing_depth",
+    type: "textarea",
+  },
+  {
+    title: "Oral Hygiene:",
+    name: "oral_hygiene",
+    type: "radio",
+    list: ["Excellent", "Good", "Fair", "Poor"],
+  },
+];
+
 export const dentistAssessmentSections = [
   // =========================================================
   // 1. PATIENT INFORMATION
@@ -464,11 +558,6 @@ export const dentistAssessmentSections = [
       {
         type: "textarea",
         label: "Filled Teeth",
-        name: "filledTeeth",
-      },
-      {
-        type: "textarea",
-        label: "Fractured Teeth",
         name: "fracturedTeeth",
       },
       {

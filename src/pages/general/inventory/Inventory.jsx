@@ -8,12 +8,12 @@ import { TableSkeleton, Skeleton } from "../../../component/ui/Skeleton";
 import { StaggerContainer, StaggerItem } from "../../../component/ui/Transitions";
 
 const CATEGORY_OPTIONS = [
-  { id: "Consumable", label: "Consumable", icon: "solar:box-minimalistic-bold-duotone", color: "blue" },
-  { id: "Pharmaceutical", label: "Pharmaceutical", icon: "solar:pill-bold-duotone", color: "emerald" },
-  { id: "Equipment", label: "Equipment", icon: "solar:monitor-bold-duotone", color: "purple" },
-  { id: "Surgical", label: "Surgical", icon: "solar:medical-kit-bold-duotone", color: "rose" },
-  { id: "Diagnostic", label: "Diagnostic", icon: "solar:test-tube-bold-duotone", color: "amber" },
-  { id: "General", label: "General Supply", icon: "solar:box-bold-duotone", color: "slate" },
+  { id: "Consumable", label: "Consumable", icon: "solar:box-minimalistic-linear", color: "blue" },
+  { id: "Pharmaceutical", label: "Pharmaceutical", icon: "solar:pill-linear", color: "emerald" },
+  { id: "Equipment", label: "Equipment", icon: "solar:monitor-linear", color: "purple" },
+  { id: "Surgical", label: "Surgical", icon: "solar:medical-kit-linear", color: "rose" },
+  { id: "Diagnostic", label: "Diagnostic", icon: "solar:test-tube-linear", color: "amber" },
+  { id: "General", label: "General Supply", icon: "solar:box-linear", color: "slate" },
 ];
 
 const INVENTORY_FIELD_SLIDES = [
@@ -219,7 +219,7 @@ function Inventory() {
               <div className="flex items-center justify-between border-b border-slate-100 pb-5">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center font-bold text-xl border border-blue-100 shadow-sm">
-                    <Icon icon={formData?._id ? "solar:pen-bold-duotone" : "solar:box-bold-duotone"} />
+                    <Icon icon={formData?._id ? "solar:pen-linear" : "solar:box-linear"} />
                   </div>
                   <div>
                     <h2 className="text-xl font-black text-slate-800 m-0">
@@ -298,7 +298,7 @@ function Inventory() {
                   <div className="max-w-2xl mx-auto space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
                     <div className="text-center space-y-2">
                       <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto text-2xl border border-blue-100 shadow-sm">
-                        <Icon icon="solar:box-minimalistic-bold-duotone" />
+                        <Icon icon="solar:box-minimalistic-linear" />
                       </div>
                       <h3 className="text-2xl font-black text-slate-800">Product Name & Description</h3>
                       <p className="text-xs text-slate-500 font-medium max-w-md mx-auto">
@@ -331,7 +331,7 @@ function Inventory() {
                   <div className="max-w-2xl mx-auto space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
                     <div className="text-center space-y-2">
                       <div className="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto text-2xl border border-emerald-100 shadow-sm">
-                        <Icon icon="solar:tag-bold-duotone" />
+                        <Icon icon="solar:tag-linear" />
                       </div>
                       <h3 className="text-2xl font-black text-slate-800">Category & Supplier Details</h3>
                       <p className="text-xs text-slate-500 font-medium max-w-md mx-auto">
@@ -386,7 +386,7 @@ function Inventory() {
                   <div className="max-w-2xl mx-auto space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
                     <div className="text-center space-y-2">
                       <div className="w-14 h-14 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center mx-auto text-2xl border border-purple-100 shadow-sm">
-                        <Icon icon="solar:box-bold-duotone" />
+                        <Icon icon="solar:box-linear" />
                       </div>
                       <h3 className="text-2xl font-black text-slate-800">Stock Capacity & Parameters</h3>
                       <p className="text-xs text-slate-500 font-medium max-w-md mx-auto">
@@ -438,7 +438,7 @@ function Inventory() {
                   <div className="max-w-2xl mx-auto space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
                     <div className="text-center space-y-2">
                       <div className="w-14 h-14 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mx-auto text-2xl border border-amber-100 shadow-sm">
-                        <Icon icon="solar:dollar-minimalistic-bold-duotone" />
+                        <Icon icon="solar:dollar-minimalistic-linear" />
                       </div>
                       <h3 className="text-2xl font-black text-slate-800">Unit Price & Reorder Level</h3>
                       <p className="text-xs text-slate-500 font-medium max-w-md mx-auto">
@@ -483,7 +483,7 @@ function Inventory() {
                   <div className="max-w-2xl mx-auto space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
                     <div className="text-center space-y-2">
                       <div className="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto text-2xl border border-emerald-100 shadow-sm">
-                        <Icon icon="solar:clipboard-check-bold-duotone" />
+                        <Icon icon="solar:clipboard-check-linear" />
                       </div>
                       <h3 className="text-2xl font-black text-slate-800">Review Item Details</h3>
                       <p className="text-xs text-slate-500 font-medium max-w-md mx-auto">
@@ -575,7 +575,7 @@ function Inventory() {
                       onClick={formData?._id ? handleUpdateData : handleSubmitData}
                       className="px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-lg shadow-emerald-500/20 flex items-center gap-2 cursor-pointer transition-all border-none uppercase tracking-wider"
                     >
-                      <Icon icon="solar:check-circle-bold" className="text-lg" />
+                      <Icon icon="solar:check-circle-linear" className="text-lg" />
                       <span>{formData?._id ? "Commit Item Updates" : "Confirm & Register Item"}</span>
                     </button>
                   )}
@@ -606,7 +606,7 @@ function Inventory() {
                       <div className="flex-1">
                         <div className="flex items-center gap-4 mb-4">
                           <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center shadow-inner">
-                            <Icon icon="solar:box-bold-duotone" width="32" />
+                            <Icon icon="solar:box-linear" width="32" />
                           </div>
                           <div>
                             <h2 className="text-4xl font-black text-slate-800 tracking-tight leading-none capitalize">
@@ -632,7 +632,7 @@ function Inventory() {
                         </div>
                         <div className="group bg-blue-500 p-6 rounded-2xl shadow-[0_8px_16px_-4px_rgba(59,130,246,0.4)] flex-1 min-w-[220px] relative overflow-hidden transition-transform hover:scale-105">
                           <div className="absolute right-0 bottom-0 opacity-10 group-hover:scale-110 transition-transform">
-                            <Icon icon="solar:box-bold-duotone" width="80" />
+                            <Icon icon="solar:box-linear" width="80" />
                           </div>
                           <div className="text-[10px] font-black text-blue-100 uppercase tracking-widest mb-1 drop-shadow opacity-90">Current Stock</div>
                           <div className="flex items-end justify-between">
@@ -641,7 +641,7 @@ function Inventory() {
                               onClick={() => setAddSwaper(true)}
                               className="w-10 h-10 bg-white/20 hover:bg-white/40 text-white rounded-xl flex items-center justify-center transition-all active:scale-95 drop-shadow-md cursor-pointer border-none"
                             >
-                              <Icon icon="solar:pen-bold-duotone" width="18" />
+                              <Icon icon="solar:pen-linear" width="18" />
                             </button>
                           </div>
                         </div>
@@ -651,7 +651,7 @@ function Inventory() {
                 ) : (
                   <div className="bg-slate-50/50 rounded-3xl p-16 border-2 border-dashed border-slate-200 flex flex-col items-center justify-center transition-all group hover:bg-slate-100/50">
                     <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center mb-4 shadow-sm border border-slate-200 group-hover:scale-110 transition-transform">
-                      <Icon icon="solar:hand-stars-bold-duotone" width="40" className="text-blue-500" />
+                      <Icon icon="solar:hand-stars-linear" width="40" className="text-blue-500" />
                     </div>
                     <h3 className="text-lg font-black text-slate-800 tracking-tight text-center">Ready to manage stock?</h3>
                     <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px] mt-1">Select a product from the list below to view detailed metrics</p>
@@ -749,7 +749,7 @@ function Inventory() {
                                       className="p-2.5 bg-white text-slate-400 hover:text-blue-600 hover:scale-110 active:scale-95 transition-all shadow-xs border border-slate-200 rounded-xl cursor-pointer"
                                       title="Quick View"
                                     >
-                                      <Icon icon="solar:eye-bold-duotone" width="18" />
+                                      <Icon icon="solar:eye-linear" width="18" />
                                     </button>
                                     <button
                                       onClick={(e) => {
@@ -760,7 +760,7 @@ function Inventory() {
                                       title="Permanent Delete"
                                     >
                                       <Icon
-                                        icon="solar:trash-bin-trash-bold-duotone"
+                                        icon="solar:trash-bin-trash-linear"
                                         width="18"
                                       />
                                     </button>
