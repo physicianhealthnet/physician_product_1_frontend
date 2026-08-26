@@ -14,7 +14,15 @@ import {
   mockPatientDetails,
 } from "./mockDashboardData";
 
-const DoctorDashboard = () => {
+// Import images for cards
+import bg1 from "../../../assets/imgs/pexels-karola-g2-5795.jpg";
+import bg2 from "../../../assets/imgs/pexels-cottonbro-5722157.jpg";
+import bg3 from "../../../assets/imgs/pexels-cottonbro-7578799.jpg";
+import bg4 from "../../../assets/imgs/pexels-goumbik-669615.jpg";
+
+const cardImages = [bg1, bg2, bg3, bg4];
+
+const DoctorDashboard = ({ targetDoctor = null, isEmbedded = false }) => {
   const navigate = useNavigate();
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -45,10 +53,23 @@ const DoctorDashboard = () => {
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
-        const user = JSON.parse(sessionStorage.getItem("user") || "{}");
-        const clinicId = user?.clinicId || "";
-        const doctorId = user?._id || "";
-        const doctorName = user?.userName || "";
+        let clinicId = "";
+        let doctorId = "";
+        let doctorName = "";
+
+        if (targetDoctor) {
+          const userSession = sessionStorage.getItem("user");
+          const userData = userSession ? JSON.parse(userSession) : null;
+          clinicId = userData?.clinicId || "";
+          doctorId = targetDoctor._id === "ALL" ? "" : (targetDoctor.userId || targetDoctor._id);
+          doctorName = targetDoctor._id === "ALL" ? "" : targetDoctor.userName;
+        } else {
+          const user = JSON.parse(sessionStorage.getItem("user") || "{}");
+          clinicId = user?.clinicId || "";
+          doctorId = user?.userId || user?._id || "";
+          doctorName = user?.userName || "";
+        }
+
         const res = await AxiosInstance.get(
           `/business-tool/dashboard-v2?clinicId=${clinicId}&doctorId=${doctorId}&doctorName=${doctorName}`,
         );
@@ -63,7 +84,7 @@ const DoctorDashboard = () => {
     };
 
     fetchDashboardData();
-  }, []);
+  }, [targetDoctor]);
 
   const currentDate = new Date()
     .toLocaleDateString("en-GB", {
@@ -107,6 +128,7 @@ const DoctorDashboard = () => {
     iconBg,
     iconColor,
     onClick,
+    bgImage,
   }) => (
     <div
       onClick={onClick}
@@ -115,7 +137,7 @@ const DoctorDashboard = () => {
       }`}
     >
       <div
-        className={`absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[60px] opacity-10 transition-opacity group-hover:opacity-20 ${color}`}
+        className={`absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[60px] opacity-10 transition-opacity group-hover:opacity-20 ${color} z-0`}
       />
 
       <div className="p-4 sm:p-6 flex items-center justify-between gap-2 sm:gap-4 z-10 relative">
@@ -153,7 +175,7 @@ const DoctorDashboard = () => {
 
   return (
     <StaggerContainer>
-      <div className="flex flex-col gap-6 sm:gap-8 p-4 sm:p-6 lg:p-8 bg-white/70 rounded backdrop-blur-3xl border border-slate-200 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] min-h-[500px] w-full max-w-full min-w-0 overflow-hidden">
+      <div className={`flex flex-col gap-6 sm:gap-8 w-full max-w-full min-w-0 overflow-hidden ${isEmbedded ? "" : "min-h-[500px]"}`}>
         {/* HEADER SECTION */}
         <StaggerItem>
           <div className="flex flex-col lg:flex-row justify-between rounded items-start lg:items-center gap-8">
@@ -215,6 +237,7 @@ const DoctorDashboard = () => {
               iconBg="bg-blue-500/10"
               iconColor="text-blue-600"
               onClick={() => handleCardClick("all")}
+              bgImage={cardImages[0]}
             />
             <StatCard
               title="Morning Appointments"
@@ -226,28 +249,31 @@ const DoctorDashboard = () => {
               iconBg="bg-sky-500/10"
               iconColor="text-sky-600"
               onClick={() => handleCardClick("morning")}
+              bgImage={cardImages[1]}
             />
             <StatCard
               title="Afternoon Appointments"
               subValue={patientStats?.afternoon?.completed || 0}
               total={patientStats?.afternoon?.total || 0}
               icon="fluent:weather-sunny-16-filled"
-              bgGradient="from-amber-500/10 to-orange-500/10"
               color="bg-amber-500"
+              bgGradient="from-amber-500/10 to-orange-500/10"
               iconBg="bg-amber-500/10"
               iconColor="text-amber-600"
               onClick={() => handleCardClick("afternoon")}
+              bgImage={cardImages[2]}
             />
             <StatCard
               title="Evening Appointments"
               subValue={patientStats?.evening?.completed || 0}
               total={patientStats?.evening?.total || 0}
-              icon="fluent:weather-partly-cloudy-night-20-filled"
-              color="bg-indigo-500"
-              bgGradient="from-indigo-500/10 to-violet-500/10"
-              iconBg="bg-indigo-500/10"
-              iconColor="text-indigo-600"
+              icon="fluent:weather-moon-16-filled"
+              color="bg-purple-500"
+              bgGradient="from-purple-500/10 to-pink-500/10"
+              iconBg="bg-purple-500/10"
+              iconColor="text-purple-600"
               onClick={() => handleCardClick("evening")}
+              bgImage={cardImages[3]}
             />
           </div>
         </StaggerItem>

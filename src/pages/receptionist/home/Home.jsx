@@ -4,6 +4,7 @@ import PatientInfoTable from "../../../component/tables/PatientInfoTable";
 import TodayAppointmentsTable from "../../../component/tables/TodayAppointmentsTable";
 import DoctorDashboard from "../../../pages/doctor/home/DoctorDashboard";
 import { StaggerContainer, StaggerItem } from "../../../component/ui/Transitions";
+import QuickLinks from "../../../component/ui/QuickLinks";
 
 const Home = () => {
   let userType = null;
@@ -36,6 +37,14 @@ const Home = () => {
           ) : (
             <HeroSection role={"receptionist"} />
           )}
+        </StaggerItem>
+
+        <StaggerItem>
+          <QuickLinks links={[
+            { label: "Appointments", icon: "solar:calendar-linear", route: "/book-appointment", color: "blue" },
+            { label: "Video Consultation", icon: "solar:videocamera-record-linear", route: "/video-consult", color: "purple" },
+            { label: "Doctors & Staff", icon: "solar:stethoscope-linear", route: "/master/doctor-and-staffs", color: "emerald" },
+          ]} />
         </StaggerItem>
 
         {/* Today's Appointments Table */}

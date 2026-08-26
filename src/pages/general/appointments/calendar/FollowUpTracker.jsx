@@ -5,7 +5,7 @@ import { Icon } from "@iconify/react";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 dayjs.extend(isSameOrAfter);
 
-const FollowUpTracker = () => {
+const FollowUpTracker = ({ filterDate, searchTerm }) => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -35,7 +35,20 @@ const FollowUpTracker = () => {
         // Filter for upcoming
         const today = dayjs().startOf("day");
         const upcoming = cleaned
-          .filter((item) => dayjs(item.nextReview).isSameOrAfter(today, "day"))
+          .filter((item) => {
+            const itemDate = dayjs(item.nextReview).startOf("day");
+            if (filterDate) {
+              return itemDate.isSame(dayjs(filterDate).startOf("day"));
+            }
+            return itemDate.isSameOrAfter(today, "day");
+          })
+          .filter((item) => {
+            if (searchTerm) {
+              const q = searchTerm.toLowerCase();
+              return (item.patientName || "").toLowerCase().includes(q) || (item.phoneNumber || "").includes(q);
+            }
+            return true;
+          })
           .sort((a, b) => dayjs(a.nextReview) - dayjs(b.nextReview));
 
         setReviews(upcoming);
@@ -46,16 +59,10 @@ const FollowUpTracker = () => {
       }
     };
     fetchReviews();
-  }, []);
+  }, [filterDate, searchTerm]);
 
   return (
-    <div className="flex flex-col flex-1 bg-white border border-slate-200/50 rounded-2xl overflow-hidden shadow-sm">
-      <div className="bg-slate-50 border-b border-slate-200/50 p-4">
-        <h3 className="font-black text-slate-700 tracking-tight flex items-center gap-2 text-sm uppercase">
-          <Icon icon="solar:calendar-date-bold-duotone" className="text-blue-500 text-lg" />
-          Next Reviews <span className="text-slate-400 font-medium normal-case text-xs">(Planned Follow-up)</span>
-        </h3>
-      </div>
+    <div className="w-full">
       
       <div className="overflow-x-auto custom-scrollbar h-[350px]">
         <table className="w-full text-left border-collapse whitespace-nowrap min-w-max">

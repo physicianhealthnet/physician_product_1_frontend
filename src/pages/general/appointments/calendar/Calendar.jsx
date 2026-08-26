@@ -8,6 +8,7 @@ import {
 } from "../../../../component/ui/Transitions";
 import Button from "../../../../component/ui/Button";
 import { useNavigate } from "react-router-dom";
+import QuickLinks from "../../../../component/ui/QuickLinks";
 
 export default function Calendar({ refreshTrigger }) {
   const navigate = useNavigate();
@@ -48,6 +49,14 @@ export default function Calendar({ refreshTrigger }) {
         </StaggerItem>
 
         <div className="flex flex-col gap-8 w-full items-start">
+          <StaggerItem>
+            <QuickLinks links={[
+              { label: "Patients", icon: "solar:users-group-two-rounded-linear", route: "/home", color: "blue" },
+              { label: "Video Consultation", icon: "solar:videocamera-record-linear", route: "/video-consult", color: "purple" },
+              { label: "Doctors & Staff", icon: "solar:stethoscope-linear", route: "/master/doctor-and-staffs", color: "emerald" },
+            ]} />
+          </StaggerItem>
+
           <StaggerItem className="w-full">
             <div className="flex flex-col w-full self-start gap-8 transition-all">
               <div className="flex flex-col xl:flex-row gap-4 w-full items-start">

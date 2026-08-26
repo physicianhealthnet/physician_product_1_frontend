@@ -30,6 +30,7 @@ dayjs.extend(isSameOrBefore);
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 import { StaggerContainer, StaggerItem } from "../../../component/ui/Transitions";
+import QuickLinks from "../../../component/ui/QuickLinks";
 
 function Bill() {
   const user = JSON.parse(sessionStorage.getItem("user"));
@@ -230,6 +231,14 @@ function Bill() {
               ))}
             </div>
           </div>
+        </StaggerItem>
+
+        <StaggerItem>
+          <QuickLinks links={[
+            { label: "Dashboard", icon: "solar:widget-5-linear", route: "/dashboard", color: "blue" },
+            { label: "Pharmacy", icon: "solar:pill-linear", route: "/pharmacy", color: "emerald" },
+            { label: "Expenditure", icon: "solar:ticket-sale-linear", route: "/expenditure", color: "rose" },
+          ]} />
         </StaggerItem>
 
         {activeTab === "Billing" && (

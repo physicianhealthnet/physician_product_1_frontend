@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { AxiosInstance } from "../../../utilities/AxiosInstance";
 import { useParams } from "react-router-dom";
 import formatDateToDDMMYYYY from "../../../utilities/formatter";
-import { message } from "antd";
+import { message, Collapse } from "antd";
 import CreatableSelect from "react-select/creatable";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Card from "../../../component/ui/Card";
@@ -664,381 +664,122 @@ export default function DentalAssessment({ isEmbedded = false }) {
           </div>
         ))}
 
-        {/* Modern Stepper Header */}
-        <div className="bg-slate-50 p-4 rounded-xl border border-slate-100/80 mb-6 mt-4">
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin">
-            {steps.map((sec, idx) => {
-              const isActive = idx === step;
-              const isCompleted = idx < step;
-              return (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => setStep(idx)}
-                  className="flex items-center gap-2 flex-shrink-0 focus:outline-none cursor-pointer"
-                >
-                  <div
-                    className={`w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs transition-all ${
-                      isActive
-                        ? "bg-blue-600 text-white shadow-md shadow-blue-200 ring-2 ring-blue-100"
-                        : isCompleted
-                        ? "bg-emerald-500 text-white"
-                        : "bg-slate-200 text-slate-500 hover:bg-slate-300"
-                    }`}
-                  >
-                    {isCompleted ? (
-                      <Icon icon="solar:check-circle-bold" className="text-sm" />
-                    ) : (
-                      idx + 1
-                    )}
-                  </div>
-                  <span
-                    className={`text-xs font-bold transition-all ${
-                      isActive ? "text-blue-600 font-extrabold" : isCompleted ? "text-emerald-600" : "text-slate-400"
-                    } hidden md:inline`}
-                  >
-                    {sec}
-                  </span>
-                  {idx < steps.length - 1 && (
-                    <div className="w-4 h-[1px] bg-slate-300 hidden md:block mx-1" />
-                  )}
-                </button>
-              );
-            })}
-          </div>
-          <div className="mt-3 flex justify-between items-center text-xs font-bold text-slate-500">
-            <div>
-              Step {step + 1} of {steps.length}: <span className="text-slate-800">{steps[step]}</span>
-            </div>
-            <div>{Math.round(((step + 1) / steps.length) * 100)}% Complete</div>
-          </div>
-          <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden mt-1.5">
-            <div
-              className="bg-blue-600 h-full transition-all duration-300"
-              style={{ width: `${((step + 1) / steps.length) * 100}%` }}
-            />
-          </div>
-        </div>
-
+        <Collapse defaultActiveKey={["0"]} className="bg-white shadow-sm border border-slate-200 rounded-xl overflow-hidden mt-6 mb-6" expandIconPlacement="end" size="large">
         {/* EXTRAORAL */}
-        <div className={step === 0 ? "block transition-opacity duration-300 opacity-100" : "hidden opacity-0"}>
+        <Collapse.Panel key="0" header={<span className="font-bold text-slate-800">Extraoral Examination</span>} className="bg-slate-50/50">
+        <div className="py-2">
         <h2 className="text-lg font-bold my-5 text-slate-800 border-b border-slate-100 pb-2">Extraoral Examination</h2>
-        {/* Facial Symmetry, Lymph Nodes, Soft Tissue Swelling */}
-        <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="mb-0">
-            <label className="text-[11px] font-bold text-slate-500 block mb-1.5 pl-1 uppercase tracking-wider">Facial Symmetry</label>
+        <Collapse defaultActiveKey={[]} expandIconPlacement="end" className="bg-white shadow-sm border border-slate-100 rounded-xl overflow-hidden mb-6">
+          <Collapse.Panel header="Facial Symmetry" key="facialSymmetry" className="bg-slate-50/30">
             <div className="flex gap-2">
               <select className="flex-1 rounded-xl border border-slate-200 p-3 text-sm focus:border-blue-500 focus:outline-none bg-white transition-all shadow-sm focus:ring-2 focus:ring-blue-50 font-medium text-slate-700"
-                
                 value={extraoral.facialSymmetry.status}
-                onChange={(ev) =>
-                  setExtraoral({
-                    ...extraoral,
-                    facialSymmetry: {
-                      ...extraoral.facialSymmetry,
-                      status: ev.target.value,
-                    },
-                  })
-                }
+                onChange={(ev) => setExtraoral({ ...extraoral, facialSymmetry: { ...extraoral.facialSymmetry, status: ev.target.value }})}
               >
                 <option>Normal</option>
                 <option>Abnormal</option>
               </select>
               <Input
-                containerClassName="flex-1"
-                placeholder="Notes"
-                value={extraoral.facialSymmetry.notes}
-                onChange={(ev) =>
-                  setExtraoral({
-                    ...extraoral,
-                    facialSymmetry: {
-                      ...extraoral.facialSymmetry,
-                      notes: ev.target.value,
-                    },
-                  })
-                }
+                containerClassName="flex-1" placeholder="Notes" value={extraoral.facialSymmetry.notes}
+                onChange={(ev) => setExtraoral({ ...extraoral, facialSymmetry: { ...extraoral.facialSymmetry, notes: ev.target.value }})}
               />
             </div>
-          </div>
-          <div className="mb-0">
-            <label className="text-[11px] font-bold text-slate-500 block mb-1.5 pl-1 uppercase tracking-wider">Lymph Nodes</label>
+          </Collapse.Panel>
+          <Collapse.Panel header="Lymph Nodes" key="lymphNodes" className="bg-slate-50/30">
             <div className="flex gap-2">
               <select className="flex-1 rounded-xl border border-slate-200 p-3 text-sm focus:border-blue-500 focus:outline-none bg-white transition-all shadow-sm focus:ring-2 focus:ring-blue-50 font-medium text-slate-700"
-                
                 value={extraoral.lymphNodes.status}
-                onChange={(ev) =>
-                  setExtraoral({
-                    ...extraoral,
-                    lymphNodes: {
-                      ...extraoral.lymphNodes,
-                      status: ev.target.value,
-                    },
-                  })
-                }
+                onChange={(ev) => setExtraoral({ ...extraoral, lymphNodes: { ...extraoral.lymphNodes, status: ev.target.value }})}
               >
                 <option>Normal</option>
                 <option>Abnormal</option>
               </select>
               <Input
-                containerClassName="flex-1"
-                placeholder="Notes"
-                value={extraoral.lymphNodes.notes}
-                onChange={(ev) =>
-                  setExtraoral({
-                    ...extraoral,
-                    lymphNodes: {
-                      ...extraoral.lymphNodes,
-                      notes: ev.target.value,
-                    },
-                  })
-                }
+                containerClassName="flex-1" placeholder="Notes" value={extraoral.lymphNodes.notes}
+                onChange={(ev) => setExtraoral({ ...extraoral, lymphNodes: { ...extraoral.lymphNodes, notes: ev.target.value }})}
               />
             </div>
-          </div>
-          <div className="mb-0">
-            <label className="text-[11px] font-bold text-slate-500 block mb-1.5 pl-1 uppercase tracking-wider">
-              Soft Tissue Swelling
-            </label>
+          </Collapse.Panel>
+          <Collapse.Panel header="Soft Tissue Swelling" key="softTissueSwelling" className="bg-slate-50/30">
             <div className="flex gap-2">
               <select className="flex-1 rounded-xl border border-slate-200 p-3 text-sm focus:border-blue-500 focus:outline-none bg-white transition-all shadow-sm focus:ring-2 focus:ring-blue-50 font-medium text-slate-700"
-                
                 value={extraoral.softTissueSwelling.status}
-                onChange={(ev) =>
-                  setExtraoral({
-                    ...extraoral,
-                    softTissueSwelling: {
-                      ...extraoral.softTissueSwelling,
-                      status: ev.target.value,
-                    },
-                  })
-                }
+                onChange={(ev) => setExtraoral({ ...extraoral, softTissueSwelling: { ...extraoral.softTissueSwelling, status: ev.target.value }})}
               >
                 <option>Normal</option>
                 <option>Abnormal</option>
               </select>
               <Input
-                containerClassName="flex-1"
-                placeholder="Notes"
-                value={extraoral.softTissueSwelling.notes}
-                onChange={(ev) =>
-                  setExtraoral({
-                    ...extraoral,
-                    softTissueSwelling: {
-                      ...extraoral.softTissueSwelling,
-                      notes: ev.target.value,
-                    },
-                  })
-                }
+                containerClassName="flex-1" placeholder="Notes" value={extraoral.softTissueSwelling.notes}
+                onChange={(ev) => setExtraoral({ ...extraoral, softTissueSwelling: { ...extraoral.softTissueSwelling, notes: ev.target.value }})}
               />
             </div>
-          </div>
-        </div>
-
-        {/* TMJ Evaluation */}
-        <div className="mb-6 border rounded-md p-4">
-          <h3 className="text-sm font-black tracking-widest uppercase text-slate-500 mb-3">TMJ Evaluation</h3>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <div>
-              <label className="text-[11px] font-bold text-slate-500 block mb-1.5 pl-1 uppercase tracking-wider">Right:</label>
-              <label className="flex items-center p-3 rounded-xl border border-slate-100 bg-white hover:bg-slate-50 text-slate-700 cursor-pointer font-medium transition-all shadow-sm mb-2">
-                <input type="checkbox" className="mr-3 w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                  checked={extraoral.tmj.right.crepitus}
-                  onChange={(e) =>
-                    setExtraoral({
-                      ...extraoral,
-                      tmj: {
-                        ...extraoral.tmj,
-                        right: {
-                          ...extraoral.tmj.right,
-                          crepitus: e.target.checked,
-                        },
-                      },
-                    })
-                  }
-                />
-                Crepitus
-              </label>
-              <label className="flex items-center p-3 rounded-xl border border-slate-100 bg-white hover:bg-slate-50 text-slate-700 cursor-pointer font-medium transition-all shadow-sm mb-2">
-                <input type="checkbox" className="mr-3 w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                  checked={extraoral.tmj.right.clicking}
-                  onChange={(e) =>
-                    setExtraoral({
-                      ...extraoral,
-                      tmj: {
-                        ...extraoral.tmj,
-                        right: {
-                          ...extraoral.tmj.right,
-                          clicking: e.target.checked,
-                        },
-                      },
-                    })
-                  }
-                />
-                Clicking
-              </label>
-              <label className="flex items-center p-3 rounded-xl border border-slate-100 bg-white hover:bg-slate-50 text-slate-700 cursor-pointer font-medium transition-all shadow-sm mb-2">
-                <input type="checkbox" className="mr-3 w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                  checked={extraoral.tmj.right.tenderness}
-                  onChange={(e) =>
-                    setExtraoral({
-                      ...extraoral,
-                      tmj: {
-                        ...extraoral.tmj,
-                        right: {
-                          ...extraoral.tmj.right,
-                          tenderness: e.target.checked,
-                        },
-                      },
-                    })
-                  }
-                />
-                Tenderness
-              </label>
+          </Collapse.Panel>
+          <Collapse.Panel header="TMJ Evaluation" key="tmj" className="bg-slate-50/30">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-[11px] font-bold text-slate-500 block mb-1.5 pl-1 uppercase tracking-wider">Right:</label>
+                <label className="flex items-center p-3 rounded-xl border border-slate-100 bg-white hover:bg-slate-50 text-slate-700 cursor-pointer font-medium transition-all shadow-sm mb-2">
+                  <input type="checkbox" className="mr-3 w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                    checked={extraoral.tmj.right.crepitus} onChange={(e) => setExtraoral({ ...extraoral, tmj: { ...extraoral.tmj, right: { ...extraoral.tmj.right, crepitus: e.target.checked } }})} />
+                  Crepitus
+                </label>
+                <label className="flex items-center p-3 rounded-xl border border-slate-100 bg-white hover:bg-slate-50 text-slate-700 cursor-pointer font-medium transition-all shadow-sm mb-2">
+                  <input type="checkbox" className="mr-3 w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                    checked={extraoral.tmj.right.clicking} onChange={(e) => setExtraoral({ ...extraoral, tmj: { ...extraoral.tmj, right: { ...extraoral.tmj.right, clicking: e.target.checked } }})} />
+                  Clicking
+                </label>
+                <label className="flex items-center p-3 rounded-xl border border-slate-100 bg-white hover:bg-slate-50 text-slate-700 cursor-pointer font-medium transition-all shadow-sm mb-2">
+                  <input type="checkbox" className="mr-3 w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                    checked={extraoral.tmj.right.tenderness} onChange={(e) => setExtraoral({ ...extraoral, tmj: { ...extraoral.tmj, right: { ...extraoral.tmj.right, tenderness: e.target.checked } }})} />
+                  Tenderness
+                </label>
+              </div>
+              <div>
+                <label className="text-[11px] font-bold text-slate-500 block mb-1.5 pl-1 uppercase tracking-wider">Left:</label>
+                <label className="flex items-center p-3 rounded-xl border border-slate-100 bg-white hover:bg-slate-50 text-slate-700 cursor-pointer font-medium transition-all shadow-sm mb-2">
+                  <input type="checkbox" className="mr-3 w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                    checked={extraoral.tmj.left.crepitus} onChange={(e) => setExtraoral({ ...extraoral, tmj: { ...extraoral.tmj, left: { ...extraoral.tmj.left, crepitus: e.target.checked } }})} />
+                  Crepitus
+                </label>
+                <label className="flex items-center p-3 rounded-xl border border-slate-100 bg-white hover:bg-slate-50 text-slate-700 cursor-pointer font-medium transition-all shadow-sm mb-2">
+                  <input type="checkbox" className="mr-3 w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                    checked={extraoral.tmj.left.clicking} onChange={(e) => setExtraoral({ ...extraoral, tmj: { ...extraoral.tmj, left: { ...extraoral.tmj.left, clicking: e.target.checked } }})} />
+                  Clicking
+                </label>
+                <label className="flex items-center p-3 rounded-xl border border-slate-100 bg-white hover:bg-slate-50 text-slate-700 cursor-pointer font-medium transition-all shadow-sm mb-2">
+                  <input type="checkbox" className="mr-3 w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                    checked={extraoral.tmj.left.tenderness} onChange={(e) => setExtraoral({ ...extraoral, tmj: { ...extraoral.tmj, left: { ...extraoral.tmj.left, tenderness: e.target.checked } }})} />
+                  Tenderness
+                </label>
+              </div>
             </div>
-            <div>
-              <label className="text-[11px] font-bold text-slate-500 block mb-1.5 pl-1 uppercase tracking-wider">Left:</label>
-              <label className="flex items-center p-3 rounded-xl border border-slate-100 bg-white hover:bg-slate-50 text-slate-700 cursor-pointer font-medium transition-all shadow-sm mb-2">
-                <input type="checkbox" className="mr-3 w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                  checked={extraoral.tmj.left.crepitus}
-                  onChange={(e) =>
-                    setExtraoral({
-                      ...extraoral,
-                      tmj: {
-                        ...extraoral.tmj,
-                        left: {
-                          ...extraoral.tmj.left,
-                          crepitus: e.target.checked,
-                        },
-                      },
-                    })
-                  }
-                />
-                Crepitus
-              </label>
-              <label className="flex items-center p-3 rounded-xl border border-slate-100 bg-white hover:bg-slate-50 text-slate-700 cursor-pointer font-medium transition-all shadow-sm mb-2">
-                <input type="checkbox" className="mr-3 w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                  checked={extraoral.tmj.left.clicking}
-                  onChange={(e) =>
-                    setExtraoral({
-                      ...extraoral,
-                      tmj: {
-                        ...extraoral.tmj,
-                        left: {
-                          ...extraoral.tmj.left,
-                          clicking: e.target.checked,
-                        },
-                      },
-                    })
-                  }
-                />
-                Clicking
-              </label>
-              <label className="flex items-center p-3 rounded-xl border border-slate-100 bg-white hover:bg-slate-50 text-slate-700 cursor-pointer font-medium transition-all shadow-sm mb-2">
-                <input type="checkbox" className="mr-3 w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                  checked={extraoral.tmj.left.tenderness}
-                  onChange={(e) =>
-                    setExtraoral({
-                      ...extraoral,
-                      tmj: {
-                        ...extraoral.tmj,
-                        left: {
-                          ...extraoral.tmj.left,
-                          tenderness: e.target.checked,
-                        },
-                      },
-                    })
-                  }
-                />
-                Tenderness
-              </label>
+          </Collapse.Panel>
+          <Collapse.Panel header="Muscles" key="muscles" className="bg-slate-50/30">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="flex items-center p-3 rounded-xl border border-slate-100 bg-white hover:bg-slate-50 text-slate-700 cursor-pointer font-medium transition-all shadow-sm mb-2">
+                  <input type="checkbox" className="mr-3 w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                    checked={extraoral.muscles.deviationOnOpening.checked} onChange={(e) => setExtraoral({ ...extraoral, muscles: { ...extraoral.muscles, deviationOnOpening: { ...extraoral.muscles.deviationOnOpening, checked: e.target.checked } }})} />
+                  Deviation on Opening
+                </label>
+                {extraoral.muscles.deviationOnOpening.checked && (
+                  <input className="block w-full border p-2 rounded mt-1" placeholder="Notes" value={extraoral.muscles.deviationOnOpening.notes} onChange={(e) => setExtraoral({ ...extraoral, muscles: { ...extraoral.muscles, deviationOnOpening: { ...extraoral.muscles.deviationOnOpening, notes: e.target.value } }})} />
+                )}
+              </div>
+              <div>
+                <label className="flex items-center p-3 rounded-xl border border-slate-100 bg-white hover:bg-slate-50 text-slate-700 cursor-pointer font-medium transition-all shadow-sm mb-2">
+                  <input type="checkbox" className="mr-3 w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                    checked={extraoral.muscles.deviationOnClosing.checked} onChange={(e) => setExtraoral({ ...extraoral, muscles: { ...extraoral.muscles, deviationOnClosing: { ...extraoral.muscles.deviationOnClosing, checked: e.target.checked } }})} />
+                  Deviation on Closing
+                </label>
+                {extraoral.muscles.deviationOnClosing.checked && (
+                  <input className="block w-full border p-2 rounded mt-1" placeholder="Notes" value={extraoral.muscles.deviationOnClosing.notes} onChange={(e) => setExtraoral({ ...extraoral, muscles: { ...extraoral.muscles, deviationOnClosing: { ...extraoral.muscles.deviationOnClosing, notes: e.target.value } }})} />
+                )}
+              </div>
             </div>
-          </div>
-        </div>
-
-        {/* Muscles */}
-        <div className="mb-6 border rounded-md p-4">
-          <h3 className="text-sm font-black tracking-widest uppercase text-slate-500 mb-3">Muscles</h3>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="flex items-center p-3 rounded-xl border border-slate-100 bg-white hover:bg-slate-50 text-slate-700 cursor-pointer font-medium transition-all shadow-sm mb-2">
-                <input type="checkbox" className="mr-3 w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                  checked={extraoral.muscles.deviationOnOpening.checked}
-                  onChange={(e) =>
-                    setExtraoral({
-                      ...extraoral,
-                      muscles: {
-                        ...extraoral.muscles,
-                        deviationOnOpening: {
-                          ...extraoral.muscles.deviationOnOpening,
-                          checked: e.target.checked,
-                        },
-                      },
-                    })
-                  }
-                />
-                Deviation on Opening
-              </label>
-              {extraoral.muscles.deviationOnOpening.checked && (
-                <input
-                  className="block w-full border p-2 rounded mt-1"
-                  placeholder="Notes"
-                  value={extraoral.muscles.deviationOnOpening.notes}
-                  onChange={(e) =>
-                    setExtraoral({
-                      ...extraoral,
-                      muscles: {
-                        ...extraoral.muscles,
-                        deviationOnOpening: {
-                          ...extraoral.muscles.deviationOnOpening,
-                          notes: e.target.value,
-                        },
-                      },
-                    })
-                  }
-                />
-              )}
-            </div>
-            <div>
-              <label className="flex items-center p-3 rounded-xl border border-slate-100 bg-white hover:bg-slate-50 text-slate-700 cursor-pointer font-medium transition-all shadow-sm mb-2">
-                <input type="checkbox" className="mr-3 w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                  checked={extraoral.muscles.deviationOnClosing.checked}
-                  onChange={(e) =>
-                    setExtraoral({
-                      ...extraoral,
-                      muscles: {
-                        ...extraoral.muscles,
-                        deviationOnClosing: {
-                          ...extraoral.muscles.deviationOnClosing,
-                          checked: e.target.checked,
-                        },
-                      },
-                    })
-                  }
-                />
-                Deviation on Closing
-              </label>
-              {extraoral.muscles.deviationOnClosing.checked && (
-                <input
-                  className="block w-full border p-2 rounded mt-1"
-                  placeholder="Notes"
-                  value={extraoral.muscles.deviationOnClosing.notes}
-                  onChange={(e) =>
-                    setExtraoral({
-                      ...extraoral,
-                      muscles: {
-                        ...extraoral.muscles,
-                        deviationOnClosing: {
-                          ...extraoral.muscles.deviationOnClosing,
-                          notes: e.target.value,
-                        },
-                      },
-                    })
-                  }
-                />
-              )}
-            </div>
-          </div>
-        </div>
+          </Collapse.Panel>
+        </Collapse>
 
         {/* Overall Notes */}
         <Textarea 
@@ -1057,51 +798,34 @@ export default function DentalAssessment({ isEmbedded = false }) {
 
         {/* INTRAORAL */}
         </div>
-        <div className={step === 1 ? "block transition-opacity duration-300 opacity-100" : "hidden opacity-0"}>
-        <h2 className="text-lg font-bold my-5 text-slate-800 border-b border-slate-100 pb-2">Intraoral Examination</h2>
+        </Collapse.Panel>
+        
+        {/* INTRAORAL */}
+        <Collapse.Panel key="1" header={<span className="font-bold text-slate-800">Intraoral Examination</span>} className="bg-slate-50/50">
+        <div className="py-2">
         <div>
           <h3 className="text-sm font-black tracking-widest uppercase text-slate-500 mb-3">Soft Tissue Examination:</h3>
-          <div className="border border-slate-200  rounded-md mb-6 overflow-hidden">
-            <table className="w-full divide-y divide-slate-200 ">
-              <thead>
-                <tr className="divide-x divide-slate-200  bg-slate-100 ">
-                  <th className="font-bold text-lg p-2 text-slate-800 ">Area</th>
-                  <th className="font-bold text-lg p-2 text-slate-800 ">
-                    Description (Color, Size, Shape, Texture)
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-200  bg-white ">
-                {intraoralStructures.map((area) => (
-                  <tr key={area} className="divide-x divide-slate-200 ">
-                    <td className="p-2">
-                      <p className="w-full p-2 flex items-center justify-center font-bold text-lg text-slate-700 ">
-                        {area}
-                      </p>
-                    </td>
-                    <td className="p-2">
-                      <Textarea 
-                        rows={3}
-                        value={intraoralNotes[area] || ""}
-                        onChange={(e) =>
-                          setIntraoralNotes((prev) => ({
-                            ...prev,
-                            [area]: e.target.value,
-                          }))
-                        }
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <Collapse defaultActiveKey={[]} expandIconPlacement="end" className="bg-white shadow-sm border border-slate-100 rounded-xl overflow-hidden mb-6">
+            {intraoralStructures.map((area) => (
+              <Collapse.Panel header={<span className="font-medium text-slate-700">{area}</span>} key={area} className="bg-slate-50/30">
+                <Textarea 
+                  rows={3}
+                  value={intraoralNotes[area] || ""}
+                  onChange={(e) => setIntraoralNotes((prev) => ({ ...prev, [area]: e.target.value }))}
+                  placeholder={`Description for ${area} (Color, Size, Shape, Texture)`}
+                />
+              </Collapse.Panel>
+            ))}
+          </Collapse>
         </div>
 
         {/* HARD TISSUE: Integrated Teeth Chart */}
         </div>
-        <div className={step === 2 ? "block transition-opacity duration-300 opacity-100" : "hidden opacity-0"}>
-        <h2 className="text-lg font-bold my-5 text-slate-800 border-b border-slate-100 pb-2">Hard Tissue Examination</h2>
+        </Collapse.Panel>
+
+        {/* HARD TISSUE: Integrated Teeth Chart */}
+        <Collapse.Panel key="2" header={<span className="font-bold text-slate-800">Hard Tissue Examination</span>} className="bg-slate-50/50">
+        <div className="py-2">
         <div className="w-full text-center mb-4 overflow-x-auto pb-2">
           <div className="min-w-[600px] bg-slate-50  rounded-xl p-4 border border-slate-100 ">
             <table className="w-full mx-auto border-separate border-spacing-y-2">
@@ -1346,15 +1070,14 @@ export default function DentalAssessment({ isEmbedded = false }) {
 
         {/* HARD TISSUE: Periodontal Assessments */}
         <h3 className="text-sm font-black tracking-widest uppercase text-slate-500 mb-3">Periodontal Assessment</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <Collapse defaultActiveKey={[]} expandIconPlacement="end" className="bg-white shadow-sm border border-slate-100 rounded-xl overflow-hidden mb-6">
           {hardTissueAssessments.map((data, key) => (
-            <div key={key}>
-              <label className="text-[11px] font-bold text-slate-500 block mb-1.5 pl-1 uppercase tracking-wider">{data.title}</label>
+            <Collapse.Panel header={<span className="font-medium text-slate-700">{data.title}</span>} key={key} className="bg-slate-50/30">
               <div>
                 {data.type === "radio" ? (
                   <div className="flex flex-wrap gap-2">
                     {data.list.map((option, index) => (
-                      <label key={index} className="flex items-center mr-4 mb-2 cursor-pointer text-slate-700 ">
+                      <label key={index} className="flex items-center mr-4 mb-2 cursor-pointer text-slate-700 bg-white px-3 py-2 border border-slate-100 rounded-lg shadow-sm hover:bg-slate-50 transition-colors">
                         <input
                           type="radio"
                           name={data.name}
@@ -1387,37 +1110,59 @@ export default function DentalAssessment({ isEmbedded = false }) {
                   />
                 )}
               </div>
-            </div>
+            </Collapse.Panel>
           ))}
+        </Collapse>
         </div>
-        </div>
+        </Collapse.Panel>
 
         {/* SYMPTOMS */}
-        <div className={step === 3 ? "block transition-opacity duration-300 opacity-100" : "hidden opacity-0"}>
-        <h2 className="text-lg font-bold my-5 text-slate-800 border-b border-slate-100 pb-2">Symptoms</h2>
-        <div className="space-y-3 mb-8">
+        <Collapse.Panel key="3" header={<span className="font-bold text-slate-800">Symptoms & Diagnosis</span>} className="bg-slate-50/50">
+        <div className="py-2">
+        <Collapse defaultActiveKey={[]} expandIconPlacement="end" className="bg-white shadow-sm border border-slate-100 rounded-xl overflow-hidden mb-8">
           {symptoms.map((s) => (
-            <div key={s.key}>
-              <label className="flex items-center p-3 rounded-xl border border-slate-100 bg-white hover:bg-slate-50 text-slate-700 cursor-pointer font-medium transition-all shadow-sm">
-                <input
-                  type="checkbox"
-                  className="mr-3 w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                  checked={symptomData?.[s.key]?.present || false}
-                  onChange={(e) =>
-                    setSymptomData({
-                      ...symptomData,
-                      [s.key]: {
-                        ...symptomData[s.key],
-                        present: e.target.checked,
-                      },
-                    })
-                  }
-                />
-                {s.label}
-              </label>
-            </div>
+            <Collapse.Panel 
+              header={
+                <div className="flex items-center justify-between w-full pr-4">
+                  <span className="font-medium text-slate-700">{s.label}</span>
+                  {symptomData?.[s.key]?.present && <span className="text-blue-600 text-[10px] font-bold bg-blue-100 px-2 py-0.5 rounded uppercase tracking-wider">Present</span>}
+                </div>
+              } 
+              key={s.key}
+              className="bg-slate-50/30"
+            >
+              <div className="flex flex-col gap-4">
+                <label className="flex items-center p-3 rounded-xl border border-slate-100 bg-white hover:bg-slate-50 text-slate-700 cursor-pointer font-medium transition-all shadow-sm w-max">
+                  <input
+                    type="checkbox"
+                    className="mr-3 w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    checked={symptomData?.[s.key]?.present || false}
+                    onChange={(e) => setSymptomData({ ...symptomData, [s.key]: { ...symptomData[s.key], present: e.target.checked } })}
+                  />
+                  Present
+                </label>
+                {symptomData?.[s.key]?.present && (
+                  <div className="flex flex-col gap-3">
+                    <div>
+                      <label className="text-xs font-bold text-slate-500 block mb-1">Severity (1-10): {symptomData[s.key].severity}</label>
+                      <input 
+                        type="range" min="1" max="10" 
+                        value={symptomData[s.key].severity} 
+                        onChange={(e) => setSymptomData({ ...symptomData, [s.key]: { ...symptomData[s.key], severity: parseInt(e.target.value) } })}
+                        className="w-full max-w-xs accent-blue-600"
+                      />
+                    </div>
+                    <Textarea 
+                      placeholder="Additional notes about this symptom..."
+                      value={symptomData[s.key].notes}
+                      onChange={(e) => setSymptomData({ ...symptomData, [s.key]: { ...symptomData[s.key], notes: e.target.value } })}
+                    />
+                  </div>
+                )}
+              </div>
+            </Collapse.Panel>
           ))}
-        </div>
+        </Collapse>
         
         {/* DIAGNOSIS */}
         <h2 className="text-lg font-bold my-5 text-slate-800 border-b border-slate-100 pb-2">Diagnosis</h2>
@@ -1478,10 +1223,11 @@ export default function DentalAssessment({ isEmbedded = false }) {
           )}
         </div>
         </div>
+        </Collapse.Panel>
 
         {/* TREATMENT PLAN */}
-        <div className={step === 4 ? "block transition-opacity duration-300 opacity-100" : "hidden opacity-0"}>
-        <h2 className="text-lg font-bold my-5 text-slate-800 border-b border-slate-100 pb-2">Treatment Plan</h2>
+        <Collapse.Panel key="4" header={<span className="font-bold text-slate-800">Treatment Plan</span>} className="bg-slate-50/50">
+        <div className="py-2">
         <div className="mb-6">
           <div className="flex gap-4 mb-3">
             <Input
@@ -1562,46 +1308,24 @@ export default function DentalAssessment({ isEmbedded = false }) {
             </label>
           </div>
         </div>
+        </div>
+        </Collapse.Panel>
+        </Collapse>
         
-        {/* Navigation Buttons */}
-        <div className="flex justify-between items-center mt-6 pt-4 border-t border-slate-100">
-          <Button
-            type="button"
-            variant="outline"
-            className={`min-w-[100px] ${step === 0 ? "invisible" : ""}`}
-            onClick={() => setStep(prev => Math.max(0, prev - 1))}
-          >
-            <Icon icon="solar:alt-arrow-left-linear" className="mr-2" /> Back
-          </Button>
-          
-          {step < steps.length - 1 ? (
-            <Button
-              type="button"
-              className="min-w-[100px] bg-blue-600 hover:bg-blue-700 text-white"
-              onClick={() => setStep(prev => Math.min(steps.length - 1, prev + 1))}
-            >
-              Next <Icon icon="solar:alt-arrow-right-linear" className="ml-2" />
+        {/* Action Buttons */}
+        <div className="flex justify-end space-x-4 mt-6 pt-6 border-t border-slate-100">
+          {updateId ? (
+            <Button type="button" onClick={updateAssessment} className="bg-blue-600 hover:bg-blue-700 text-white px-8">
+              Update Assessment
             </Button>
           ) : (
-            <div className="flex justify-end space-x-3">
-              <Button type="button" variant="outline">
-                Cancel
-              </Button>
-              {updateId ? (
-                <Button type="button" onClick={updateAssessment}>
-                  Update Assessment
-                </Button>
-              ) : (
-                <Button type="button" onClick={submitAssessment}>
-                  Submit Assessment
-                </Button>
-              )}
-            </div>
+            <Button type="button" onClick={submitAssessment} className="bg-blue-600 hover:bg-blue-700 text-white px-8">
+              Submit Assessment
+            </Button>
           )}
         </div>
       </div>
       </div>
-    </div>
   );
 }
 

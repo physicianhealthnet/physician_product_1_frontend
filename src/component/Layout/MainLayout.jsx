@@ -1,5 +1,5 @@
 import React, { useEffect, Suspense } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import Navbar from '../Navbar/Navbar';
 import Sidebar from '../sidebar/Sidebar';
 import { useSelector, useDispatch } from 'react-redux';
@@ -9,10 +9,44 @@ import { PageSkeleton } from '../ui/Skeleton';
 import chatSocketService from '../../utilities/chatSocketService';
 import { notification } from 'antd';
 
+// Import specific banner images requested by the user
+import imgPatient from '../../assets/imgs/pexels-pavel-danilyuk-7108326.jpg';
+import imgScan from '../../assets/imgs/pexels-charlss-gonzhu-433318654-15277954.jpg';
+import imgLab from '../../assets/imgs/pexels-karola-g-6627667.jpg';
+import imgPharmacy from '../../assets/imgs/pexels-martabranco-32236830.jpg';
+import imgAssessment from '../../assets/imgs/pexels-cottonbro-7578799.jpg';
+import imgVideo from '../../assets/imgs/pexels-mikhail-nilov-8943097.jpg';
+import imgBill from '../../assets/imgs/pexels-pavel-danilyuk-7108318.jpg';
+import imgAdmin from '../../assets/imgs/pexels-silverkblack-36763595.jpg';
+import imgDashboard from '../../assets/imgs/pexels-gustavo-fring-4173251.jpg';
+import imgAppointment from '../../assets/imgs/pexels-karola-g2-5795.jpg';
+
+// Helper to deterministically pick an image based on path keywords
+const getBgImageForPath = (pathname) => {
+    const p = pathname.toLowerCase();
+    
+    if (p.includes('appointment') || p.includes('apt') || p.includes('book')) return imgAppointment;
+    if (p.includes('patient') || p.includes('patients')) return imgPatient;
+    if (p.includes('scan')) return imgScan;
+    if (p.includes('lab')) return imgLab;
+    if (p.includes('pharmacy') || p.includes('prescription')) return imgPharmacy;
+    if (p.includes('assessment') || p.includes('treatment') || p.includes('plan')) return imgAssessment;
+    if (p.includes('video') || p.includes('consult')) return imgVideo;
+    if (p.includes('bill') || p.includes('invoice') || p.includes('finance')) return imgBill;
+    if (p.includes('admin') || p.includes('form') || p.includes('consultation')) return imgAdmin;
+    
+    // Default image if no match (dashboard/home)
+    return imgDashboard;
+};
+
 const MainLayout = () => {
     const isOpen = useSelector((state) => state.toggle.isOpen);
     const theme = useSelector((state) => state.theme.theme);
     const dispatch = useDispatch();
+    const location = useLocation();
+
+    // Select the background image based on the current URL
+    const currentBannerImg = getBgImageForPath(location.pathname);
 
     // Always ensure light theme (no dark class) and establish persistent socket connection
     useEffect(() => {
@@ -92,7 +126,8 @@ const MainLayout = () => {
     }, []);
 
     return (
-        <div className="flex h-screen w-full bg-slate-50  overflow-hidden font-sans text-slate-900  transition-colors duration-300">
+        <div className="flex h-screen w-full bg-slate-50 overflow-hidden font-sans text-slate-900 transition-colors duration-300 relative">
+
             {/* Sidebar - self-managed width based on Redux state */}
             {/* Mobile Overlay */}
             {isOpen && (
@@ -105,16 +140,26 @@ const MainLayout = () => {
             <Sidebar />
 
             {/* Main Content Wrapper */}
-            <div className={`flex flex-col flex-1 h-full min-w-0 overflow-hidden relative bg-slate-50  transition-colors duration-300`}>
+            <div className={`flex flex-col flex-1 h-full min-w-0 overflow-hidden relative bg-slate-50 transition-colors duration-300`}>
                 <Navbar />
 
+                {/* FIXED GLOBAL TOP BANNER */}
+                <div className="absolute top-[65px] left-0 right-0 h-64 sm:h-72 md:h-80 overflow-hidden z-0 pointer-events-none">
+                    <img src={currentBannerImg} alt="Header Banner" className="w-full h-full object-cover opacity-100 object-center" />
+                    {/* Very subtle gradient just to ensure top navbar contrast, completely transparent at the bottom */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-slate-50/50 via-transparent to-transparent"></div>
+                </div>
+
                 {/* Scrollable Page Content */}
-                <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 scroll-smooth relative z-10 w-full">
+                <main className="flex-1 overflow-x-hidden overflow-y-auto scroll-smooth relative z-10 w-full">
                     {/* Max width container for large screens to prevent stretching */}
-                    <div className="mx-auto w-full max-w-[1600px] pb-10">
-                        <Suspense fallback={<PageSkeleton />}>
-                            <Outlet />
-                        </Suspense>
+                    <div className="mx-auto w-full max-w-[1600px] px-4 md:px-6 lg:px-8 pb-10 pt-32 sm:pt-40 md:pt-48 relative z-10">
+                        {/* GLOBAL GLASS CONTAINER */}
+                        <div className="bg-white/60 backdrop-blur-md border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl p-4 sm:p-6 lg:p-8 min-h-[calc(100vh-250px)]">
+                            <Suspense fallback={<PageSkeleton />}>
+                                <Outlet />
+                            </Suspense>
+                        </div>
                     </div>
                 </main>
             </div>

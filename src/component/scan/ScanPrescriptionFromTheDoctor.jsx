@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import FileViewerModal from "./FileViewerModal";
 import { jsPDF } from "jspdf";
 import { message, Modal } from "antd";
+import QuickLinks from "../ui/QuickLinks";
 
 const SCAN_FIELD_SLIDES = [
   {
@@ -168,6 +169,20 @@ function ScanPrescriptionFromTheDoctor() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [previewUrl, setPreviewUrl] = useState(null);
+  
+  // File Upload State
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [selectedRowForUpload, setSelectedRowForUpload] = useState(null);
+  const [uploadFile, setUploadFile] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
+  
+  // Schedule Modal State
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [selectedRowForSchedule, setSelectedRowForSchedule] = useState(null);
+  const [scheduleDate, setScheduleDate] = useState("");
+  const [scheduleTime, setScheduleTime] = useState("");
+  const [isScheduling, setIsScheduling] = useState(false);
+
   const [patients, setPatients] = useState([]);
   const [doctors, setDoctors] = useState([]);
   const [formData, setFormData] = useState({
@@ -361,6 +376,61 @@ function ScanPrescriptionFromTheDoctor() {
     });
   };
 
+  const handleScheduleSubmit = async () => {
+    if (!scheduleDate || !scheduleTime) {
+      message.error("Please select a valid date and time.");
+      return;
+    }
+    
+    setIsScheduling(true);
+    try {
+      const appointmentDateTime = dayjs(`${scheduleDate}T${scheduleTime}`).toISOString();
+      await AxiosInstance.put(`/scan-prescription/${selectedRowForSchedule}/status`, { 
+        status: "REPORT UPLOAD",
+        appointmentDateTime 
+      });
+      message.success("Scan scheduled successfully!");
+      setIsScheduleModalOpen(false);
+      setSelectedRowForSchedule(null);
+      setScheduleDate("");
+      setScheduleTime("");
+      fetchPendingScans();
+    } catch (err) {
+      console.error("Failed to schedule", err);
+      message.error("Error scheduling appointment");
+    } finally {
+      setIsScheduling(false);
+    }
+  };
+
+  const handleUploadSubmit = async () => {
+    if (!uploadFile || !selectedRowForUpload) {
+      message.error("Please select a file to upload");
+      return;
+    }
+    
+    setIsUploading(true);
+    const formData = new FormData();
+    formData.append("scanReportFiles", uploadFile);
+    
+    try {
+      await AxiosInstance.put(`/scan-prescription/${selectedRowForUpload}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" }
+      });
+      await AxiosInstance.put(`/scan-prescription/${selectedRowForUpload}/status`, { status: "COMPLETED" });
+      message.success("Report uploaded and scan completed successfully!");
+      setIsUploadModalOpen(false);
+      setUploadFile(null);
+      setSelectedRowForUpload(null);
+      fetchPendingScans();
+    } catch (err) {
+      console.error("Upload error", err);
+      message.error("Failed to upload report");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const activeSlideMeta = SCAN_FIELD_SLIDES[fieldStep - 1];
 
   const handleNextStep = () => {
@@ -403,8 +473,9 @@ function ScanPrescriptionFromTheDoctor() {
   };
 
   const filteredScans = pendingScans.filter((s) => {
-    if (activeTab === "NOT SCHEDULED") return s.status !== "COMPLETED" && s.status !== "Completed";
+    if (activeTab === "NOT SCHEDULED") return s.status !== "COMPLETED" && s.status !== "Completed" && s.status !== "REPORT UPLOAD" && s.status !== "MISSED" && s.status !== "Missed";
     if (activeTab === "MISSED") return s.status === "MISSED" || s.status === "Missed";
+    if (activeTab === "REPORT UPLOAD") return s.status === "REPORT UPLOAD";
     if (activeTab === "COMPLETED") return s.status === "COMPLETED" || s.status === "Completed";
     return true;
   });
@@ -454,7 +525,14 @@ function ScanPrescriptionFromTheDoctor() {
         </div>
       </div>
 
-      {/* FULL AREA SINGLE-FIELD SLIDER WIZARD VIEW */}
+      {!isWizardMode && (
+        <QuickLinks links={[
+          { label: "Lab Prescriptions", icon: "solar:test-tube-linear", route: "/lab-prescription-from-the-doctor", color: "amber" },
+          { label: "Patients", icon: "solar:users-group-two-rounded-linear", route: "/home", color: "blue" },
+        ]} />
+      )}
+
+      {/* FULL PAGE SLIDER WIZARD VIEW */}
       {isWizardMode ? (
         <div className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col gap-6 animate-in fade-in duration-300">
           {/* Stepper Nav Pills */}
@@ -874,7 +952,7 @@ function ScanPrescriptionFromTheDoctor() {
 
           {/* Filter Status Tabs */}
           <div className="flex items-center gap-2">
-            {["NOT SCHEDULED", "MISSED", "COMPLETED"].map((tab) => (
+            {["NOT SCHEDULED", "MISSED", "REPORT UPLOAD", "COMPLETED"].map((tab) => (
               <button
                 key={tab}
                 type="button"
@@ -928,22 +1006,62 @@ function ScanPrescriptionFromTheDoctor() {
                       </td>
                       <td className="px-6 py-4 text-center">
                         <div className="flex items-center justify-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => handleDelete(row._id)}
-                            className="p-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-600 hover:text-white border-none cursor-pointer transition-all"
-                            title="Delete"
-                          >
-                            <Icon icon="solar:trash-bin-trash-linear" className="text-sm" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => generatePrescriptionPDF(row)}
-                            className="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 border-none cursor-pointer transition-all"
-                            title="Print PDF"
-                          >
-                            <Icon icon="solar:printer-linear" className="text-sm" />
-                          </button>
+                          {(activeTab === "NOT SCHEDULED" || activeTab === "MISSED") && (
+                            <>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setSelectedRowForSchedule(row._id);
+                                  setIsScheduleModalOpen(true);
+                                }}
+                                className="p-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white border-none cursor-pointer transition-all"
+                                title="Schedule Scan"
+                              >
+                                <Icon icon="solar:calendar-date-linear" className="text-sm" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleDelete(row._id)}
+                                className="p-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-600 hover:text-white border-none cursor-pointer transition-all"
+                                title="Delete"
+                              >
+                                <Icon icon="solar:trash-bin-trash-linear" className="text-sm" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => generatePrescriptionPDF(row)}
+                                className="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 border-none cursor-pointer transition-all"
+                                title="Print PDF"
+                              >
+                                <Icon icon="solar:printer-linear" className="text-sm" />
+                              </button>
+                            </>
+                          )}
+                          {activeTab === "REPORT UPLOAD" && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSelectedRowForUpload(row._id);
+                                setIsUploadModalOpen(true);
+                              }}
+                              className="px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white border-none cursor-pointer transition-all font-bold text-[10px] uppercase flex items-center gap-1"
+                              title="Upload Report"
+                            >
+                              <Icon icon="solar:upload-minimalistic-linear" className="text-sm" />
+                              Upload
+                            </button>
+                          )}
+                          {activeTab === "COMPLETED" && row.finalReportFileUrl && (
+                            <button
+                              type="button"
+                              onClick={() => setPreviewUrl(row.finalReportFileUrl)}
+                              className="px-3 py-1.5 rounded-lg bg-purple-50 text-purple-600 hover:bg-purple-600 hover:text-white border-none cursor-pointer transition-all font-bold text-[10px] uppercase flex items-center gap-1"
+                              title="View Report"
+                            >
+                              <Icon icon="solar:document-text-linear" className="text-sm" />
+                              View Report
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -968,6 +1086,126 @@ function ScanPrescriptionFromTheDoctor() {
           onClose={() => setPreviewUrl(null)}
         />
       )}
+
+      {/* Schedule Modal */}
+      <Modal
+        title="Schedule Scan Appointment"
+        open={isScheduleModalOpen}
+        onCancel={() => {
+          setIsScheduleModalOpen(false);
+          setSelectedRowForSchedule(null);
+          setScheduleDate("");
+          setScheduleTime("");
+        }}
+        footer={null}
+        destroyOnClose
+      >
+        <div className="flex flex-col gap-4 py-4">
+          <p className="text-sm text-slate-500 m-0">
+            Select a date and time to schedule this scan order. It will automatically move to the <strong>Report Upload</strong> tab so you can upload the results after the appointment.
+          </p>
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-bold text-slate-700">Date</label>
+            <input
+              type="date"
+              value={scheduleDate}
+              onChange={(e) => setScheduleDate(e.target.value)}
+              className="px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-bold text-slate-700">Time</label>
+            <input
+              type="time"
+              value={scheduleTime}
+              onChange={(e) => setScheduleTime(e.target.value)}
+              className="px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+            />
+          </div>
+          <div className="flex justify-end gap-2 mt-4">
+            <button
+              onClick={() => {
+                setIsScheduleModalOpen(false);
+                setSelectedRowForSchedule(null);
+                setScheduleDate("");
+                setScheduleTime("");
+              }}
+              className="px-4 py-2 text-xs font-bold text-slate-500 hover:bg-slate-100 rounded-xl transition-all border border-slate-200 cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleScheduleSubmit}
+              disabled={isScheduling || !scheduleDate || !scheduleTime}
+              className="px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-all border-none cursor-pointer disabled:opacity-50 flex items-center gap-2"
+            >
+              {isScheduling ? (
+                <>
+                  <Icon icon="eos-icons:loading" className="text-sm" />
+                  Scheduling...
+                </>
+              ) : (
+                "Schedule Scan"
+              )}
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Upload Modal */}
+      <Modal
+        title="Upload Scan Report"
+        open={isUploadModalOpen}
+        onCancel={() => {
+          setIsUploadModalOpen(false);
+          setUploadFile(null);
+          setSelectedRowForUpload(null);
+        }}
+        footer={null}
+        destroyOnClose
+      >
+        <div className="flex flex-col gap-4 py-4">
+          <p className="text-sm text-slate-500 m-0">
+            Please attach the scan report document (PDF, JPG, PNG, DICOM). 
+            Uploading a report will automatically mark it as ready for AI analysis.
+          </p>
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-bold text-slate-700">Select File</label>
+            <input
+              type="file"
+              onChange={(e) => setUploadFile(e.target.files[0])}
+              className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.dcm"
+            />
+          </div>
+          <div className="flex justify-end gap-2 mt-4">
+            <button
+              onClick={() => {
+                setIsUploadModalOpen(false);
+                setUploadFile(null);
+                setSelectedRowForUpload(null);
+              }}
+              className="px-4 py-2 text-xs font-bold text-slate-500 hover:bg-slate-100 rounded-xl transition-all border border-slate-200 cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleUploadSubmit}
+              disabled={isUploading || !uploadFile}
+              className="px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-all border-none cursor-pointer disabled:opacity-50 flex items-center gap-2"
+            >
+              {isUploading ? (
+                <>
+                  <Icon icon="eos-icons:loading" className="text-sm" />
+                  Uploading...
+                </>
+              ) : (
+                "Upload Report"
+              )}
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

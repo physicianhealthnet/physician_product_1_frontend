@@ -6,6 +6,7 @@ import chatSocketService from "../../../utilities/chatSocketService";
 import formatDateToDDMMYYYY from "../../../utilities/formatter";
 import { TableSkeleton, Skeleton } from "../../../component/ui/Skeleton";
 import { StaggerContainer, StaggerItem } from "../../../component/ui/Transitions";
+import QuickLinks from "../../../component/ui/QuickLinks";
 
 const CATEGORY_OPTIONS = [
   { id: "Consumable", label: "Consumable", icon: "solar:box-minimalistic-linear", color: "blue" },
@@ -210,6 +211,16 @@ function Inventory() {
             </div>
           </div>
         </StaggerItem>
+
+        {!addSwaper && (
+          <StaggerItem>
+            <QuickLinks links={[
+              { label: "Pharmacy", icon: "solar:pill-linear", route: "/pharmacy", color: "purple" },
+              { label: "Suppliers", icon: "solar:shop-linear", route: "/supplier", color: "amber" },
+              { label: "Expenditure", icon: "solar:ticket-sale-linear", route: "/expenditure", color: "rose" },
+            ]} />
+          </StaggerItem>
+        )}
 
         {/* FULL CONTAINER SLIDER WIZARD VIEW */}
         {addSwaper ? (

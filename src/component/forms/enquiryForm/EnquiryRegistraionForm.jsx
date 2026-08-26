@@ -3,7 +3,6 @@ import { AxiosInstance } from "../../../utilities/AxiosInstance";
 import { message } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import PatientBasicDetails from "./PatientBasicDetails";
-import PatientMedicalForm from "./PatientMedicalForm";
 import Button from "../../ui/Button";
 import { Icon } from "@iconify/react";
 import Card from "../../ui/Card";
@@ -30,14 +29,7 @@ const REGISTRATION_STEPS = [
     title: "Basic Details",
     description: "Patient registration, contact info, photo, and emergency attender info",
     icon: "tabler:user-circle",
-  },
-  {
-    id: 2,
-    key: "medical",
-    title: "Medical Details",
-    description: "Physician history, chief complaints, symptoms, and medical habits",
-    icon: "tabler:file-medical",
-  },
+  }
 ];
 
 function EnquiryRegistraionForm() {
@@ -401,119 +393,19 @@ function EnquiryRegistraionForm() {
           </div>
         </div>
 
-        {/* Stepper Navigation */}
-        {renderStepperNav()}
+        {/* Stepper Navigation Removed */}
       </div>
 
-      {/* Main Step Form Card */}
-      <div className="bg-white rounded-3xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden">
-        {/* Step Title Header & Progress Bar */}
-        <div className="p-6 sm:p-8 pb-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3.5">
-            <div className="p-3 rounded-2xl bg-blue-500/10 text-blue-600 shadow-sm flex items-center justify-center">
-              <Icon icon={currentStepObj.icon} className="text-2xl" />
-            </div>
-            <div>
-              <span className="bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
-                Step {stepIndex} of {REGISTRATION_STEPS.length}
-              </span>
-              <h2 className="text-xl font-black text-slate-800 m-0 mt-0.5 leading-tight">
-                {currentStepObj.title}
-              </h2>
-              <p className="text-xs text-slate-500 font-medium m-0 mt-0.5">
-                {currentStepObj.description}
-              </p>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-1 w-full sm:w-48">
-            <div className="flex items-center justify-between text-xs font-bold text-slate-600">
-              <span>Progress</span>
-              <span>{stepIndex === 1 ? "50%" : "100%"}</span>
-            </div>
-            <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-blue-600 transition-all duration-500"
-                style={{ width: `${(stepIndex / REGISTRATION_STEPS.length) * 100}%` }}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Step Content */}
-        <div className="p-6 sm:p-8">
-          {activeStep === "basic" ? (
-            <PatientBasicDetails
-              patientFormData={patientBasic}
-              setPatientFormData={setPatientBasic}
-              loading={loading}
-              onSaveAndNext={async () => {
-                const res = await saveBasicDetails(true);
-                if (res && user?.userType !== "receptionist") {
-                  setActiveStep("medical");
-                }
-              }}
-            />
-          ) : (
-            <PatientMedicalForm
-              fetchPatientMedical={fetchPatientMedical}
-              patientId={patientBasic.patientId || patient_id}
-              patientBasic={patientBasic}
-              hideSubmitButton={true}
-              onSaveSuccess={async (savedMedical) => {
-                const targetPid = patientBasic?.patientId || patient_id || savedMedical?.patientId;
-                if (targetPid) {
-                  navigate(`/administration/identicards?patientId=${targetPid}&autostart=true`);
-                } else {
-                  navigate("/home");
-                }
-              }}
-            />
-          )}
-        </div>
-
-        {/* Step Footer Controls */}
-        <div className="p-6 sm:p-8 pt-5 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between">
-          <div>
-            {activeStep === "medical" ? (
-              <Button
-                onClick={() => setActiveStep("basic")}
-                variant="secondary"
-                className="rounded-xl px-5 py-2.5 flex items-center gap-2 border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 cursor-pointer font-semibold"
-              >
-                <Icon icon="tabler:arrow-left" className="text-base" />
-                Previous Step (Basic Details)
-              </Button>
-            ) : (
-              <Button
-                onClick={() => navigate("/home")}
-                variant="secondary"
-                className="rounded-xl px-5 py-2.5 border border-slate-200 text-slate-500 bg-white hover:bg-slate-50 cursor-pointer font-medium"
-              >
-                Cancel
-              </Button>
-            )}
-          </div>
-
-          <div>
-            {activeStep === "basic" && (
-              <Button
-                onClick={async () => {
-                  const res = await saveBasicDetails(true);
-                  if (res && user?.userType !== "receptionist") {
-                    setActiveStep("medical");
-                  }
-                }}
-                loading={loading}
-                variant="primary"
-                className="rounded-xl px-6 py-2.5 flex items-center gap-2 cursor-pointer shadow-md shadow-blue-500/20 font-semibold"
-              >
-                Save & Next
-                <Icon icon="tabler:arrow-right" className="text-base" />
-              </Button>
-            )}
-          </div>
-        </div>
+      {/* Main Patient Registration Component */}
+      <div className="w-full bg-white rounded-[40px] shadow-sm border border-slate-200/80 p-2 sm:p-4">
+        <PatientBasicDetails
+          patientFormData={patientBasic}
+          setPatientFormData={setPatientBasic}
+          loading={loading}
+          onSaveAndNext={async () => {
+            await saveBasicDetails(false);
+          }}
+        />
       </div>
 
       {/* Patient Information Table Section */}

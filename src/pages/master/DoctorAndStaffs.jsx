@@ -6,6 +6,8 @@ import Card from "../../component/ui/Card";
 import Input from "../../component/ui/Input";
 import Button from "../../component/ui/Button";
 import { StaggerContainer, StaggerItem } from "../../component/ui/Transitions";
+import PatientInfoTable from "../../component/tables/PatientInfoTable";
+import QuickLinks from "../../component/ui/QuickLinks";
 
 const ROLE_OPTIONS = [
   { id: "doctor", label: "Doctor / Specialist", icon: "solar:user-md-linear", color: "blue" },
@@ -31,6 +33,7 @@ function DoctorAndStaffs() {
   const [addLoading, setAddLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const [expandedDoctorId, setExpandedDoctorId] = useState(null);
 
   const [subSlideStep, setSubSlideStep] = useState(1);
 
@@ -247,6 +250,15 @@ function DoctorAndStaffs() {
             )}
           </div>
         </StaggerItem>
+
+        {!isModalOpen && (
+          <StaggerItem>
+            <QuickLinks links={[
+              { label: "Administration", icon: "solar:shield-user-linear", route: "/administration/identicards", color: "blue" },
+              { label: "Dashboard", icon: "solar:widget-5-linear", route: "/dashboard", color: "emerald" },
+            ]} />
+          </StaggerItem>
+        )}
 
         {/* Filters & Actions */}
         {!isModalOpen && (
@@ -660,27 +672,68 @@ function DoctorAndStaffs() {
                     </thead>
                     <tbody className="divide-y divide-slate-200">
                       {filteredUsers.map((data, index) => (
-                        <tr key={index} className="hover:bg-slate-50/80 transition-colors">
-                          <td className="p-4 font-semibold text-slate-700">{index + 1}</td>
-                          <td className="p-4 font-black text-blue-600">{data.userId}</td>
-                          <td className="p-4 font-bold text-slate-800">{data.userName}</td>
-                          <td className="p-4">
-                            <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${getRoleBadge(data.userType)}`}>
-                              {data.userType}
-                            </span>
-                          </td>
-                          <td className="p-4 font-medium text-slate-600">{data.email}</td>
-                          <td className="p-4 font-medium text-slate-600">{data.phone}</td>
-                          <td className="p-4 text-center">
-                            <button
-                              onClick={() => openEditModal(data)}
-                              className="p-2.5 text-blue-600 hover:bg-blue-50 rounded-xl transition-colors cursor-pointer border-none"
-                              title="Edit User"
-                            >
-                              <Icon icon="tabler:edit" className="text-xl" />
-                            </button>
-                          </td>
-                        </tr>
+                        <React.Fragment key={index}>
+                          <tr 
+                            className={`transition-colors ${data.userType === "doctor" ? "cursor-pointer hover:bg-slate-50/80" : "hover:bg-slate-50/80"} ${expandedDoctorId === data.userId ? "bg-slate-50/80" : ""}`}
+                            onClick={() => {
+                              if (data.userType === "doctor") {
+                                setExpandedDoctorId(expandedDoctorId === data.userId ? null : data.userId);
+                              }
+                            }}
+                          >
+                            <td className="p-4 font-semibold text-slate-700">
+                              <div className="flex items-center gap-2">
+                                {data.userType === "doctor" && (
+                                  <Icon 
+                                    icon="solar:alt-arrow-down-linear" 
+                                    className={`transition-transform duration-300 ${expandedDoctorId === data.userId ? "rotate-180" : ""}`} 
+                                  />
+                                )}
+                                {index + 1}
+                              </div>
+                            </td>
+                            <td className="p-4 font-black text-blue-600">{data.userId}</td>
+                            <td className="p-4 font-bold text-slate-800">{data.userName}</td>
+                            <td className="p-4">
+                              <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${getRoleBadge(data.userType)}`}>
+                                {data.userType}
+                              </span>
+                            </td>
+                            <td className="p-4 font-medium text-slate-600">{data.email}</td>
+                            <td className="p-4 font-medium text-slate-600">{data.phone}</td>
+                            <td className="p-4 text-center">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openEditModal(data);
+                                }}
+                                className="p-2.5 text-blue-600 hover:bg-blue-50 rounded-xl transition-colors cursor-pointer border-none"
+                                title="Edit User"
+                              >
+                                <Icon icon="tabler:edit" className="text-xl" />
+                              </button>
+                            </td>
+                          </tr>
+                          
+                          {/* Expanded Patient List for Doctors */}
+                          {expandedDoctorId === data.userId && data.userType === "doctor" && (
+                            <tr className="bg-slate-50/50 border-b border-slate-200 shadow-inner">
+                              <td colSpan={7} className="p-6">
+                                <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                                  <div className="bg-blue-50/50 border-b border-blue-100 p-4">
+                                    <h3 className="text-sm font-black text-blue-800 uppercase tracking-wider flex items-center gap-2">
+                                      <Icon icon="solar:users-group-two-rounded-linear" className="text-lg" />
+                                      Patients under {data.userName}
+                                    </h3>
+                                  </div>
+                                  <div className="p-2 max-w-full overflow-x-auto">
+                                    <PatientInfoTable doctorFilterName={data.userName} />
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          )}
+                        </React.Fragment>
                       ))}
                     </tbody>
                   </table>

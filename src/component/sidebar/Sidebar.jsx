@@ -14,6 +14,7 @@ const ICONS = {
   Patient: "solar:user-rounded-linear",
   "Patient Information": "solar:users-group-two-rounded-linear",
   Information: "solar:users-group-two-rounded-linear",
+  "Specialist Assessment": "solar:stethoscope-bold-duotone",
   "Today Patients": "solar:user-id-linear",
   "Patient Registration": "solar:user-check-rounded-linear",
   Registration: "solar:user-check-rounded-linear",
@@ -48,7 +49,14 @@ const ICONS = {
   "WhatsApp chat & call": "solar:phone-calling-rounded-linear",
 };
 
-const SidebarItem = ({ text, route, isOpen, hasSubMenu, isExpanded, isActiveParent }) => {
+const SidebarItem = ({
+  text,
+  route,
+  isOpen,
+  hasSubMenu,
+  isExpanded,
+  isActiveParent,
+}) => {
   const location = useLocation();
   const isSelected = route ? location.pathname === route : false;
   const isActuallySelected = isSelected || isActiveParent;
@@ -97,6 +105,7 @@ const MENU_ITEMS = {
       subMenu: [
         { text: "Registration", route: "/enquiry-registration" },
         { text: "Information", route: "/home" },
+        { text: "Specialist Assessment", route: "/specialist-assessment" },
       ],
     },
     { text: "Appointment", route: "/book-appointment" },
@@ -111,9 +120,7 @@ const MENU_ITEMS = {
     { text: "Feedbacks", route: "/feedback" },
     {
       text: "Administration",
-      subMenu: [
-        { text: "Identicards", route: "/administration/identicards" },
-      ],
+      subMenu: [{ text: "Identicards", route: "/administration/identicards" }],
     },
   ],
 
@@ -125,16 +132,14 @@ const MENU_ITEMS = {
       subMenu: [
         { text: "Registration", route: "/enquiry-registration" },
         { text: "Information", route: "/home" },
+        { text: "Specialist Assessment", route: "/specialist-assessment" },
         { text: "Web Chat", route: "/patient-chat" },
         { text: "WhatsApp chat & call", route: "/whatsapp-chat" },
-
       ],
     },
     {
       text: "Consultation",
-      subMenu: [
-        { text: "Video Consultation", route: "/video-consult" },
-      ],
+      subMenu: [{ text: "Video Consultation", route: "/video-consult" }],
     },
     {
       text: "Pharmacy & Prescription",
@@ -153,9 +158,7 @@ const MENU_ITEMS = {
     { text: "Billing", route: "/bill" },
     {
       text: "Administration",
-      subMenu: [
-        { text: "Identicards", route: "/administration/identicards" },
-      ],
+      subMenu: [{ text: "Identicards", route: "/administration/identicards" }],
     },
   ],
 
@@ -165,18 +168,14 @@ const MENU_ITEMS = {
     { text: "Expenditure", route: "/expenditure" },
     {
       text: "Pharmacy & Prescription",
-      subMenu: [
-        { text: "Pharmacy Management", route: "/pharmacy" },
-      ],
+      subMenu: [{ text: "Pharmacy Management", route: "/pharmacy" }],
     },
   ],
 
   generalManager: [
     {
       text: "Patient",
-      subMenu: [
-        { text: "Information", route: "/home" },
-      ],
+      subMenu: [{ text: "Information", route: "/home" }],
     },
     { text: "Doctor & Staff", route: "/master/doctor-and-staffs" },
     { text: "Billing", route: "/bill" },
@@ -185,15 +184,11 @@ const MENU_ITEMS = {
     { text: "Expenditure", route: "/expenditure" },
     {
       text: "Pharmacy & Prescription",
-      subMenu: [
-        { text: "Pharmacy Management", route: "/pharmacy" },
-      ],
+      subMenu: [{ text: "Pharmacy Management", route: "/pharmacy" }],
     },
     {
       text: "Administration",
-      subMenu: [
-        { text: "Identicards", route: "/administration/identicards" },
-      ],
+      subMenu: [{ text: "Identicards", route: "/administration/identicards" }],
     },
   ],
 
@@ -202,26 +197,23 @@ const MENU_ITEMS = {
     {
       text: "Patient",
       subMenu: [
-        { text: "Registration", route: "/enquiry-registration" },
-        { text: "Information", route: "/home" },
-        { text: "Web Chat", route: "/patient-chat" },
+        { text: "Patient Registration", route: "/enquiry-registration" },
+        { text: "Patient Information", route: "/home" },
+        { text: "Specialist Assessment", route: "/specialist-assessment" },
+        { text: "Patient Web Chat", route: "/patient-chat" },
         { text: "WhatsApp chat & call", route: "/whatsapp-chat" },
-
       ],
     },
     { text: "Appointment", route: "/book-appointment" },
-    {
-      text: "Consultation",
-      subMenu: [
-        { text: "Video Consultation", route: "/video-consult" },
-      ],
-    },
+
+    { text: "Video Consultation", route: "/video-consult" },
+
     {
       text: "Pharmacy & Prescription",
       subMenu: [
         { text: "Pharmacy & Prescription", route: "/pre-load-prescription" },
         { text: "AI X-Ray Analysis", route: "/xray-analysis" },
-        { text: "Pharmacy Management", route: "/pharmacy" }
+        { text: "Pharmacy Management", route: "/pharmacy" },
       ],
     },
     {
@@ -245,15 +237,11 @@ const MENU_ITEMS = {
     { text: "Feedbacks", route: "/feedback" },
     {
       text: "Analytics",
-      subMenu: [
-        { text: "Revenue", route: "/revenue" },
-      ],
+      subMenu: [{ text: "Revenue", route: "/revenue" }],
     },
     {
       text: "Administration",
-      subMenu: [
-        { text: "Identicards", route: "/administration/identicards" },
-      ],
+      subMenu: [{ text: "Identicards", route: "/administration/identicards" }],
     },
   ],
 };
@@ -285,7 +273,10 @@ const Sidebar = () => {
   React.useEffect(() => {
     if (!menuItems) return;
     menuItems.forEach((item) => {
-      if (item.subMenu && item.subMenu.some((sub) => location.pathname === sub.route)) {
+      if (
+        item.subMenu &&
+        item.subMenu.some((sub) => location.pathname === sub.route)
+      ) {
         setExpandedMenus((prev) => ({ ...prev, [item.text]: true }));
       }
     });
@@ -325,7 +316,9 @@ const Sidebar = () => {
             {menuItems.map((item, index) => {
               if (item.subMenu) {
                 const isExpanded = expandedMenus[item.text];
-                const isParentActive = item.subMenu.some((sub) => location.pathname === sub.route);
+                const isParentActive = item.subMenu.some(
+                  (sub) => location.pathname === sub.route,
+                );
                 return (
                   <div
                     key={`menu-${index}-${item.text}`}
@@ -356,7 +349,8 @@ const Sidebar = () => {
                           {item.subMenu.map((subItem) => {
                             const isSubSelected =
                               location.pathname === subItem.route;
-                            const SubIcon = ICONS[subItem.text] || "solar:widget-5-linear";
+                            const SubIcon =
+                              ICONS[subItem.text] || "solar:widget-5-linear";
                             return (
                               <Link
                                 key={subItem.route}
@@ -366,11 +360,15 @@ const Sidebar = () => {
                                 <div
                                   className={`pl-12 pr-6 py-3 flex items-center gap-3 text-[13.5px] transition-all duration-200 border-l-[3px] border-transparent ${isSubSelected ? "text-primary-600 font-bold bg-[#f4f4f9] border-l-primary-500" : "text-gray-500 hover:text-primary-600 hover:bg-white hover:border-l-primary-400"}`}
                                 >
-                                  <Icon 
-                                    icon={SubIcon} 
-                                    width={18} 
-                                    height={18} 
-                                    className={isSubSelected ? "text-primary-600" : "text-gray-400"} 
+                                  <Icon
+                                    icon={SubIcon}
+                                    width={18}
+                                    height={18}
+                                    className={
+                                      isSubSelected
+                                        ? "text-primary-600"
+                                        : "text-gray-400"
+                                    }
                                   />
                                   {subItem.text}
                                 </div>

@@ -5,24 +5,7 @@ import Button from "../../../../component/ui/Button";
 
 const LiveSchedule = ({ appointments, updateStatus, getStatusIcon, getStatusColor }) => {
   return (
-    <div className="flex flex-col flex-1 bg-white border border-slate-200/50 rounded-2xl overflow-hidden shadow-sm">
-      <div className="bg-slate-50 border-b border-slate-200/50 p-4 flex items-center justify-between">
-        <h3 className="font-black text-slate-700 tracking-tight flex items-center gap-2 text-sm uppercase">
-          <Icon icon="solar:clock-circle-bold-duotone" className="text-blue-500 text-lg" />
-          Appointment List <span className="text-slate-400 font-medium normal-case text-xs">(Live Day Schedule)</span>
-        </h3>
-
-        <div className="flex items-center gap-1">
-          <div className="flex items-center gap-2 mr-4">
-            <span className="inline-flex items-center gap-1.5 bg-purple-100 text-purple-700 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-widest border border-purple-200">
-              <span className="scale-110"><Icon icon="solar:global-bold-duotone" /></span> Web Appt
-            </span>
-            <span className="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-700 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-widest border border-emerald-200">
-              <span className="scale-110"><Icon icon="duo-icons:building" /></span> Internal
-            </span>
-          </div>
-        </div>
-      </div>
+    <div className="w-full">
       
       <div className="overflow-x-auto custom-scrollbar h-[350px]">
         <table className="w-full text-left border-collapse whitespace-nowrap min-w-max">
@@ -57,9 +40,22 @@ const LiveSchedule = ({ appointments, updateStatus, getStatusIcon, getStatusColo
                     </div>
                   </td>
                   <td className="p-4">
-                    <div className="flex flex-col">
-                      <span className="font-extrabold text-slate-800 text-sm tracking-tight">{appt.patientName}</span>
-                      <span className="text-xs text-slate-500">{appt.phoneNumber || appt.patientPhone || appt.patientPhno}</span>
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-extrabold text-slate-800 text-sm tracking-tight">{appt.patientName}</span>
+                        {appt.isWebAppointment ? (
+                          <span className="px-1.5 py-0.5 rounded text-purple-700 bg-purple-100/80 text-[9px] font-black uppercase tracking-wider border border-purple-200/50 shadow-sm flex items-center gap-1">
+                            <Icon icon="solar:global-bold-duotone" />
+                            Web
+                          </span>
+                        ) : (
+                          <span className="px-1.5 py-0.5 rounded text-emerald-700 bg-emerald-100/80 text-[9px] font-black uppercase tracking-wider border border-emerald-200/50 shadow-sm flex items-center gap-1">
+                            <Icon icon="solar:building-bold-duotone" />
+                            Clinic
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-xs text-slate-500 font-medium">{appt.phoneNumber || appt.patientPhone || appt.patientPhno}</span>
                     </div>
                   </td>
                   <td className="p-4 text-sm font-bold text-blue-600">

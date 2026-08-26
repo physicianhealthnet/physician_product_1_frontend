@@ -6,6 +6,7 @@ import cornerstoneWADOImageLoader from 'cornerstone-wado-image-loader';
 import cornerstoneMath from 'cornerstone-math';
 import cornerstoneTools from 'cornerstone-tools';
 import Hammer from 'hammerjs';
+import { AxiosInstance } from '../../utilities/AxiosInstance';
 
 // Setup cornerstone and tools
 cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
@@ -72,12 +73,22 @@ const FileViewerModal = ({ fileUrl, onClose }) => {
     return 'unknown';
   };
 
-  const fileType = getFileType(fileUrl);
+  const getFullUrl = (url) => {
+    if (!url) return "";
+    if (url.startsWith("http") || url.startsWith("blob:") || url.startsWith("data:")) return url;
+    const rawBaseUrl = AxiosInstance.defaults.baseURL || "http://localhost:3026";
+    const baseUrl = rawBaseUrl.replace(/\/api\/?$/, "");
+    return `${baseUrl}${url.startsWith("/") ? "" : "/"}${url}`;
+  };
+
+  const fullUrl = getFullUrl(fileUrl);
+  const fileType = getFileType(fullUrl);
+  
   // Using WADO URI scheme for DICOM
-  const dicomUrl = fileType === 'dicom' ? `wadouri:${fileUrl}` : fileUrl;
+  const dicomUrl = fileType === 'dicom' ? `wadouri:${fullUrl}` : fullUrl;
 
   useEffect(() => {
-    if (!fileUrl) {
+    if (!fullUrl) {
       setError("No file URL provided.");
       setLoading(false);
       return;
@@ -165,7 +176,7 @@ const FileViewerModal = ({ fileUrl, onClose }) => {
                 <Icon icon="solar:info-circle-bold-duotone" /> LC: Window/Level | MC: Zoom | RC: Pan
               </div>
             )}
-            <a href={fileUrl} target="_blank" rel="noreferrer" download className="text-slate-400 hover:text-blue-500 transition-colors p-2 rounded-xl hover:bg-blue-50" title="Open in new window">
+            <a href={fullUrl} target="_blank" rel="noreferrer" download className="text-slate-400 hover:text-blue-500 transition-colors p-2 rounded-xl hover:bg-blue-50" title="Open in new window">
               <Icon icon="solar:export-bold-duotone" className="text-xl" />
             </a>
             <button onClick={onClose} className="text-slate-400 hover:text-rose-500 transition-colors p-2 rounded-xl hover:bg-rose-50 mb-0.5">
@@ -207,7 +218,7 @@ const FileViewerModal = ({ fileUrl, onClose }) => {
 
           {fileType === 'image' && !error && (
             <img 
-              src={fileUrl} 
+              src={fullUrl} 
               alt="Scan Report" 
               className="max-w-full max-h-full object-contain p-4 drop-shadow-xl" 
             />
@@ -215,7 +226,7 @@ const FileViewerModal = ({ fileUrl, onClose }) => {
 
           {fileType === 'pdf' && !error && (
             <iframe 
-              src={fileUrl} 
+              src={fullUrl} 
               className="w-full h-full border-none shadow-sm"
               title="PDF Report Viewer" 
             />
@@ -227,7 +238,7 @@ const FileViewerModal = ({ fileUrl, onClose }) => {
               <div className="text-center">
                 <h3 className="text-xl font-black text-slate-700">Unknown File Type</h3>
                 <p className="text-slate-500 font-bold mt-2 text-sm max-w-md tracking-tight">The provided file extension is not explicitly handled by the native viewer. We recommend opening it manually.</p>
-                <a href={fileUrl} target="_blank" rel="noreferrer" className="inline-flex mt-6 items-center gap-2 px-6 py-2.5 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 text-sm font-black transition-all uppercase tracking-widest">
+                <a href={fullUrl} target="_blank" rel="noreferrer" className="inline-flex mt-6 items-center gap-2 px-6 py-2.5 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 text-sm font-black transition-all uppercase tracking-widest">
                   Open File Manually <Icon icon="solar:export-bold-duotone" />
                 </a>
               </div>

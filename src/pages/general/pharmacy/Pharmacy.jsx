@@ -12,6 +12,7 @@ import PharmacyAnalytics from "./PharmacyAnalytics";
 import dayjs from "dayjs";
 import AIGaugeReport from "../../../component/ui/AIGaugeReport";
 import { useNavigate } from "react-router-dom";
+import QuickLinks from "../../../component/ui/QuickLinks";
 
 function Pharmacy() {
   const navigate = useNavigate();
@@ -323,6 +324,14 @@ function Pharmacy() {
               Analytics
             </button>
           </div>
+        </StaggerItem>
+
+        <StaggerItem>
+          <QuickLinks links={[
+            { label: "Billing", icon: "solar:bill-list-linear", route: "/bill", color: "blue" },
+            { label: "Inventory", icon: "solar:bedside-table-4-linear", route: "/inventory", color: "purple" },
+            { label: "Suppliers", icon: "solar:shop-linear", route: "/supplier", color: "amber" },
+          ]} />
         </StaggerItem>
 
         {activeTab === "queue" ? (

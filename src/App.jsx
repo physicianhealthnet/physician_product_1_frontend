@@ -30,6 +30,9 @@ const Assessment = lazy(() => import("./pages/general/assessment/Assessment"));
 const ExerciseUpload = lazy(
   () => import("./component/exercise/ExerciseUpload"),
 );
+const SpecialistAssessmentPage = lazy(
+  () => import("./pages/general/assessment/SpecialistAssessmentPage")
+);
 const DoctorAndStaffs = lazy(() => import("./pages/master/DoctorAndStaffs"));
 const Inventory = lazy(() => import("./pages/general/inventory/Inventory"));
 const ExpenditureShow = lazy(
@@ -233,6 +236,16 @@ const AppContent = () => {
               <PageTransition>
                 <Assessment />
               </PageTransition>
+            }
+          />
+          <Route
+            path="/specialist-assessment"
+            element={
+              <ProtectedRoute>
+                <PageTransition>
+                  <SpecialistAssessmentPage />
+                </PageTransition>
+              </ProtectedRoute>
             }
           />
           <Route

@@ -15,7 +15,7 @@ import PatientDetails from "../../pages/general/patientDetails/PatientDetails";
 
 const PAGE_SIZE = 5;
 
-const PatientInfoTable = () => {
+const PatientInfoTable = ({ doctorFilterName }) => {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
 
@@ -38,7 +38,7 @@ const PatientInfoTable = () => {
     type: null, // 'prescription', 'lab', 'scan'
     patientId: null,
   });
-  
+
   const [expandedRow, setExpandedRow] = useState(null);
 
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
@@ -61,7 +61,9 @@ const PatientInfoTable = () => {
       }
     } catch (err) {
       console.error(err);
-      message.error(err.response?.data?.message || "Error generating AI report");
+      message.error(
+        err.response?.data?.message || "Error generating AI report",
+      );
       setIsAIModalOpen(false);
     } finally {
       setLoadingAIReport(false);
@@ -80,7 +82,8 @@ const PatientInfoTable = () => {
     if (!url) return null;
     if (url.startsWith("http") || url.startsWith("data:")) return url;
     // Extract base URL dynamically from AxiosInstance (e.g., http://localhost:3026/api -> http://localhost:3026)
-    const rawBaseUrl = AxiosInstance.defaults.baseURL || "http://localhost:3026";
+    const rawBaseUrl =
+      AxiosInstance.defaults.baseURL || "http://localhost:3026";
     const baseUrl = rawBaseUrl.replace(/\/api\/?$/, "");
     return `${baseUrl}${url.startsWith("/") ? "" : "/"}${url}`;
   };
@@ -142,12 +145,19 @@ const PatientInfoTable = () => {
         ? item.patientGender === genderFilter
         : true;
 
+      const matchesDoctor = doctorFilterName
+        ? item.docName === doctorFilterName ||
+          item.doctor === doctorFilterName ||
+          item.ref_dr_name === doctorFilterName
+        : true;
+
       return (
         matchesSearch &&
         matchesPhone &&
         matchesName &&
         matchesLocationId &&
-        matchesGender
+        matchesGender &&
+        matchesDoctor
       );
     });
   }, [data, search, phoneSearch, nameSearch, locationIdSearch, genderFilter]);
@@ -291,12 +301,22 @@ const PatientInfoTable = () => {
                   <React.Fragment key={patient.patientId}>
                     <tr
                       className={`hover:bg-slate-50 transition-colors cursor-pointer ${expandedRow === patient.patientId ? "bg-slate-50" : ""}`}
-                      onClick={() => setExpandedRow(expandedRow === patient.patientId ? null : patient.patientId)}
+                      onClick={() =>
+                        setExpandedRow(
+                          expandedRow === patient.patientId
+                            ? null
+                            : patient.patientId,
+                        )
+                      }
                     >
                       <td className="py-4 px-6 text-center text-slate-500 font-medium relative">
                         <div className="flex items-center justify-center gap-2">
-                          <Icon 
-                            icon={expandedRow === patient.patientId ? "solar:alt-arrow-down-linear" : "solar:alt-arrow-right-linear"} 
+                          <Icon
+                            icon={
+                              expandedRow === patient.patientId
+                                ? "solar:alt-arrow-down-linear"
+                                : "solar:alt-arrow-right-linear"
+                            }
                             className="text-primary-500 transition-transform"
                           />
                           <span>{startIdx + index + 1}</span>
@@ -312,7 +332,9 @@ const PatientInfoTable = () => {
                           <div className="w-6 h-6 rounded-full bg-slate-100 overflow-hidden shrink-0 flex items-center justify-center">
                             {patient.profileImg || patient.photo ? (
                               <img
-                                src={getImageUrl(patient.profileImg || patient.photo)}
+                                src={getImageUrl(
+                                  patient.profileImg || patient.photo,
+                                )}
                                 alt={patient.patientName}
                                 className="w-full h-full object-cover"
                               />
@@ -334,7 +356,7 @@ const PatientInfoTable = () => {
                       <td className="py-4 px-6 text-center text-slate-600 font-medium">
                         {patient.patientAge || "-"}
                       </td>
-                      <td 
+                      <td
                         className="py-4 px-6 text-center text-slate-600 font-medium"
                         onClick={(e) => e.stopPropagation()}
                       >
@@ -342,25 +364,36 @@ const PatientInfoTable = () => {
                           <span>{patient.patientPhone || "-"}</span>
                           {patient.patientPhone && (
                             <div className="flex items-center gap-1">
-                              <button 
+                              <button
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  window.open(`https://wa.me/${String(patient.patientPhone).replace(/\D/g, '')}`, "_blank");
+                                  window.open(
+                                    `https://wa.me/${String(patient.patientPhone).replace(/\D/g, "")}`,
+                                    "_blank",
+                                  );
                                 }}
                                 className="p-1.5 hover:bg-green-50 rounded-full text-green-600 transition-colors flex items-center justify-center shadow-sm border border-transparent hover:border-green-200"
                                 title="WhatsApp Chat"
                               >
-                                <Icon icon="ic:baseline-whatsapp" className="text-[16px]" />
+                                <Icon
+                                  icon="ic:baseline-whatsapp"
+                                  className="text-[16px]"
+                                />
                               </button>
-                              <button 
+                              <button
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  navigate('/patient-chat', { state: { patientId: patient.patientId } });
+                                  navigate("/patient-chat", {
+                                    state: { patientId: patient.patientId },
+                                  });
                                 }}
                                 className="p-1.5 hover:bg-blue-50 rounded-full text-blue-600 transition-colors flex items-center justify-center shadow-sm border border-transparent hover:border-blue-200"
                                 title="Web Chat"
                               >
-                                <Icon icon="solar:chat-round-dots-linear" className="text-[16px]" />
+                                <Icon
+                                  icon="solar:chat-round-dots-linear"
+                                  className="text-[16px]"
+                                />
                               </button>
                             </div>
                           )}
@@ -370,7 +403,10 @@ const PatientInfoTable = () => {
                         {patient.location || "-"}
                       </td>
                       <td className="py-4 px-6 text-center font-bold text-blue-600">
-                        {patient.docName || patient.doctor || "—"}
+                        {patient.docName ||
+                          patient.doctor ||
+                          patient.ref_dr_name ||
+                          "—"}
                       </td>
                       <td
                         className="py-4 px-6 text-slate-600 font-medium max-w-[150px] truncate"
@@ -396,14 +432,19 @@ const PatientInfoTable = () => {
                         </div>
                       </td>
                     </tr>
-                    
+
                     {/* Expanded Colab Content */}
                     {expandedRow === patient.patientId && (
                       <tr className="bg-slate-50/50 border-b border-slate-200 shadow-inner">
-                        <td colSpan={10} className="p-6 whitespace-normal max-w-0">
+                        <td
+                          colSpan={10}
+                          className="p-6 whitespace-normal max-w-0"
+                        >
                           {/* Quick Actions Bar */}
                           <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center mb-6 bg-slate-100/50 backdrop-blur-xl p-3.5 rounded-2xl border border-slate-200/50 animate-fade-in">
-                            <span className="text-slate-600 font-extrabold text-xs uppercase tracking-widest pl-2">Patient Quick Actions</span>
+                            <span className="text-slate-600 font-extrabold text-xs uppercase tracking-widest pl-2">
+                              Patient Quick Actions
+                            </span>
                             <div className="flex flex-wrap bg-slate-200/60 rounded-xl p-1 gap-1 items-center shadow-inner">
                               <button
                                 title="Edit"
@@ -416,11 +457,17 @@ const PatientInfoTable = () => {
                                     message.warning("Permission denied");
                                     return;
                                   }
-                                  navigate(`/enquiry-registration/${patient.patientId}`);
+                                  navigate(
+                                    `/enquiry-registration/${patient.patientId}`,
+                                  );
                                 }}
                                 className="px-4 py-2 hover:bg-white rounded-lg text-slate-500 hover:text-primary-600 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider duration-300"
                               >
-                                <Icon icon="solar:pen-linear" width="16" height="16" />
+                                <Icon
+                                  icon="solar:pen-linear"
+                                  width="16"
+                                  height="16"
+                                />
                                 <span>Edit</span>
                               </button>
 
@@ -428,11 +475,17 @@ const PatientInfoTable = () => {
                                 title="View Details"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  navigate(`/patient-details/${patient.patientId}`);
+                                  navigate(
+                                    `/patient-details/${patient.patientId}`,
+                                  );
                                 }}
                                 className="px-4 py-2 hover:bg-white rounded-lg text-slate-500 hover:text-blue-500 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider duration-300"
                               >
-                                <Icon icon="solar:document-linear" width="16" height="16" />
+                                <Icon
+                                  icon="solar:document-linear"
+                                  width="16"
+                                  height="16"
+                                />
                                 <span>Fullscreen</span>
                               </button>
 
@@ -440,11 +493,17 @@ const PatientInfoTable = () => {
                                 title="Health Monitor"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  navigate(`/health-dashboard/${patient.patientId}`);
+                                  navigate(
+                                    `/health-dashboard/${patient.patientId}`,
+                                  );
                                 }}
                                 className="px-4 py-2 hover:bg-white rounded-lg text-slate-500 hover:text-rose-500 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider duration-300"
                               >
-                                <Icon icon="solar:heart-pulse-linear" width="16" height="16" />
+                                <Icon
+                                  icon="solar:heart-pulse-linear"
+                                  width="16"
+                                  height="16"
+                                />
                                 <span>Monitor</span>
                               </button>
 
@@ -452,16 +511,26 @@ const PatientInfoTable = () => {
                                 title="AI Report"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  handleOverallAIReport(patient.patientId, patient.patientName);
+                                  handleOverallAIReport(
+                                    patient.patientId,
+                                    patient.patientName,
+                                  );
                                 }}
                                 className="px-4 py-2 hover:bg-white rounded-lg text-slate-500 hover:text-emerald-600 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider duration-300"
                               >
-                                <Icon icon="solar:magic-stick-3-linear" width="16" height="16" />
+                                <Icon
+                                  icon="solar:magic-stick-3-linear"
+                                  width="16"
+                                  height="16"
+                                />
                                 <span>AI Report</span>
                               </button>
                             </div>
                           </div>
-                          <PatientDetails patientId={patient.patientId} isNested={true} />
+                          <PatientDetails
+                            patientId={patient.patientId}
+                            isNested={true}
+                          />
                         </td>
                       </tr>
                     )}
@@ -486,8 +555,6 @@ const PatientInfoTable = () => {
           </tbody>
         </table>
       </div>
-
-
 
       {whatsAppModalVisible && (
         <CustomMessageWindow
@@ -514,17 +581,30 @@ const PatientInfoTable = () => {
                 <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600">
                   <Icon icon="solar:magic-stick-3-linear" className="text-xl" />
                 </div>
-                <h2 className="text-xl font-black text-slate-800 tracking-tight">AI Health Summary for <span className="text-emerald-600">{aiReportPatientName}</span></h2>
+                <h2 className="text-xl font-black text-slate-800 tracking-tight">
+                  AI Health Summary for{" "}
+                  <span className="text-emerald-600">
+                    {aiReportPatientName}
+                  </span>
+                </h2>
               </div>
-              <button onClick={() => setIsAIModalOpen(false)} className="text-slate-400 hover:text-red-500 transition-colors p-2 rounded-xl hover:bg-red-50">
+              <button
+                onClick={() => setIsAIModalOpen(false)}
+                className="text-slate-400 hover:text-red-500 transition-colors p-2 rounded-xl hover:bg-red-50"
+              >
                 <Icon icon="solar:close-circle-linear" className="text-2xl" />
               </button>
             </div>
             <div className="p-8 max-h-[70vh] overflow-y-auto custom-scrollbar bg-white">
               {loadingAIReport ? (
                 <div className="flex flex-col items-center justify-center py-20 gap-4">
-                  <Icon icon="line-md:loading-twotone-loop" className="text-5xl text-emerald-600 animate-spin" />
-                  <span className="font-extrabold text-slate-600 text-sm uppercase tracking-widest">Aggregating records & generating AI summary...</span>
+                  <Icon
+                    icon="line-md:loading-twotone-loop"
+                    className="text-5xl text-emerald-600 animate-spin"
+                  />
+                  <span className="font-extrabold text-slate-600 text-sm uppercase tracking-widest">
+                    Aggregating records & generating AI summary...
+                  </span>
                 </div>
               ) : (
                 <>
@@ -537,7 +617,10 @@ const PatientInfoTable = () => {
               )}
             </div>
             <div className="p-6 border-t border-slate-100 flex justify-end bg-slate-50/30">
-              <button onClick={() => setIsAIModalOpen(false)} className="px-8 py-3 bg-slate-800 text-white rounded-xl text-sm font-black hover:bg-slate-900 transition-all shadow-lg shadow-slate-200 uppercase tracking-widest">
+              <button
+                onClick={() => setIsAIModalOpen(false)}
+                className="px-8 py-3 bg-slate-800 text-white rounded-xl text-sm font-black hover:bg-slate-900 transition-all shadow-lg shadow-slate-200 uppercase tracking-widest"
+              >
                 Close Summary
               </button>
             </div>

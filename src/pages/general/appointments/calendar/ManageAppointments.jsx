@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { message, Select, Modal, Tag } from "antd";
+import { message, Select, Modal, Tag, Collapse } from "antd";
 import {
   CheckCircleOutlined,
   ClockCircleOutlined,
@@ -25,7 +25,7 @@ import {
 import Input from "../../../../component/ui/Input";
 import Button from "../../../../component/ui/Button";
 import Reschedule from "../Reschedule";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import PatientClinicalDataModal from "../../../../component/dashboard/PatientClinicalDataModal";
 import { Icon } from "@iconify/react";
 import IncomingWebRequests from "./IncomingWebRequests";
@@ -43,10 +43,17 @@ const ManageAppointments = ({
   onDoctorFilterChange,
 }) => {
   const [appointments, setAppointments] = useState([]);
-  const [pendingWebRequests, setPendingWebRequests] = useState([]);
+  const [allWebRequests, setAllWebRequests] = useState([]);
   const [filterDate, setFilterDate] = useState(dayjs().format("YYYY-MM-DD"));
   const [filterStatus, setFilterStatus] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  
+  const [webFilterDate, setWebFilterDate] = useState(dayjs().format("YYYY-MM-DD"));
+  const [webSearchTerm, setWebSearchTerm] = useState("");
+  const [webFilterDoctor, setWebFilterDoctor] = useState("");
+
+  const [upcomingFilterDate, setUpcomingFilterDate] = useState("");
+  const [upcomingSearchTerm, setUpcomingSearchTerm] = useState("");
   const [selectedAppt, setSelectedAppt] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [showRescheduleModal, setShowRescheduleModal] = useState(false);
@@ -85,6 +92,8 @@ const ManageAppointments = ({
 
   // Patient Details
   const navigate = useNavigate();
+  const location = useLocation();
+  const initialActiveKey = location.state?.activeCollab ? [location.state.activeCollab] : [];
   const [patientDetails, setPatientDetails] = useState({});
   const [loadingDetails, setLoadingDetails] = useState(false);
   const [modalConfig, setModalConfig] = useState({ isOpen: false, type: null, patientId: null });
@@ -112,12 +121,9 @@ const ManageAppointments = ({
       let webAppts =
         webRes.status === "fulfilled" ? webRes.value.data.data || [] : [];
 
-      // Extract pending requests globally (not filtered by date)
-      const pendingWeb = webAppts.filter(appt => {
-        const s = appt.status?.toLowerCase();
-        return s === "pending" || (!s && !appt.localAppointmentId);
-      }).map(appt => ({ ...appt, isWebAppointment: true }));
-      setPendingWebRequests(pendingWeb);
+      // Pass all web requests globally
+      const allWeb = webAppts.map(appt => ({ ...appt, isWebAppointment: true }));
+      setAllWebRequests(allWeb);
 
       // Filter approved web appointments by date for Live Schedule
       let approvedWebAppts = webAppts
@@ -405,42 +411,48 @@ const ManageAppointments = ({
     return true;
   });
 
-  return (
-    <div className="flex flex-col gap-5 flex-1 min-w-0 w-full bg-white p-5 border border-slate-200/50 rounded-2xl">
-      {/* Filters */}
-      <div className="flex flex-col gap-4 bg-slate-50/50 border border-slate-200/50  shadow-[inset_0_1px_2px_rgba(255,255,255,0.05)]">
-        <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4 w-full">
-          <div className="relative group w-full sm:w-52">
-            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-all duration-300 z-10">
-              <CalendarOutlined className="text-lg" />
-            </div>
-            <Input
-              type={filterDate ? "date" : "text"}
-              placeholder="Select Date"
-              onFocus={(e) => (e.target.type = "date")}
-              onBlur={(e) => {
-                if (!e.target.value) e.target.type = "text";
-              }}
-              value={filterDate}
-              onChange={(e) => setFilterDate(e.target.value)}
-              className="w-full h-12 pl-12 pr-10 bg-white border-slate-200/60 rounded-[1.25rem] focus:ring-4 focus:ring-blue-500/10 transition-all font-bold tracking-tight"
-            />
-            {filterDate && (
-              <button
-                onClick={() => setFilterDate("")}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-500 transition-colors z-10"
-                title="Clear Date"
-              >
-                <Icon icon="solar:close-circle-bold" className="text-lg" />
-              </button>
-            )}
+  const renderFilterBar = ({
+    dateVal, setDateVal,
+    statusVal, setStatusVal,
+    doctorVal, setDoctorVal,
+    searchVal, setSearchVal,
+    showStatus = false,
+    showDoctor = false
+  }) => (
+    <div className="flex flex-col gap-4 bg-slate-50/50 border-b border-slate-200/50 p-4">
+      <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4 w-full">
+        <div className="relative group w-full sm:w-52">
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-all duration-300 z-10">
+            <CalendarOutlined className="text-lg" />
           </div>
+          <Input
+            type={dateVal ? "date" : "text"}
+            placeholder="Select Date"
+            onFocus={(e) => (e.target.type = "date")}
+            onBlur={(e) => {
+              if (!e.target.value) e.target.type = "text";
+            }}
+            value={dateVal}
+            onChange={(e) => setDateVal(e.target.value)}
+            className="w-full h-12 pl-12 pr-10 bg-white border-slate-200/60 rounded-[1.25rem] focus:ring-4 focus:ring-blue-500/10 transition-all font-bold tracking-tight"
+          />
+          {dateVal && (
+            <button
+              onClick={() => setDateVal("")}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-500 transition-colors z-10"
+              title="Clear Date"
+            >
+              <Icon icon="solar:close-circle-bold" className="text-lg" />
+            </button>
+          )}
+        </div>
 
+        {showStatus && (
           <Select
             placeholder="Filter by Status"
             allowClear
-            value={filterStatus || undefined}
-            onChange={(val) => setFilterStatus(val || "")}
+            value={statusVal || undefined}
+            onChange={(val) => setStatusVal(val || "")}
             className="w-full sm:w-52 h-12 custom-select-premium"
             popupClassName="  rounded-2xl shadow-2xl border-slate-700/50"
           >
@@ -462,14 +474,16 @@ const ManageAppointments = ({
               </Option>
             ))}
           </Select>
+        )}
 
+        {showDoctor && (
           <Select
             placeholder="Filter by Doctor"
             allowClear
-            value={filterDoctor || undefined}
+            value={doctorVal || undefined}
             onChange={(val) => {
               const selected = doctorsList.find((doc) => doc.userName === val);
-              setFilterDoctor(val || "");
+              setDoctorVal(val || "");
               if (onDoctorFilterChange) {
                 onDoctorFilterChange(selected || null);
               }
@@ -483,37 +497,125 @@ const ManageAppointments = ({
               </Option>
             ))}
           </Select>
+        )}
 
-          <div className="relative group w-full sm:w-52">
-            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-all duration-300 z-10">
-              <SearchOutlined className="text-lg" />
-            </div>
-            <Input
-              placeholder="Search patients..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full h-12 pl-12 bg-white  border-slate-200/60  rounded-[1.25rem] focus:ring-4 focus:ring-blue-500/10 transition-all font-bold tracking-tight"
-            />
+        <div className="relative group w-full sm:w-52 flex-1">
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-all duration-300 z-10">
+            <SearchOutlined className="text-lg" />
           </div>
+          <Input
+            placeholder="Search patients..."
+            value={searchVal}
+            onChange={(e) => setSearchVal(e.target.value)}
+            className="w-full h-12 pl-12 bg-white  border-slate-200/60  rounded-[1.25rem] focus:ring-4 focus:ring-blue-500/10 transition-all font-bold tracking-tight"
+          />
         </div>
       </div>
+    </div>
+  );
 
-      <div className="flex flex-col gap-6 w-full">
-        <IncomingWebRequests
-          pendingRequests={pendingWebRequests}
-          onApprove={(appt) => updateStatus(appt, "Booked")}
-          onReschedule={(appt) => openRescheduleModal(appt)}
+  return (
+    <div className="flex flex-col gap-5 flex-1 min-w-0 w-full bg-white p-5 border border-slate-200/50 rounded-2xl">
+
+
+      <div className="flex flex-col w-full">
+        <Collapse
+          defaultActiveKey={initialActiveKey}
+          bordered={false}
+          className="bg-transparent w-full"
+          expandIconPosition="end"
+          items={[
+            {
+              key: '1',
+              label: (
+                <div className="flex items-center justify-between w-full py-1 pr-6">
+                  <div className="flex items-center gap-2">
+                    <Icon icon="solar:clock-circle-bold-duotone" className="text-blue-500 text-xl" />
+                    <h3 className="font-black text-slate-700 tracking-tight text-sm uppercase m-0">
+                      Internal & Clinic Appointments
+                    </h3>
+                  </div>
+                </div>
+              ),
+              children: (
+                <div className="flex flex-col bg-white">
+                  {renderFilterBar({
+                    dateVal: filterDate, setDateVal: setFilterDate,
+                    statusVal: filterStatus, setStatusVal: setFilterStatus,
+                    doctorVal: filterDoctor, setDoctorVal: setFilterDoctor,
+                    searchVal: searchTerm, setSearchVal: setSearchTerm,
+                    showStatus: true, showDoctor: true
+                  })}
+                  <LiveSchedule
+                    appointments={filteredAppointments}
+                    updateStatus={updateStatus}
+                    getStatusIcon={getStatusIcon}
+                    getStatusColor={getStatusColor}
+                  />
+                </div>
+              ),
+              className: "bg-white border border-slate-200/50 rounded-2xl overflow-hidden shadow-sm mb-6",
+              style: { padding: 0 }
+            },
+            {
+              key: '2',
+              label: (
+                <div className="flex items-center gap-2 py-1">
+                  <Icon icon="solar:global-bold-duotone" className="text-blue-500 text-xl" />
+                  <h3 className="font-black text-slate-700 tracking-tight text-sm uppercase m-0">
+                    Online Web Appointments
+                  </h3>
+                </div>
+              ),
+              children: (
+                <div className="flex flex-col bg-white">
+                  {renderFilterBar({
+                    dateVal: webFilterDate, setDateVal: setWebFilterDate,
+                    doctorVal: webFilterDoctor, setDoctorVal: setWebFilterDoctor,
+                    searchVal: webSearchTerm, setSearchVal: setWebSearchTerm,
+                    showStatus: false, showDoctor: true
+                  })}
+                  <IncomingWebRequests
+                    allRequests={allWebRequests}
+                    onApprove={(appt) => updateStatus(appt, "Booked")}
+                    onReschedule={(appt) => openRescheduleModal(appt)}
+                    filterDate={webFilterDate}
+                    searchTerm={webSearchTerm}
+                    filterDoctor={webFilterDoctor}
+                  />
+                </div>
+              ),
+              className: "bg-white border border-slate-200/50 rounded-2xl overflow-hidden shadow-sm mb-6",
+              style: { padding: 0 }
+            },
+            {
+              key: '3',
+              label: (
+                <div className="flex items-center gap-2 py-1">
+                  <Icon icon="solar:calendar-date-bold-duotone" className="text-blue-500 text-xl" />
+                  <h3 className="font-black text-slate-700 tracking-tight text-sm uppercase m-0">
+                    Upcoming Appointments (Old patients)
+                  </h3>
+                </div>
+              ),
+              children: (
+                <div className="flex flex-col bg-white">
+                  {renderFilterBar({
+                    dateVal: upcomingFilterDate, setDateVal: setUpcomingFilterDate,
+                    searchVal: upcomingSearchTerm, setSearchVal: setUpcomingSearchTerm,
+                    showStatus: false, showDoctor: false
+                  })}
+                  <FollowUpTracker 
+                    filterDate={upcomingFilterDate}
+                    searchTerm={upcomingSearchTerm}
+                  />
+                </div>
+              ),
+              className: "bg-white border border-slate-200/50 rounded-2xl overflow-hidden shadow-sm",
+              style: { padding: 0 }
+            }
+          ]}
         />
-        
-        <div className="flex flex-col lg:flex-row gap-6 w-full">
-          <LiveSchedule
-            appointments={filteredAppointments}
-            updateStatus={updateStatus}
-            getStatusIcon={getStatusIcon}
-            getStatusColor={getStatusColor}
-          />
-          <FollowUpTracker />
-        </div>
       </div>
 
 

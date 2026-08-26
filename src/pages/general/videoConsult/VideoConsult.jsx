@@ -8,6 +8,7 @@ import { AxiosInstance, AxiosInstanceDependency } from "../../../utilities/Axios
 import Button from "../../../component/ui/Button";
 import Card from "../../../component/ui/Card";
 import { StaggerContainer, StaggerItem } from "../../../component/ui/Transitions";
+import QuickLinks from "../../../component/ui/QuickLinks";
 
 const SCHEDULE_SLIDES = [
   {
@@ -58,6 +59,7 @@ const VideoConsult = () => {
   // Scheduled Meetings states
   const [meetings, setMeetings] = useState([]);
   const [loadingMeetings, setLoadingMeetings] = useState(false);
+  const [meetingTab, setMeetingTab] = useState("pending");
 
   // Schedule Wizard states (full page / area slider)
   const [isSchedulingMode, setIsSchedulingMode] = useState(false);
@@ -299,14 +301,58 @@ const VideoConsult = () => {
     }
   };
 
+  const checkMissed = (meet) => {
+    const status = meet.status?.toLowerCase();
+    if (status === "missed") return true;
+    if (status === "completed" || status === "cancelled") return false;
+    
+    if (meet.date && meet.time) {
+      const baseDate = dayjs(meet.date);
+      const match = meet.time.match(/(\d+):(\d+)\s*(AM|PM)/i);
+      if (match) {
+        let hours = parseInt(match[1], 10);
+        const mins = parseInt(match[2], 10);
+        const ampm = match[3].toUpperCase();
+        if (ampm === "PM" && hours < 12) hours += 12;
+        if (ampm === "AM" && hours === 12) hours = 0;
+        
+        const endTime = baseDate.hour(hours).minute(mins).second(0).add(meet.duration || 30, 'minute');
+        return dayjs().isAfter(endTime);
+      }
+    }
+    return false;
+  };
+
   const filteredMeetings = meetings.filter((meet) => {
-    if (!searchTerm) return true;
-    const term = searchTerm.toLowerCase();
-    const patientNameMatch = meet.patientName?.toLowerCase().includes(term);
-    const phoneMatch = meet.patientPhone?.toLowerCase().includes(term);
-    const emailMatch = meet.patientEmail?.toLowerCase().includes(term);
-    const statusMatch = meet.status?.toLowerCase().includes(term);
-    return patientNameMatch || phoneMatch || emailMatch || statusMatch;
+    let match = true;
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      const patientNameMatch = meet.patientName?.toLowerCase().includes(term);
+      const phoneMatch = meet.patientPhone?.toLowerCase().includes(term);
+      const emailMatch = meet.patientEmail?.toLowerCase().includes(term);
+      const statusMatch = meet.status?.toLowerCase().includes(term);
+      match = patientNameMatch || phoneMatch || emailMatch || statusMatch;
+    }
+    
+    if (!match) return false;
+
+    const missed = checkMissed(meet);
+    const status = meet.status?.toLowerCase();
+
+    if (meetingTab === "pending") {
+      return !missed && (status === "requested" || status === "pending");
+    }
+    if (meetingTab === "scheduled") {
+      return !missed && status === "scheduled";
+    }
+    if (meetingTab === "missed") {
+      return missed;
+    }
+    if (meetingTab === "history") {
+      return status === "completed" || status === "cancelled" || missed;
+    }
+    
+    return true;
   });
 
   if (meetingStarted) {
@@ -426,6 +472,16 @@ const VideoConsult = () => {
             )}
           </div>
         </StaggerItem>
+
+        {!isSchedulingMode && (
+          <StaggerItem>
+            <QuickLinks links={[
+              { label: "Patients", icon: "solar:users-group-two-rounded-linear", route: "/home", color: "blue" },
+              { label: "Appointments", icon: "solar:calendar-linear", route: "/book-appointment", color: "emerald" },
+              { label: "Prescriptions", icon: "solar:pill-linear", route: "/pharmacy", color: "purple" },
+            ]} />
+          </StaggerItem>
+        )}
 
         {/* FULL PAGE SLIDER WIZARD VIEW */}
         {isSchedulingMode ? (
@@ -781,16 +837,60 @@ const VideoConsult = () => {
               </div>
 
               {activeTab === "scheduled" && (
-                <div className="flex flex-col lg:flex-row gap-4 items-center">
-                  <div className="flex items-center shadow shadow-slate-200 flex-1 w-full gap-4 px-6 py-2 bg-white rounded-2xl border border-slate-200/50">
-                    <Icon icon="tabler:search" className="text-[#14BEF0] text-xl" />
-                    <input
-                      type="text"
-                      placeholder="Search consultations by patient name, phone, or status..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full bg-transparent border-none outline-none focus:outline-none focus:ring-0 text-slate-700 placeholder:text-slate-400 dark:text-slate-600 font-medium h-12"
-                    />
+                <div className="flex flex-col gap-4">
+                  <div className="flex gap-2 bg-slate-100 p-1.5 rounded-2xl w-fit border border-slate-200/40">
+                    <button
+                      onClick={() => setMeetingTab("pending")}
+                      className={`flex items-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl transition-all cursor-pointer border-none ${
+                        meetingTab === "pending"
+                          ? "bg-white text-blue-500 shadow-sm"
+                          : "text-slate-500 hover:text-slate-800 hover:bg-slate-200/50"
+                      }`}
+                    >
+                      Pending
+                    </button>
+                    <button
+                      onClick={() => setMeetingTab("scheduled")}
+                      className={`flex items-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl transition-all cursor-pointer border-none ${
+                        meetingTab === "scheduled"
+                          ? "bg-white text-blue-500 shadow-sm"
+                          : "text-slate-500 hover:text-slate-800 hover:bg-slate-200/50"
+                      }`}
+                    >
+                      Scheduled
+                    </button>
+                    <button
+                      onClick={() => setMeetingTab("missed")}
+                      className={`flex items-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl transition-all cursor-pointer border-none ${
+                        meetingTab === "missed"
+                          ? "bg-white text-blue-500 shadow-sm"
+                          : "text-slate-500 hover:text-slate-800 hover:bg-slate-200/50"
+                      }`}
+                    >
+                      Missed
+                    </button>
+                    <button
+                      onClick={() => setMeetingTab("history")}
+                      className={`flex items-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl transition-all cursor-pointer border-none ${
+                        meetingTab === "history"
+                          ? "bg-white text-blue-500 shadow-sm"
+                          : "text-slate-500 hover:text-slate-800 hover:bg-slate-200/50"
+                      }`}
+                    >
+                      History
+                    </button>
+                  </div>
+                  <div className="flex flex-col lg:flex-row gap-4 items-center">
+                    <div className="flex items-center shadow shadow-slate-200 flex-1 w-full gap-4 px-6 py-2 bg-white rounded-2xl border border-slate-200/50">
+                      <Icon icon="tabler:search" className="text-[#14BEF0] text-xl" />
+                      <input
+                        type="text"
+                        placeholder="Search consultations by patient name, phone, or status..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full bg-transparent border-none outline-none focus:outline-none focus:ring-0 text-slate-700 placeholder:text-slate-400 dark:text-slate-600 font-medium h-12"
+                      />
+                    </div>
                   </div>
                 </div>
               )}
@@ -846,10 +946,13 @@ const VideoConsult = () => {
                   </div>
                 ) : filteredMeetings.length > 0 ? (
                   filteredMeetings.map((meet) => {
-                    const isScheduled = meet.status === "Scheduled";
+                    const missed = checkMissed(meet);
+                    const isScheduled = !missed && meet.status === "Scheduled";
                     const isCompleted = meet.status === "Completed";
                     const isCancelled = meet.status === "Cancelled";
-                    const isRequested = meet.status === "Requested";
+                    const isRequested = !missed && (meet.status === "Requested" || meet.status === "Pending");
+                    const isMissed = missed;
+                    const displayStatus = isMissed ? "Missed" : meet.status;
 
                     return (
                       <Card
@@ -867,10 +970,12 @@ const VideoConsult = () => {
                                     ? "bg-emerald-50 text-emerald-600 border border-emerald-200"
                                     : isCancelled
                                     ? "bg-red-50 text-red-600 border border-red-200"
+                                    : isMissed
+                                    ? "bg-rose-50 text-rose-600 border border-rose-200"
                                     : "bg-amber-50 text-amber-600 border border-amber-200"
                                 }`}
                               >
-                                {meet.status}
+                                {displayStatus}
                               </span>
                               <h3 className="text-base font-bold text-slate-800 m-0 mt-1.5 truncate">
                                 {meet.patientName}
@@ -927,6 +1032,28 @@ const VideoConsult = () => {
                               >
                                 Join Call
                                 <Icon icon="tabler:chevron-right" className="text-xs" />
+                              </button>
+                            )}
+                            {isMissed && (
+                              <button
+                                onClick={() => {
+                                  setFormData({
+                                    patientId: meet.patientId || "",
+                                    patientName: meet.patientName || "",
+                                    patientPhone: meet.patientPhone || "",
+                                    patientEmail: meet.patientEmail || "",
+                                    date: "",
+                                    time: "",
+                                    duration: meet.duration || 30,
+                                    notes: meet.notes || "",
+                                  });
+                                  setScheduleStep(3);
+                                  setIsSchedulingMode(true);
+                                }}
+                                className="bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-200 text-xs font-bold px-3 py-1.5 rounded-lg cursor-pointer flex items-center gap-1 shadow-sm transition-all"
+                              >
+                                Reschedule
+                                <Icon icon="tabler:calendar-forward" className="text-xs" />
                               </button>
                             )}
                           </div>

@@ -10,7 +10,7 @@ import {
   StaggerContainer,
   StaggerItem,
 } from "../../../component/ui/Transitions";
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown from "react-markdown";
 import chatSocketService from "../../../utilities/chatSocketService";
 
 // Chart.js imports
@@ -226,7 +226,7 @@ const PatientHealthDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [analyzing, setAnalyzing] = useState(false);
   const [aiReport, setAiReport] = useState(null);
-  
+
   const [overallSolution, setOverallSolution] = useState(null);
   const [generatingSolution, setGeneratingSolution] = useState(false);
 
@@ -234,14 +234,14 @@ const PatientHealthDashboard = () => {
     try {
       setGeneratingSolution(true);
       const response = await AxiosInstance.get(
-        `/patient/ai-report/${patientId}`
+        `/patient/ai-report/${patientId}`,
       );
       setOverallSolution(response.data.report);
       message.success("Overall clinical summary generated successfully!");
     } catch (error) {
       console.error("Summary Generation Error:", error);
       message.error(
-        error.response?.data?.message || "Failed to generate overall solution"
+        error.response?.data?.message || "Failed to generate overall solution",
       );
     } finally {
       setGeneratingSolution(false);
@@ -307,7 +307,10 @@ const PatientHealthDashboard = () => {
 
   useEffect(() => {
     const handleVitalsUpdate = (data) => {
-      console.log("[PatientHealthDashboard] Socket vitals:updated received:", data);
+      console.log(
+        "[PatientHealthDashboard] Socket vitals:updated received:",
+        data,
+      );
       if (data.patientId === patientId && data.vitals) {
         setVitalsData(data.vitals);
         message.success("Patient vitals updated in real-time!");
@@ -371,15 +374,19 @@ const PatientHealthDashboard = () => {
         });
       } else if (report.data) {
         // Handle scan data which might be an array or an object
-        const scanDataList = Array.isArray(report.data) ? report.data : [report.data];
-        scanDataList.forEach(scanData => {
+        const scanDataList = Array.isArray(report.data)
+          ? report.data
+          : [report.data];
+        scanDataList.forEach((scanData) => {
           aiGaugeItems.push({
             title: report.test || "Scan",
             value: scanData.flag?.toUpperCase() || "N/A",
             unit: "",
             impression: scanData.impression,
             flag: scanData.flag,
-            patient_solution: scanData.patient_understandable_solution || scanData.patient_friendly_summary,
+            patient_solution:
+              scanData.patient_understandable_solution ||
+              scanData.patient_friendly_summary,
             treatment_suggestion: scanData.treatment_suggestion,
             type: "scan",
           });
@@ -434,7 +441,9 @@ const PatientHealthDashboard = () => {
     if (!items || items.length === 0) return null;
     return (
       <div className="mb-2 w-full">
-        <h3 className={`text-sm font-black text-${color}-600 mb-4 flex items-center gap-2 uppercase tracking-wide px-2`}>
+        <h3
+          className={`text-sm font-black text-${color}-600 mb-4 flex items-center gap-2 uppercase tracking-wide px-2`}
+        >
           <Icon icon={icon} className="text-xl" />
           {title}
         </h3>
@@ -451,16 +460,12 @@ const PatientHealthDashboard = () => {
                 critical: "text-red-500",
               }[flagLower] || "text-slate-500";
 
-            const gaugeColors = [
-              "#38bdf8",
-              "#10b981",
-              "#facc15",
-              "#ef4444",
-            ];
+            const gaugeColors = ["#38bdf8", "#10b981", "#facc15", "#ef4444"];
 
             return {
               key: `ai-gauge-${idx}`,
-              className: "bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm",
+              className:
+                "bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm",
               label: (
                 <div className="flex items-center justify-between w-full py-1">
                   <div className="flex items-center gap-3">
@@ -480,7 +485,9 @@ const PatientHealthDashboard = () => {
                       </p>
                     </div>
                   </div>
-                  <div className={`px-3 py-1 rounded-full text-[10px] font-black uppercase bg-slate-50 border border-slate-100 ${statusColorClass}`}>
+                  <div
+                    className={`px-3 py-1 rounded-full text-[10px] font-black uppercase bg-slate-50 border border-slate-100 ${statusColorClass}`}
+                  >
                     {item.flag || "NORMAL"}
                   </div>
                 </div>
@@ -739,9 +746,24 @@ const PatientHealthDashboard = () => {
             <StaggerItem className="flex flex-col gap-6">
               {aiGaugeItems.length > 0 && (
                 <>
-                  {renderGaugeGroup(aiGaugeItems.filter(i => i.type === 'vital'), "Vital Signs Analysis", "solar:health-linear", "rose")}
-                  {renderGaugeGroup(aiGaugeItems.filter(i => i.type === 'lab'), "Laboratory Results", "solar:test-tube-linear", "indigo")}
-                  {renderGaugeGroup(aiGaugeItems.filter(i => i.type === 'scan'), "Scan & Imaging Insights", "solar:scanner-linear", "emerald")}
+                  {renderGaugeGroup(
+                    aiGaugeItems.filter((i) => i.type === "vital"),
+                    "Vital Signs Analysis",
+                    "solar:health-linear",
+                    "rose",
+                  )}
+                  {renderGaugeGroup(
+                    aiGaugeItems.filter((i) => i.type === "lab"),
+                    "Laboratory Results",
+                    "solar:test-tube-linear",
+                    "indigo",
+                  )}
+                  {renderGaugeGroup(
+                    aiGaugeItems.filter((i) => i.type === "scan"),
+                    "Scan & Imaging Insights",
+                    "solar:scanner-linear",
+                    "emerald",
+                  )}
                 </>
               )}
             </StaggerItem>
@@ -754,12 +776,18 @@ const PatientHealthDashboard = () => {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 relative z-10">
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-600 shadow-sm border border-white shrink-0">
-                  <Icon icon="solar:document-medicine-linear" className="text-3xl" />
+                  <Icon
+                    icon="solar:document-medicine-linear"
+                    className="text-3xl"
+                  />
                 </div>
                 <div>
-                  <h2 className="font-black text-slate-800 text-xl m-0 tracking-tight">Overall Clinical Solution</h2>
+                  <h2 className="font-black text-slate-800 text-xl m-0 tracking-tight">
+                    Overall Clinical Solution
+                  </h2>
                   <p className="text-sm font-medium text-slate-500 m-0 mt-1 max-w-2xl">
-                    Generate a comprehensive AI health summary and personalized treatment plan based on the entire patient medical history.
+                    Generate a comprehensive AI health summary and personalized
+                    treatment plan based on the entire patient medical history.
                   </p>
                 </div>
               </div>
@@ -795,9 +823,12 @@ const PatientHealthDashboard = () => {
                 </div>
               </div>
             )}
-            
+
             <div className="absolute -bottom-10 -right-10 opacity-[0.03] pointer-events-none">
-               <Icon icon="solar:medical-kit-linear" className="text-[200px] text-blue-600" />
+              <Icon
+                icon="solar:medical-kit-linear"
+                className="text-[200px] text-blue-600"
+              />
             </div>
           </Card>
         </StaggerItem>
