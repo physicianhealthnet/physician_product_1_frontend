@@ -13,25 +13,27 @@ import { notification } from 'antd';
 import imgPatient from '../../assets/imgs/pexels-pavel-danilyuk-7108326.jpg';
 import imgScan from '../../assets/imgs/pexels-charlss-gonzhu-433318654-15277954.jpg';
 import imgLab from '../../assets/imgs/pexels-karola-g-6627667.jpg';
-import imgPharmacy from '../../assets/imgs/pexels-martabranco-32236830.jpg';
+import imgPharmacy from '../../assets/imgs/pexels-gustavo-fring-4173251.jpg';
 import imgAssessment from '../../assets/imgs/pexels-cottonbro-7578799.jpg';
-import imgVideo from '../../assets/imgs/pexels-mikhail-nilov-8943097.jpg';
+import imgVideo from '../../assets/imgs/pexels-silverkblack-36763595.jpg';
 import imgBill from '../../assets/imgs/pexels-pavel-danilyuk-7108318.jpg';
 import imgAdmin from '../../assets/imgs/pexels-silverkblack-36763595.jpg';
 import imgDashboard from '../../assets/imgs/pexels-gustavo-fring-4173251.jpg';
-import imgAppointment from '../../assets/imgs/pexels-karola-g2-5795.jpg';
+import imgAppointment from '../../assets/imgs/pexels-gustavo-fring-6285399.jpg';
 
 // Helper to deterministically pick an image based on path keywords
 const getBgImageForPath = (pathname) => {
     const p = pathname.toLowerCase();
+    console.log(p);
+    
     
     if (p.includes('appointment') || p.includes('apt') || p.includes('book')) return imgAppointment;
-    if (p.includes('patient') || p.includes('patients')) return imgPatient;
+    if (p.includes('enquiry')) return imgPatient;
     if (p.includes('scan')) return imgScan;
     if (p.includes('lab')) return imgLab;
     if (p.includes('pharmacy') || p.includes('prescription')) return imgPharmacy;
     if (p.includes('assessment') || p.includes('treatment') || p.includes('plan')) return imgAssessment;
-    if (p.includes('video') || p.includes('consult')) return imgVideo;
+    if (p.includes('/whatsapp-chat') || p.includes('/patient-chat')) return imgVideo;
     if (p.includes('bill') || p.includes('invoice') || p.includes('finance')) return imgBill;
     if (p.includes('admin') || p.includes('form') || p.includes('consultation')) return imgAdmin;
     

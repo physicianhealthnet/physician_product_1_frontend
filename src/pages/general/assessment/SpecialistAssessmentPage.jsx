@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
-import { message } from "antd";
+import { message, Collapse } from "antd";
 import { AxiosInstance, AxiosInstanceSecondryServer } from "../../../utilities/AxiosInstance";
 import Button from "../../../component/ui/Button";
-import Input from "../../../component/ui/Input";
 import SpecialistAssessmentForm from "../../../pages/general/assessment/SpecialistAssessmentForm";
 
 const SpecialistAssessmentPage = () => {
-  const [searchQuery, setSearchQuery] = useState("");
   const [patients, setPatients] = useState([]);
-  const [selectedPatient, setSelectedPatient] = useState(null);
+  const [selectedPatientId, setSelectedPatientId] = useState(null);
   const [searching, setSearching] = useState(false);
   
   // Specialist assessment state
@@ -41,35 +39,77 @@ const SpecialistAssessmentPage = () => {
     loadPatients();
   }, [clinicId]);
 
-  const handleSelectPatient = async (patient) => {
-    setSelectedPatient(patient);
-    setSearchQuery("");
-    
-    // Attempt to load existing specialist assessment if needed
-    // Assuming we start fresh for this UI or load from a specific endpoint
-    setSpecialistAssessment({ selectedDept: "General Physician" });
+  const handleSelectPatient = async (key) => {
+    const patientIdStr = key ? String(key) : null;
+    setSelectedPatientId(patientIdStr);
+    // Reset the assessment form when selecting a patient
+    setSpecialistAssessment({});
+
+    if (patientIdStr) {
+      try {
+        const res = await AxiosInstance.get(`/specialist-assessment/patient/${patientIdStr}`);
+        if (res.data?.data && res.data.data.length > 0) {
+          const combined = {};
+          res.data.data.forEach(assessment => {
+            if (assessment.assessmentData) {
+              Object.assign(combined, assessment.assessmentData);
+            }
+          });
+          setSpecialistAssessment(combined);
+        }
+      } catch (err) {
+        console.error("Failed to fetch existing specialist assessments", err);
+      }
+    }
   };
 
-  const handleSubmit = async () => {
-    if (!selectedPatient) return;
+  const handleSubmit = async (patient) => {
+    if (!patient) return;
     
     try {
       setIsSubmitting(true);
-      // Construct payload similar to PhysicianAssessmentSheet but simplified for this standalone page
-      const payload = {
-        patientId: selectedPatient._id,
-        clinicId,
-        phnId: selectedPatient.PHN_ID,
-        medicalNotes: {
-          specialistAssessment,
-        },
-      };
 
-      await AxiosInstance.post(`/assessment/create`, payload);
-      message.success("Specialist Assessment Submitted Successfully!");
+      // Fetch the existing assessment for this patient
+      let existingAssessment = null;
+      try {
+        const getRes = await AxiosInstance.get(`/assessment/get/${patient._id}`);
+        if (getRes.data?.data) {
+          existingAssessment = getRes.data.data;
+        }
+      } catch (err) {
+        console.log("No existing assessment found, will create one.");
+      }
+
+      if (existingAssessment && existingAssessment._id) {
+        // Update existing assessment
+        const updatedMedicalNotes = {
+          ...existingAssessment.medicalNotes,
+          specialistAssessment,
+        };
+
+        const payload = {
+          medicalNotes: updatedMedicalNotes,
+        };
+
+        await AxiosInstance.patch(`/assessment/update/${existingAssessment._id}`, payload);
+        message.success("Specialist Assessment Updated Successfully!");
+      } else {
+        // Create new if none exists
+        const payload = {
+          patientId: patient._id,
+          clinicId,
+          phnId: patient.PHN_ID,
+          medicalNotes: {
+            specialistAssessment,
+          },
+        };
+
+        await AxiosInstance.post(`/assessment/create`, payload);
+        message.success("Specialist Assessment Submitted Successfully!");
+      }
       
-      // Reset after submit
-      setSelectedPatient(null);
+      // Close the collapse and reset
+      setSelectedPatientId(null);
       setSpecialistAssessment({});
     } catch (err) {
       console.error("Error submitting assessment:", err);
@@ -95,107 +135,83 @@ const SpecialistAssessmentPage = () => {
         </div>
 
         {/* Patient Selection Card */}
-        {!selectedPatient ? (
-          <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm">
-            <h2 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
-              <Icon icon="solar:user-rounded-bold" className="text-blue-500" />
-              Select Patient
-            </h2>
-            
-            {searching ? (
-              <div className="flex justify-center p-8 text-blue-500">
-                <Icon icon="solar:spinner-bold-duotone" className="text-3xl animate-spin" />
-              </div>
-            ) : patients.length > 0 ? (
-              <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-slate-200">
+        <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm">
+          <h2 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
+            <Icon icon="solar:user-rounded-bold" className="text-blue-500" />
+            Select Patient
+          </h2>
+          
+          {searching ? (
+            <div className="flex justify-center p-8 text-blue-500">
+              <Icon icon="solar:spinner-bold-duotone" className="text-3xl animate-spin" />
+            </div>
+          ) : patients.length > 0 ? (
+            <div className="max-h-[75vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-slate-200">
+              <Collapse 
+                accordion 
+                activeKey={selectedPatientId} 
+                onChange={handleSelectPatient}
+                className="bg-transparent border-none space-y-3"
+                expandIconPlacement="end"
+              >
                 {patients.map((p) => (
-                  <div 
+                  <Collapse.Panel 
                     key={p._id}
-                    onClick={() => handleSelectPatient(p)}
-                    className="flex items-center justify-between p-4 rounded-2xl border border-slate-100 hover:border-blue-200 hover:bg-blue-50/50 cursor-pointer transition-all group"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 bg-slate-100 text-slate-500 rounded-full flex items-center justify-center font-bold group-hover:bg-blue-100 group-hover:text-blue-600 transition-colors">
-                        {p.patientName?.charAt(0).toUpperCase()}
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-slate-800 group-hover:text-blue-700 transition-colors">{p.patientName}</h3>
-                        <div className="text-xs text-slate-500 font-medium flex gap-3 mt-1">
-                          <span>Ph: {p.patientPhone}</span>
-                          <span>PHN: {p.PHN_ID || p.patientId || 'N/A'}</span>
+                    className="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm"
+                    header={
+                      <div className="flex items-center gap-4 py-1">
+                        <div className="w-10 h-10 bg-slate-100 text-slate-500 rounded-full flex items-center justify-center font-bold">
+                          {p.patientName?.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-slate-800 m-0">{p.patientName}</h3>
+                          <div className="text-xs text-slate-500 font-medium flex gap-3 mt-1">
+                            <span>Ph: {p.patientPhone}</span>
+                            <span>PHN: {p.PHN_ID || p.patientId || 'N/A'}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <Icon icon="solar:alt-arrow-right-line-duotone" className="text-xl text-slate-300 group-hover:text-blue-500 transition-colors" />
-                  </div>
+                    }
+                  >
+                    {selectedPatientId === p._id && (
+                      <div className="p-4 border-t border-slate-100 bg-slate-50/30">
+                        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+                          <SpecialistAssessmentForm 
+                            specialistAssessment={specialistAssessment}
+                            setSpecialistAssessment={setSpecialistAssessment}
+                            isReadOnlyView={false}
+                            patientId={p._id}
+                          />
+
+                          <div className="mt-8 pt-6 border-t border-slate-100 flex justify-end gap-4">
+                            <Button 
+                              variant="secondary"
+                              onClick={() => handleSelectPatient(null)}
+                              className="px-8"
+                            >
+                              Cancel
+                            </Button>
+                            <Button 
+                              onClick={() => handleSubmit(p)}
+                              loading={isSubmitting}
+                              className="bg-blue-600 hover:bg-blue-700 text-white px-10 shadow-md shadow-blue-500/20"
+                            >
+                              Submit Assessment
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </Collapse.Panel>
                 ))}
-              </div>
-            ) : (
-              <div className="text-center p-8 text-slate-500">
-                No patients found in the system.
-              </div>
-            )}
-          </div>
-        ) : (
-          /* Active Assessment View */
-          <div className="space-y-6">
-            {/* Selected Patient Banner */}
-            <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center">
-                  <Icon icon="solar:check-circle-bold-duotone" className="text-2xl" />
-                </div>
-                <div>
-                  <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Selected Patient</div>
-                  <h3 className="font-black text-slate-800 text-lg">{selectedPatient.patientName}</h3>
-                  <div className="text-sm font-medium text-slate-500 flex gap-4">
-                    <span>{selectedPatient.patientGender} • {selectedPatient.patientAge || 'N/A'} yrs</span>
-                    <span>Ph: {selectedPatient.patientPhone}</span>
-                  </div>
-                </div>
-              </div>
-              <Button 
-                variant="secondary"
-                onClick={() => {
-                  setSelectedPatient(null);
-                  setSpecialistAssessment({});
-                }}
-                className="text-slate-500 bg-slate-50 hover:bg-slate-100 border-slate-200"
-              >
-                Change Patient
-              </Button>
+              </Collapse>
             </div>
-
-            {/* Assessment Form */}
-            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
-              <SpecialistAssessmentForm 
-                specialistAssessment={specialistAssessment}
-                setSpecialistAssessment={setSpecialistAssessment}
-                isReadOnlyView={false}
-              />
-
-              <div className="mt-8 pt-6 border-t border-slate-100 flex justify-end gap-4">
-                <Button 
-                  variant="secondary"
-                  onClick={() => {
-                    setSelectedPatient(null);
-                    setSpecialistAssessment({});
-                  }}
-                  className="px-8"
-                >
-                  Cancel
-                </Button>
-                <Button 
-                  onClick={handleSubmit}
-                  loading={isSubmitting}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-10 shadow-md shadow-blue-500/20"
-                >
-                  Submit Assessment
-                </Button>
-              </div>
+          ) : (
+            <div className="text-center p-8 text-slate-500">
+              No patients found in the system.
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
       </div>
     </div>

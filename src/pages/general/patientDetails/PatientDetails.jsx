@@ -471,36 +471,7 @@ const PatientDetails = ({ patientId, isNested }) => {
                 />
               </button>
 
-              <button
-                onClick={() => {
-                  setActiveTab("4");
-                  document
-                    .querySelector(".custom-tabs")
-                    ?.scrollIntoView({ behavior: "smooth" });
-                }}
-                className="flex-1 flex items-center justify-between p-5 bg-white hover:bg-slate-50 border border-slate-200 hover:border-orange-400 rounded-2xl shadow-sm hover:shadow-md transition-all group text-left cursor-pointer"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-orange-500/10 text-orange-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <Icon
-                      icon="solar:heart-pulse-linear"
-                      className="text-2xl"
-                    />
-                  </div>
-                  <div>
-                    <h3 className="font-extrabold text-slate-800 text-sm tracking-tight m-0">
-                      Current Treatment Data
-                    </h3>
-                    <p className="text-[11px] text-slate-400 font-medium m-0 mt-0.5">
-                      Active treatment tracking & progress
-                    </p>
-                  </div>
-                </div>
-                <Icon
-                  icon="solar:alt-arrow-right-linear"
-                  className="text-slate-400 group-hover:text-orange-500 group-hover:translate-x-1 transition-all"
-                />
-              </button>
+
             </div>
           </div>
         </StaggerItem>
@@ -652,17 +623,7 @@ const PatientDetails = ({ patientId, isNested }) => {
               </CollapseSection>
             )}
 
-            <CollapseSection
-              id="5"
-              title="Treatment Data"
-              description="Active treatment tracker logs"
-              icon="solar:heart-pulse-linear"
-              colorInfo={tabColors[4]}
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-            >
-              <TreatmentTracker patientId={patient_id} />
-            </CollapseSection>
+
 
             <CollapseSection
               id="6"

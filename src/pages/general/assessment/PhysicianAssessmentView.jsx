@@ -1,5 +1,6 @@
 import React from "react";
 import Card from "../../../component/ui/Card";
+import SpecialistAssessmentSummary from "./SpecialistAssessmentSummary";
 
 const Section = ({ title, children }) => (
   <div className="mb-6 border border-slate-200  rounded-lg p-4 bg-slate-50 ">
@@ -55,25 +56,7 @@ export default function PhysicianAssessmentView({ data }) {
       treatment.consent !== undefined);
 
   return (
-    <Card className="max-w-5xl mx-auto text-sm shadow-sm">
-      {/* HEADER */}
-      <div className="text-center mb-8 border-b border-slate-200  pb-4">
-        <h1 className="text-2xl font-bold text-slate-900  mb-2">Physician Assessment Record</h1>
-        <p className="text-slate-600  font-medium">Patient ID: {patientId}</p>
-        <div className="flex justify-center gap-4 mt-2">
-          {createdAt && (
-            <p className="text-slate-500  text-xs">
-              Recorded: {new Date(createdAt).toLocaleString()}
-            </p>
-          )}
-          {updatedAt && (
-            <p className="text-slate-500  text-xs">
-              Last Updated: {new Date(updatedAt).toLocaleString()}
-            </p>
-          )}
-        </div>
-      </div>
-
+    <Card className="w-full text-sm shadow-sm">
       {/* CHIEF COMPLAINTS & HPI */}
       {(chiefComplaints || historyOfPresentIllness) && (
         <Section title="Clinical Presentation">
@@ -164,6 +147,16 @@ export default function PhysicianAssessmentView({ data }) {
             )}
           </div>
         </Section>
+      )}
+
+      {/* SPECIALIST ASSESSMENT */}
+      {medicalNotes?.specialistAssessment && Object.keys(medicalNotes.specialistAssessment).length > 0 && (
+        <div className="mb-6">
+          <h2 className="text-xl font-bold mb-3 text-slate-800">Specialist Assessment</h2>
+          <SpecialistAssessmentSummary
+            specialistAssessment={medicalNotes.specialistAssessment}
+          />
+        </div>
       )}
 
       {/* DIAGNOSIS & PLAN */}

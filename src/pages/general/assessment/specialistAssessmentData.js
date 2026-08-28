@@ -21,7 +21,7 @@ import { urologistSections } from "./seperate_assessments/urologistAssessment";
 
 export const generalPhysicianSections = [
   {
-    title: "General Medicine & Systemic Exam",
+    title: "General Medicine",
     fields: [
       {
         type: "textarea",

@@ -12,8 +12,9 @@ import Input from "../../../component/ui/Input";
 import Textarea from "../../../component/ui/Textarea";
 import { Skeleton } from "../../../component/ui/Skeleton";
 
-export default function DentalAssessment({ isEmbedded = false }) {
-  const { patient_id } = useParams();
+export default function DentalAssessment({ isEmbedded = false, explicitPatientId, initialData = null, isReadOnly = false, onCancelSession }) {
+  const params = useParams();
+  const patient_id = explicitPatientId || params.patient_id;
 
   /* ================= PATIENT INFO ================= */
   const [patientInfo, setPatientInfo] = useState({});
@@ -74,7 +75,16 @@ export default function DentalAssessment({ isEmbedded = false }) {
           Address: p.patientAddress,
           DOB: formatDateToDDMMYYYY(p.patientDOB),
         });
-        setClinicId(Array.isArray(p?.clinicId) ? p.clinicId[0] : (p?.clinicId || ""));
+        const userInfo = JSON.parse(
+          sessionStorage.getItem("user") || sessionStorage.getItem("master") || "{}"
+        );
+        let cid = userInfo?.cid || userInfo?.clinicId || "";
+        if (Array.isArray(p?.clinicId) && p.clinicId.length > 0) {
+          cid = p.clinicId[0];
+        } else if (typeof p?.clinicId === 'string' && p.clinicId.trim() !== '') {
+          cid = p.clinicId;
+        }
+        setClinicId(cid);
       } catch (error) {
         console.error(error);
       } finally {
@@ -502,10 +512,15 @@ export default function DentalAssessment({ isEmbedded = false }) {
   };
 
   const submitAssessment = async () => {
-    await AxiosInstance.post(`/dental-assessment/create`, payload);
-    message.success("Assessment Submitted");
-    fetchConditions();
-    getAssessmentData();
+    try {
+      await AxiosInstance.post(`/dental-assessment/create`, payload);
+      message.success("Assessment Submitted");
+      fetchConditions();
+      getAssessmentData();
+    } catch (error) {
+      console.error("Submission failed:", error.response?.data || error.message);
+      message.error(error.response?.data?.message || "Failed to submit assessment");
+    }
   };
 
   const updateAssessment = async () => {
@@ -515,17 +530,13 @@ export default function DentalAssessment({ isEmbedded = false }) {
     getAssessmentData();
   };
 
-  const getAssessmentData = async () => {
-    const res = await AxiosInstance.get(`/dental-assessment/get-by-patient/${patient_id}`);
-    if (!res.data.data) return;
-    const d = res.data.data;
+  const loadDataIntoState = (d) => {
     setMedicalChecks(d.medicalChecks || initialMedicalChecks);
     setMedicalNotes(d.medicalNotes || initialMedicalNotes);
     setExtraoral({ ...initialExtraoral, ...d.extraoral });
     setIntraoralNotes(d.intraoralNotes || initialIntraoralNotes);
-    // Load teethRecords from teethStatus array
+    
     const loadedRecords = {};
-    // Fixed: Ensure teethStatus is always treated as an array
     const teethStatusArray = Array.isArray(d?.teethStatus) ? d.teethStatus : [];
     teethStatusArray.forEach((item) => {
       const toothKey = String(item?.teethName);
@@ -541,29 +552,22 @@ export default function DentalAssessment({ isEmbedded = false }) {
       };
     });
     setTeethRecords(loadedRecords);
+    
     setHardTissue(d.hardTissue || initialHardTissue);
     setSymptomData(d.symptomData || initialSymptomData);
-    // Handle diagnosis: if array of strings, convert to objects with current date
+    
     let diagnosisData = d.treatment?.diagnosis || [];
-    if (
-      Array.isArray(diagnosisData) &&
-      diagnosisData.every((diag) => typeof diag === "string")
-    ) {
+    if (Array.isArray(diagnosisData) && diagnosisData.every((diag) => typeof diag === "string")) {
       const today = new Date().toISOString().split("T")[0];
       diagnosisData = diagnosisData.map((text) => ({ text, date: today }));
     }
-    // Handle treatment plan: if array of strings, convert to objects with current date
+    
     let treatmentPlanData = d.treatment?.plan || [];
-    if (
-      Array.isArray(treatmentPlanData) &&
-      treatmentPlanData.every((plan) => typeof plan === "string")
-    ) {
+    if (Array.isArray(treatmentPlanData) && treatmentPlanData.every((plan) => typeof plan === "string")) {
       const today = new Date().toISOString().split("T")[0];
-      treatmentPlanData = treatmentPlanData.map((text) => ({
-        text,
-        date: today,
-      }));
+      treatmentPlanData = treatmentPlanData.map((text) => ({ text, date: today }));
     }
+    
     setTreatment({
       ...d.treatment,
       diagnosis: diagnosisData,
@@ -571,6 +575,19 @@ export default function DentalAssessment({ isEmbedded = false }) {
     });
     setUpdateId(d._id);
   };
+
+  const getAssessmentData = async () => {
+    if (initialData) return; // Managed by parent if initialData is provided
+    const res = await AxiosInstance.get(`/dental-assessment/get-by-patient/${patient_id}`);
+    if (!res.data.data) return;
+    loadDataIntoState(res.data.data);
+  };
+
+  useEffect(() => {
+    if (initialData) {
+      loadDataIntoState(initialData);
+    }
+  }, [initialData]);
 
   const initialMedicalChecks = medicalHistory.reduce(
     (a, i) => ({ ...a, [i]: false }),
@@ -607,9 +624,10 @@ export default function DentalAssessment({ isEmbedded = false }) {
   /* ================= UI ================= */
   return (
     <div className={isEmbedded ? "bg-white" : "p-6 bg-slate-50 min-h-screen"}>
-      <div className={isEmbedded ? "p-4 md:p-6" : "max-w-7xl mx-auto shadow-sm bg-white rounded-xl p-6"}>
-        {/* PATIENT INFO (Hidden if embedded) */}
-        {!isEmbedded && (
+      <fieldset disabled={isReadOnly} className={isReadOnly ? "opacity-90" : ""}>
+        <div className={isEmbedded ? "p-4 md:p-6" : "max-w-7xl mx-auto shadow-sm bg-white rounded-xl p-6"}>
+          {/* PATIENT INFO (Hidden if embedded) */}
+          {!isEmbedded && (
           <>
             <h2 className="text-lg font-bold my-5 text-slate-800 border-b border-slate-100 pb-2">Patient Information</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
@@ -1313,19 +1331,27 @@ export default function DentalAssessment({ isEmbedded = false }) {
         </Collapse>
         
         {/* Action Buttons */}
-        <div className="flex justify-end space-x-4 mt-6 pt-6 border-t border-slate-100">
-          {updateId ? (
-            <Button type="button" onClick={updateAssessment} className="bg-blue-600 hover:bg-blue-700 text-white px-8">
-              Update Assessment
-            </Button>
-          ) : (
-            <Button type="button" onClick={submitAssessment} className="bg-blue-600 hover:bg-blue-700 text-white px-8">
-              Submit Assessment
-            </Button>
-          )}
-        </div>
+        {!isReadOnly && (
+          <div className="flex justify-end space-x-4 mt-6 pt-6 border-t border-slate-100">
+            {onCancelSession && (
+              <Button type="button" onClick={onCancelSession} variant="secondary" className="bg-slate-200 text-slate-800 px-8 hover:bg-slate-300">
+                Cancel
+              </Button>
+            )}
+            {updateId ? (
+              <Button type="button" onClick={updateAssessment} className="bg-blue-600 hover:bg-blue-700 text-white px-8">
+                Update Assessment
+              </Button>
+            ) : (
+              <Button type="button" onClick={submitAssessment} className="bg-blue-600 hover:bg-blue-700 text-white px-8">
+                Submit Assessment
+              </Button>
+            )}
+          </div>
+        )}
       </div>
-      </div>
+      </fieldset>
+    </div>
   );
 }
 

@@ -33,6 +33,9 @@ const ExerciseUpload = lazy(
 const SpecialistAssessmentPage = lazy(
   () => import("./pages/general/assessment/SpecialistAssessmentPage")
 );
+const PatientHistoryPage = lazy(
+  () => import("./pages/general/assessment/PatientHistoryPage")
+);
 const DoctorAndStaffs = lazy(() => import("./pages/master/DoctorAndStaffs"));
 const Inventory = lazy(() => import("./pages/general/inventory/Inventory"));
 const ExpenditureShow = lazy(
@@ -87,6 +90,12 @@ const VideoConsult = lazy(
 );
 const Identicards = lazy(
   () => import("./pages/general/identicard/Identicards"),
+);
+const PatientSummaryWrapper = lazy(
+  () => import("./pages/general/summary/PatientSummaryWrapper")
+);
+const UnderConstruction = lazy(
+  () => import("./component/ui/UnderConstruction")
 );
 
 // Protected Route Component to enforce authentication
@@ -244,6 +253,57 @@ const AppContent = () => {
               <ProtectedRoute>
                 <PageTransition>
                   <SpecialistAssessmentPage />
+                </PageTransition>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/assessment-summary"
+            element={
+              <ProtectedRoute>
+                <PageTransition>
+                  <PatientSummaryWrapper 
+                    visibleSections={["diagnosis"]} 
+                    pageTitle="Assessment Summary" 
+                    pageIcon="solar:clipboard-heart-bold-duotone"
+                    pageDescription="Select a patient to view their assessment & diagnosis summary"
+                  />
+                </PageTransition>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/treatment-summary"
+            element={
+              <ProtectedRoute>
+                <PageTransition>
+                  <UnderConstruction 
+                    pageTitle="Treatment & Diagnosis Summary" 
+                    pageIcon="solar:heart-pulse-bold-duotone"
+                  />
+                </PageTransition>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/patient-timeline"
+            element={
+              <ProtectedRoute>
+                <PageTransition>
+                  <UnderConstruction 
+                    pageTitle="Patient Timeline" 
+                    pageIcon="solar:test-tube-minimalistic-bold-duotone"
+                  />
+                </PageTransition>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/patient-history"
+            element={
+              <ProtectedRoute>
+                <PageTransition>
+                  <PatientHistoryPage />
                 </PageTransition>
               </ProtectedRoute>
             }

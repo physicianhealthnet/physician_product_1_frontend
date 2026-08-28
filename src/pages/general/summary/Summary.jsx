@@ -14,10 +14,11 @@ import Page6 from "./session3/Page6";
 import PatientMedicalDetails from "../../../component/patientDetails/PatientMedicalDetails";
 import Card from "../../../component/ui/Card";
 import Button from "../../../component/ui/Button";
-import PhysicianAssessmentView from "../assessment/PhysicianAssessmentView";
+import SpecialistAssessmentSummary from "../assessment/SpecialistAssessmentSummary";
+import DentalAssessmentWrapper from "../assessment/DentalAssessmentWrapper";
 import PatientTimeline from "./PatientTimeline";
 
-function Summary({ patientId }) {
+function Summary({ patientId, visibleSections, pageTitle, pageIcon }) {
   const page1Ref = useRef();
   const page2Ref = useRef();
   const page3Ref = useRef();
@@ -39,9 +40,13 @@ function Summary({ patientId }) {
   const [scanDocs, setScanDocs] = useState([]);
   const [bills, setBills] = useState([]);
   
-  const [activeAccordionKeys, setActiveAccordionKeys] = useState([
-    "patient_details", "doctors", "diagnosis", "reports", "treatment"
-  ]);
+  const allAccordionKeys = [
+    "patient_details", "doctors", "diagnosis", "reports"
+  ];
+  
+  const initialKeys = visibleSections || allAccordionKeys;
+  
+  const [activeAccordionKeys, setActiveAccordionKeys] = useState(initialKeys);
 
   const handledDoctors = useMemo(() => {
     const doctors = new Set();
@@ -143,7 +148,7 @@ function Summary({ patientId }) {
 
     // Expand all accordions temporarily to allow html2canvas to capture them
     const previousKeys = activeAccordionKeys;
-    setActiveAccordionKeys(["patient_details", "doctors", "diagnosis", "reports", "treatment"]);
+    setActiveAccordionKeys(["patient_details", "doctors", "diagnosis", "reports"]);
 
     // Give DOM time to expand before rendering
     await new Promise(resolve => setTimeout(resolve, 500));
@@ -250,8 +255,8 @@ function Summary({ patientId }) {
 
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 border-b border-slate-100  pb-4">
         <h1 className="font-bold text-slate-800  text-2xl m-0 flex items-center gap-2">
-          <Icon icon="solar:document-text-linear" className="text-blue-500" />
-          Treatment & Patient Summary
+          <Icon icon={pageIcon || "solar:document-text-linear"} className="text-blue-500" />
+          {"Specialist Assessment Summary"}
         </h1>
         <Button
           variant="primary"
@@ -265,120 +270,21 @@ function Summary({ patientId }) {
       </div>
 
       <div className="flex flex-col gap-8">
-        <Collapse
-          activeKey={activeAccordionKeys}
-          onChange={(keys) => setActiveAccordionKeys(keys)}
-          className="bg-transparent border-none"
-          items={[
-            {
-              key: "patient_details",
-              label: (
-                <span className="text-lg font-bold text-slate-800 flex items-center gap-2">
-                  <Icon icon="solar:user-linear" className="text-blue-500" />
-                  Full Patient Details
-                </span>
-              ),
-              children: (
-                <div className="bg-white/40 backdrop-blur-md rounded-2xl p-4">
-                  <PatientMedicalDetails
-                    page1Ref={page1Ref}
-                    patientMedicalData={patientMedicalData}
-                    showTitle={false}
-                  />
+            <div className="backdrop-blur-md rounded-lg p-4 bg-slate-100">
+              {assessmentData?.medicalNotes?.specialistAssessment && Object.keys(assessmentData.medicalNotes.specialistAssessment).length > 0 ? (
+                <SpecialistAssessmentSummary
+                  specialistAssessment={assessmentData.medicalNotes.specialistAssessment}
+                />
+              ) : null}
+              
+              <DentalAssessmentWrapper patientId={patient_id} isReadOnlyView={true} />
+              
+              {(!assessmentData?.medicalNotes?.specialistAssessment || Object.keys(assessmentData.medicalNotes.specialistAssessment).length === 0) && (
+                <div className="empty-state-placeholder hidden">
+                  {/* We can hide the text if we want, or rely on DentalAssessmentWrapper to populate */}
                 </div>
-              ),
-            },
-            {
-              key: "doctors",
-              label: (
-                <span className="text-lg font-bold text-slate-800 flex items-center gap-2">
-                  <Icon icon="solar:stethoscope-linear" className="text-emerald-500" />
-                  Handled Doctors
-                </span>
-              ),
-              children: (
-                <div className="bg-white/40 backdrop-blur-md rounded-2xl p-6">
-                  {handledDoctors.length > 0 ? (
-                    <div className="flex flex-wrap gap-3">
-                      {handledDoctors.map((doc, idx) => (
-                        <div key={idx} className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full border border-emerald-100 font-semibold shadow-sm">
-                          <Icon icon="solar:user-id-linear" />
-                          {doc}
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-slate-500 m-0">No doctors recorded yet.</p>
-                  )}
-                </div>
-              ),
-            },
-            {
-              key: "diagnosis",
-              label: (
-                <span className="text-lg font-bold text-slate-800 flex items-center gap-2">
-                  <Icon icon="solar:clipboard-heart-linear" className="text-rose-500" />
-                  Diagnosis & Assessment
-                </span>
-              ),
-              children: (
-                <div className="bg-white/40 backdrop-blur-md rounded-2xl p-4 flex flex-col gap-6">
-                  <Page6 />
-                  <PhysicianAssessmentView data={assessmentData} />
-                </div>
-              ),
-            },
-            {
-              key: "reports",
-              label: (
-                <span className="text-lg font-bold text-slate-800 flex items-center gap-2">
-                  <Icon icon="solar:test-tube-minimalistic-linear" className="text-purple-500" />
-                  Reports, Tests & Timeline
-                </span>
-              ),
-              children: (
-                <div className="bg-white/40 backdrop-blur-md rounded-2xl p-4">
-                  <PatientTimeline 
-                    patientMinimalData={patientMinimalData}
-                    assessmentData={assessmentData}
-                    prescriptions={prescriptions}
-                    labDocs={labDocs}
-                    scanDocs={scanDocs}
-                    allNotes={allNotes}
-                    treatmentTracker={treatmentTracker}
-                    exerciseSummary={exerciseSummary}
-                    bills={bills}
-                  />
-                </div>
-              ),
-            },
-            {
-              key: "treatment",
-              label: (
-                <span className="text-lg font-bold text-slate-800 flex items-center gap-2">
-                  <Icon icon="solar:heart-pulse-linear" className="text-orange-500" />
-                  Treatment Data
-                </span>
-              ),
-              children: (
-                <div className="flex flex-col gap-6 bg-white/40 backdrop-blur-md rounded-2xl p-4">
-                  {allNotes?.length !== 0 && (
-                    <Page3 page3Ref={page3Ref} allNotes={allNotes} />
-                  )}
-                  {treatmentTracker?.length !== 0 && (
-                    <Page4 page4Ref={page4Ref} treatmentTracker={treatmentTracker} />
-                  )}
-                  {exerciseSummary?.length !== 0 && (
-                    <Page5 page5Ref={page5Ref} exerciseSummary={exerciseSummary} />
-                  )}
-                  {allNotes?.length === 0 && treatmentTracker?.length === 0 && exerciseSummary?.length === 0 && (
-                    <p className="text-slate-500 m-0">No treatment data recorded.</p>
-                  )}
-                </div>
-              ),
-            },
-          ]}
-        />
+              )}
+            </div>
       </div>
     </Card>
   );

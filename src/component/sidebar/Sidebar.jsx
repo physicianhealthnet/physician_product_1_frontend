@@ -15,6 +15,10 @@ const ICONS = {
   "Patient Information": "solar:users-group-two-rounded-linear",
   Information: "solar:users-group-two-rounded-linear",
   "Specialist Assessment": "solar:stethoscope-bold-duotone",
+  "Assessment Summary": "solar:clipboard-heart-bold-duotone",
+  "Treatment & Diagnosis Summary": "solar:heart-pulse-bold-duotone",
+  "Overall Patient Timeline": "solar:test-tube-minimalistic-bold-duotone",
+  "Patient History": "solar:history-bold-duotone",
   "Today Patients": "solar:user-id-linear",
   "Patient Registration": "solar:user-check-rounded-linear",
   Registration: "solar:user-check-rounded-linear",
@@ -101,11 +105,12 @@ const MENU_ITEMS = {
   receptionist: [
     { text: "Dashboard", route: "/dashboard" },
     {
-      text: "Patient",
+      text: "Patient Data",
       subMenu: [
         { text: "Registration", route: "/enquiry-registration" },
         { text: "Information", route: "/home" },
         { text: "Specialist Assessment", route: "/specialist-assessment" },
+        { text: "Patient History", route: "/patient-history" },
       ],
     },
     { text: "Appointment", route: "/book-appointment" },
@@ -128,11 +133,15 @@ const MENU_ITEMS = {
     { text: "Dashboard", route: "/dashboard" },
     { text: "Appointment", route: "/book-appointment" },
     {
-      text: "Patient",
+      text: "Patient Data",
       subMenu: [
         { text: "Registration", route: "/enquiry-registration" },
         { text: "Information", route: "/home" },
         { text: "Specialist Assessment", route: "/specialist-assessment" },
+        { text: "Patient History", route: "/patient-history" },
+        { text: "Assessment Summary", route: "/assessment-summary" },
+        { text: "Treatment & Diagnosis Summary", route: "/treatment-summary" },
+        { text: "Overall Patient Timeline", route: "/patient-timeline" },
         { text: "Web Chat", route: "/patient-chat" },
         { text: "WhatsApp chat & call", route: "/whatsapp-chat" },
       ],
@@ -174,7 +183,7 @@ const MENU_ITEMS = {
 
   generalManager: [
     {
-      text: "Patient",
+      text: "Patient Data",
       subMenu: [{ text: "Information", route: "/home" }],
     },
     { text: "Doctor & Staff", route: "/master/doctor-and-staffs" },
@@ -195,11 +204,15 @@ const MENU_ITEMS = {
   master: [
     { text: "Dashboard", route: "/dashboard" },
     {
-      text: "Patient",
+      text: "Patient Data",
       subMenu: [
         { text: "Patient Registration", route: "/enquiry-registration" },
         { text: "Patient Information", route: "/home" },
         { text: "Specialist Assessment", route: "/specialist-assessment" },
+        { text: "Patient History", route: "/patient-history" },
+        { text: "Assessment Summary", route: "/assessment-summary" },
+        { text: "Treatment & Diagnosis Summary", route: "/treatment-summary" },
+        { text: "Overall Patient Timeline", route: "/patient-timeline" },
         { text: "Patient Web Chat", route: "/patient-chat" },
         { text: "WhatsApp chat & call", route: "/whatsapp-chat" },
       ],
