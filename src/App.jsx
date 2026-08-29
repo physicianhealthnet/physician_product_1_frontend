@@ -97,6 +97,9 @@ const PatientSummaryWrapper = lazy(
 const UnderConstruction = lazy(
   () => import("./component/ui/UnderConstruction")
 );
+const AiScribePage = lazy(
+  () => import("./pages/general/aiScribe/AiScribePage")
+);
 
 // Protected Route Component to enforce authentication
 const ProtectedRoute = ({ children }) => {
@@ -177,6 +180,16 @@ const AppContent = () => {
               <PageTransition>
                 <DashboardWrapper />
               </PageTransition>
+            }
+          />
+          <Route
+            path="/ai-scribe"
+            element={
+              <ProtectedRoute>
+                <PageTransition>
+                  <AiScribePage />
+                </PageTransition>
+              </ProtectedRoute>
             }
           />
           <Route

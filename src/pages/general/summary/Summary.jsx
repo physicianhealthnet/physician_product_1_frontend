@@ -17,6 +17,7 @@ import Button from "../../../component/ui/Button";
 import SpecialistAssessmentSummary from "../assessment/SpecialistAssessmentSummary";
 import DentalAssessmentWrapper from "../assessment/DentalAssessmentWrapper";
 import PatientTimeline from "./PatientTimeline";
+import AiScribeModal from "../../../component/AiScribe/AiScribeModal";
 
 function Summary({ patientId, visibleSections, pageTitle, pageIcon }) {
   const page1Ref = useRef();
@@ -39,6 +40,7 @@ function Summary({ patientId, visibleSections, pageTitle, pageIcon }) {
   const [labDocs, setLabDocs] = useState([]);
   const [scanDocs, setScanDocs] = useState([]);
   const [bills, setBills] = useState([]);
+  const [isAiScribeModalOpen, setIsAiScribeModalOpen] = useState(false);
   
   const allAccordionKeys = [
     "patient_details", "doctors", "diagnosis", "reports"
@@ -258,15 +260,26 @@ function Summary({ patientId, visibleSections, pageTitle, pageIcon }) {
           <Icon icon={pageIcon || "solar:document-text-linear"} className="text-blue-500" />
           {"Specialist Assessment Summary"}
         </h1>
-        <Button
-          variant="primary"
-          disabled={loading}
-          onClick={() => downloadPDF()}
-          className="flex items-center gap-2"
-        >
-          <Icon icon="solar:printer-linear" width={20} />
-          Print / Download PDF
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            disabled={loading}
+            onClick={() => setIsAiScribeModalOpen(true)}
+            className="flex items-center gap-2 border-blue-500 text-blue-500 hover:bg-blue-50"
+          >
+            <Icon icon="solar:microphone-3-bold-duotone" width={20} />
+            AI Scribe
+          </Button>
+          <Button
+            variant="primary"
+            disabled={loading}
+            onClick={() => downloadPDF()}
+            className="flex items-center gap-2"
+          >
+            <Icon icon="solar:printer-linear" width={20} />
+            Print / Download PDF
+          </Button>
+        </div>
       </div>
 
       <div className="flex flex-col gap-8">
@@ -286,6 +299,11 @@ function Summary({ patientId, visibleSections, pageTitle, pageIcon }) {
               )}
             </div>
       </div>
+      <AiScribeModal 
+        isOpen={isAiScribeModalOpen} 
+        onClose={() => setIsAiScribeModalOpen(false)} 
+        patientId={patient_id} 
+      />
     </Card>
   );
 }

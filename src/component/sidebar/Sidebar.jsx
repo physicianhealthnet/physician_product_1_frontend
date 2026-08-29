@@ -51,6 +51,7 @@ const ICONS = {
   Identicards: "solar:card-2-linear",
   "Web Chat": "solar:chat-round-line-linear",
   "WhatsApp chat & call": "solar:phone-calling-rounded-linear",
+  "AI Scribe": "solar:microphone-3-bold-duotone",
 };
 
 const SidebarItem = ({
@@ -104,6 +105,7 @@ const SidebarItem = ({
 const MENU_ITEMS = {
   receptionist: [
     { text: "Dashboard", route: "/dashboard" },
+    { text: "AI Scribe", route: "/ai-scribe" },
     {
       text: "Patient Data",
       subMenu: [
@@ -131,6 +133,7 @@ const MENU_ITEMS = {
 
   doctor: [
     { text: "Dashboard", route: "/dashboard" },
+    { text: "AI Scribe", route: "/ai-scribe" },
     { text: "Appointment", route: "/book-appointment" },
     {
       text: "Patient Data",
@@ -203,6 +206,7 @@ const MENU_ITEMS = {
 
   master: [
     { text: "Dashboard", route: "/dashboard" },
+    { text: "AI Scribe", route: "/ai-scribe" },
     {
       text: "Patient Data",
       subMenu: [
