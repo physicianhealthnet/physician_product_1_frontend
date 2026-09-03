@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { JitsiMeeting } from "@jitsi/react-sdk";
 import { Icon } from "@iconify/react";
-import { DatePicker, TimePicker, AutoComplete, Input, message, Tooltip } from "antd";
+import { DatePicker, TimePicker, AutoComplete, Input, message, Tooltip, Modal, Spin, Button as AntButton, Form } from "antd";
 import dayjs from "dayjs";
 import { AxiosInstance, AxiosInstanceDependency } from "../../../utilities/AxiosInstance";
 import Button from "../../../component/ui/Button";
@@ -56,6 +56,17 @@ const VideoConsult = () => {
   const [copied, setCopied] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
+  // Live Transcript states
+  const [liveTranscript, setLiveTranscript] = useState([]);
+  const recognitionRef = useRef(null);
+  const jitsiApiRef = useRef(null);
+  
+  // Scribe AI states
+  const [isScribing, setIsScribing] = useState(false);
+  const [scribeResult, setScribeResult] = useState("");
+  const [isScribeModalOpen, setIsScribeModalOpen] = useState(false);
+  const [scribeForm] = Form.useForm();
+  const [isSubmittingClinicalNote, setIsSubmittingClinicalNote] = useState(false);
   // Scheduled Meetings states
   const [meetings, setMeetings] = useState([]);
   const [loadingMeetings, setLoadingMeetings] = useState(false);
@@ -104,6 +115,81 @@ const VideoConsult = () => {
     }
   };
 
+  const handleSubmitClinicalNote = async (values) => {
+    setIsSubmittingClinicalNote(true);
+    try {
+      await AxiosInstance.post("/consultation/clinical-notes", {
+        roomName,
+        transcript: liveTranscript.map(t => `${t.sender}: ${t.text}`).join('\n'),
+        chiefComplaint: values.chiefComplaint,
+        treatmentPlan: values.treatmentPlan,
+        summary: values.summary,
+      });
+      message.success("Clinical note verified and saved successfully!");
+      setIsScribeModalOpen(false);
+    } catch (error) {
+      console.error("Failed to submit clinical note:", error);
+      message.error("Failed to save clinical note.");
+    } finally {
+      setIsSubmittingClinicalNote(false);
+    }
+  };
+
+  const ScribeModals = () => (
+    <>
+      <Modal
+        title={
+          <div className="flex items-center gap-2 text-blue-600">
+            <Icon icon="solar:document-text-bold-duotone" className="text-xl" />
+            <span className="font-bold">Verify Clinical Notes</span>
+          </div>
+        }
+        open={isScribeModalOpen}
+        onCancel={() => setIsScribeModalOpen(false)}
+        footer={[
+          <AntButton key="close" onClick={() => setIsScribeModalOpen(false)}>
+            Cancel
+          </AntButton>,
+          <AntButton
+            key="submit"
+            type="primary"
+            loading={isSubmittingClinicalNote}
+            onClick={() => scribeForm.submit()}
+          >
+            Submit Verified Data
+          </AntButton>,
+        ]}
+        width={700}
+      >
+        <div className="p-4 bg-slate-50 rounded-lg text-sm text-slate-700 border border-slate-200 max-h-[70vh] overflow-y-auto">
+          <Form
+            form={scribeForm}
+            layout="vertical"
+            onFinish={handleSubmitClinicalNote}
+          >
+            <Form.Item label="Chief Complaint" name="chiefComplaint">
+              <Input.TextArea rows={4} placeholder="Enter chief complaint..." />
+            </Form.Item>
+            <Form.Item label="Treatment Plan" name="treatmentPlan">
+              <Input.TextArea rows={4} placeholder="Enter treatment plan..." />
+            </Form.Item>
+            <Form.Item label="Summary / Raw AI Output" name="summary">
+              <Input.TextArea rows={6} placeholder="Summary..." />
+            </Form.Item>
+          </Form>
+        </div>
+      </Modal>
+
+      <Modal open={isScribing} footer={null} closable={false} centered>
+         <div className="flex flex-col items-center justify-center p-8 text-center gap-4">
+            <Spin size="large" />
+            <h3 className="text-lg font-bold text-slate-800 m-0">AI Scribe is analyzing the consultation...</h3>
+            <p className="text-sm text-slate-500 m-0">This may take a few moments. Please don't close this window.</p>
+         </div>
+      </Modal>
+    </>
+  );
+
   useEffect(() => {
     fetchMeetings();
   }, [doctorId]);
@@ -120,6 +206,115 @@ const VideoConsult = () => {
     }
   }, [location.state]);
 
+  useEffect(() => {
+    let reco = null;
+    let isActive = true;
+    let isRecording = false;
+    let restartTimer = null;
+    let startDelayTimer = null;
+    let lastTranscript = "";
+    let lastTranscriptTime = 0;
+
+    if (meetingStarted) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        reco = new SpeechRecognition();
+        reco.continuous = true;
+        reco.interimResults = false;
+        
+        reco.onstart = () => {
+          isRecording = true;
+        };
+        
+        reco.onresult = (event) => {
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            if (event.results[i].isFinal) {
+              let text = event.results[i][0].transcript.trim();
+              if (!text) continue;
+              
+              // Android Chrome duplicate prevention
+              const now = Date.now();
+              if (text === lastTranscript && (now - lastTranscriptTime) < 2000) {
+                 continue; // Skip exact duplicate within 2 seconds
+              }
+              lastTranscript = text;
+              lastTranscriptTime = now;
+
+              const newMessage = {
+                sender: doctorName,
+                text: text,
+                timestamp: new Date().toISOString()
+              };
+              
+              setLiveTranscript(prev => [...prev, newMessage]);
+              
+              if (jitsiApiRef.current) {
+                try {
+                  jitsiApiRef.current.executeCommand('sendEndpointTextMessage', '', JSON.stringify({ type: 'transcript', ...newMessage }));
+                } catch (e) {
+                  console.error("Failed to send transcript via Jitsi", e);
+                }
+              }
+            }
+          }
+        };
+        
+        reco.onerror = (err) => {
+          console.log('Speech recognition error on Android:', err.error);
+          if (err.error === 'not-allowed' || err.error === 'audio-capture') {
+            message.error(`Microphone access issue: ${err.error}. Live Transcript stopped.`);
+            isActive = false; // Stop trying to restart if totally denied
+          }
+          isRecording = false;
+        };
+
+        reco.onend = () => {
+          isRecording = false;
+          if (isActive && recognitionRef.current) {
+            // Clear any pending restart
+            if (restartTimer) clearTimeout(restartTimer);
+            
+            // Android Chrome needs a slight delay before restarting to prevent rapid loop crashes
+            restartTimer = setTimeout(() => {
+              if (!isActive || isRecording) return;
+              try {
+                reco.start();
+              } catch (e) {
+                console.error("Failed to restart speech recognition", e);
+                // If DOMException: recognition has already started, update state
+                isRecording = true;
+              }
+            }, 800); 
+          }
+        };
+        
+        const startReco = () => {
+          if (!isActive || isRecording) return;
+          try {
+            reco.start();
+            recognitionRef.current = reco;
+          } catch (e) {
+            console.error("Failed to start speech recognition initially", e);
+          }
+        };
+        
+        // Wait 3.5 seconds to let Jitsi acquire the microphone fully first to prevent hardware conflicts
+        startDelayTimer = setTimeout(startReco, 3500);
+      } else {
+         console.warn("Speech recognition not supported in this browser.");
+         message.warning("Live transcript is not supported in this browser. Please use Chrome.");
+      }
+    }
+
+    return () => {
+      isActive = false;
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+        recognitionRef.current = null;
+      }
+    };
+  }, [meetingStarted, doctorName]);
+
   const handleStartMeet = async (customRoomName = null) => {
     let targetRoom = customRoomName || roomName;
 
@@ -129,11 +324,88 @@ const VideoConsult = () => {
 
     setRoomName(targetRoom);
     setMeetingStarted(true);
+
+    try {
+      await AxiosInstance.post("/jitsi/start", { roomName: targetRoom });
+      message.success("Auto-recording started.");
+    } catch (error) {
+      console.error("Failed to start recording bot:", error);
+      const serverError = error.response?.data?.error || error.response?.data?.message || "Failed to start auto-recording.";
+      message.error(`Error: ${serverError}`);
+    }
   };
 
-  const handleEndMeet = () => {
+  const handleEndMeet = async () => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+    }
+
+    try {
+      if (liveTranscript.length > 0) {
+        await AxiosInstance.post("/jitsi/transcript", { roomName, transcript: liveTranscript });
+        message.success("Transcript saved locally.");
+
+        const combinedTranscriptText = liveTranscript.map(t => `${t.sender}: ${t.text}`).join('\n');
+        setIsScribing(true);
+        try {
+          const scribeRes = await fetch("https://physicianhealthnet.com/api/scribe", {
+             method: "POST",
+             headers: {
+                "Content-Type": "application/json",
+                "x-api-key": "bd4037edf73e2270c9f59f1a9513952d6f023d7a12e741e4046a304dd2e93fc2",
+             },
+             body: JSON.stringify({
+                patientId: formData.patientId || "Unknown",
+                encounterId: roomName,
+                transcript: combinedTranscriptText
+             })
+          });
+          const scribeData = await scribeRes.json();
+          console.log("Scribe AI Result: ", scribeData);
+          if (scribeRes.ok) {
+             const resultText = scribeData.result || JSON.stringify(scribeData, null, 2);
+             setScribeResult(resultText);
+             
+             // Very basic parsing heuristic for testing if it's text
+             let parsedCC = "";
+             let parsedTP = "";
+             let parsedSummary = resultText;
+             
+             if (typeof resultText === "string") {
+               const ccMatch = resultText.match(/chief complaint[:\s]+([^]*?)(?=treatment plan[:\s]+|summary[:\s]+|diagnosis[:\s]+|assessment[:\s]+|$)/i);
+               if (ccMatch) parsedCC = ccMatch[1].trim();
+
+               const tpMatch = resultText.match(/treatment plan[:\s]+([^]*?)(?=chief complaint[:\s]+|summary[:\s]+|diagnosis[:\s]+|assessment[:\s]+|$)/i);
+               if (tpMatch) parsedTP = tpMatch[1].trim();
+             }
+
+             scribeForm.setFieldsValue({
+               chiefComplaint: parsedCC,
+               treatmentPlan: parsedTP,
+               summary: parsedSummary,
+             });
+
+             setIsScribeModalOpen(true);
+             message.success("AI Scribe processing complete! Please verify.");
+          } else {
+             message.error("AI Scribe returned an error.");
+          }
+        } catch(e) {
+          console.error("AI Scribe error", e);
+          message.error("Failed to process with AI Scribe.");
+        } finally {
+          setIsScribing(false);
+        }
+      }
+      await AxiosInstance.post("/jitsi/stop", { roomName });
+      message.success("Recording stopped and saved.");
+    } catch (err) {
+      console.error("Failed to stop recording bot or save transcript:", err);
+    }
+
     setMeetingStarted(false);
     setRoomName("");
+    setLiveTranscript([]);
   };
 
   const handleCopyLink = () => {
@@ -365,7 +637,13 @@ const VideoConsult = () => {
               <Icon icon="solar:videocamera-record-linear" className="text-xl animate-pulse" />
             </div>
             <div>
-              <h1 className="text-base font-bold text-white mb-0">Active Consultation</h1>
+              <div className="flex items-center gap-2">
+                <h1 className="text-base font-bold text-white mb-0">Active Consultation</h1>
+                <span className="bg-red-500/20 text-red-400 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 border border-red-500/30">
+                  <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></div>
+                  Recording Active
+                </span>
+              </div>
               <p className="text-xs text-slate-400">Room: {roomName}</p>
             </div>
           </div>
@@ -394,40 +672,79 @@ const VideoConsult = () => {
             </Button>
           </div>
         </div>
-        {/* Jitsi Call Frame */}
-        <div className="w-full h-[650px] bg-slate-950 rounded-b-2xl overflow-hidden shadow-2xl border border-slate-900">
-          <JitsiMeeting
-            domain="alpha.jitsi.net"
-            roomName={roomName}
-            configOverwrite={{
-              startWithAudioMuted: false,
-              startWithVideoMuted: false,
-              disableModeratorIndicator: true,
-              prejoinPageEnabled: false,
-            }}
-            interfaceConfigOverwrite={{
-              DISABLE_JOIN_LEAVE_NOTIFICATIONS: true,
-            }}
-            userInfo={{
-              displayName: doctorName,
-            }}
-            onApiReady={(externalApi) => {
-              externalApi.addListener("videoConferenceLeft", () => {
-                handleEndMeet();
-              });
-            }}
-            getIFrameRef={(iframeRef) => {
-              iframeRef.style.height = "100%";
-              iframeRef.style.width = "100%";
-              iframeRef.style.border = "none";
-            }}
-          />
+        {/* Jitsi Call Frame & Transcript */}
+        <div className="w-full h-[650px] bg-slate-950 rounded-b-2xl overflow-hidden shadow-2xl border border-slate-900 flex flex-col md:flex-row">
+          <div className="flex-1 h-full">
+            <JitsiMeeting
+              domain="alpha.jitsi.net"
+              roomName={roomName}
+              configOverwrite={{
+                startWithAudioMuted: false,
+                startWithVideoMuted: false,
+                disableModeratorIndicator: true,
+                prejoinPageEnabled: false,
+              }}
+              interfaceConfigOverwrite={{
+                DISABLE_JOIN_LEAVE_NOTIFICATIONS: true,
+              }}
+              userInfo={{
+                displayName: doctorName,
+              }}
+              onApiReady={(externalApi) => {
+                jitsiApiRef.current = externalApi;
+                externalApi.addListener("videoConferenceLeft", () => {
+                  handleEndMeet();
+                });
+                externalApi.addListener("endpointTextMessageReceived", (event) => {
+                  try {
+                    const data = JSON.parse(event.eventData.text);
+                    if (data && data.type === 'transcript') {
+                      setLiveTranscript(prev => [...prev, data]);
+                    }
+                  } catch (e) {
+                    // Ignore parsing errors
+                  }
+                });
+              }}
+              getIFrameRef={(iframeRef) => {
+                iframeRef.style.height = "100%";
+                iframeRef.style.width = "100%";
+                iframeRef.style.border = "none";
+              }}
+            />
+          </div>
+          {/* Live Transcript Panel */}
+          <div className="w-full md:w-80 h-64 md:h-full bg-slate-900 border-t md:border-t-0 md:border-l border-slate-800 p-4 flex flex-col">
+            <div className="flex items-center gap-2 mb-4 border-b border-slate-800 pb-2">
+              <Icon icon="solar:chat-line-linear" className="text-emerald-400 text-xl" />
+              <h3 className="text-white text-sm font-bold m-0">Live Transcript</h3>
+            </div>
+            <div className="flex-1 overflow-y-auto flex flex-col gap-3 custom-scrollbar pr-2">
+              {liveTranscript.length === 0 ? (
+                <div className="text-slate-500 text-xs text-center mt-10 italic">
+                  Waiting for speech...
+                </div>
+              ) : (
+                liveTranscript.map((msg, idx) => (
+                  <div key={idx} className="bg-slate-800/50 rounded-xl p-3 border border-slate-700/50">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-xs font-bold text-blue-400">{msg.sender}</span>
+                      <span className="text-[10px] text-slate-500">{new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                    </div>
+                    <p className="text-xs text-slate-200 m-0">{msg.text}</p>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
         </div>
+        <ScribeModals />
       </div>
     );
   }
 
   return (
+    <>
     <StaggerContainer>
       <div className="p-4 md:p-8 flex flex-col gap-8">
         {/* Header Section */}
@@ -1083,6 +1400,8 @@ const VideoConsult = () => {
         )}
       </div>
     </StaggerContainer>
+    <ScribeModals />
+    </>
   );
 };
 

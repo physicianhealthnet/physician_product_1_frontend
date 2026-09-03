@@ -17,6 +17,12 @@ const AiScribePage = () => {
   const [patientId, setPatientId] = useState("");
   
   const recognitionRef = useRef(null);
+  const baseTranscriptRef = useRef("");
+  const latestTranscriptRef = useRef("");
+
+  useEffect(() => {
+    latestTranscriptRef.current = transcript;
+  }, [transcript]);
 
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -24,22 +30,35 @@ const AiScribePage = () => {
       const recognition = new SpeechRecognition();
       recognition.continuous = true;
       recognition.interimResults = true;
+
+      recognition.onstart = () => console.log("[SpeechRecognition] onstart - Microphone is active");
+      recognition.onaudiostart = () => console.log("[SpeechRecognition] onaudiostart - Audio capturing started");
+      recognition.onsoundstart = () => console.log("[SpeechRecognition] onsoundstart - Sound detected");
+      recognition.onspeechstart = () => console.log("[SpeechRecognition] onspeechstart - Speech detected");
       
       recognition.onresult = (event) => {
-        let currentTranscript = "";
+        console.log("[SpeechRecognition] onresult - Data received", event.results);
+        let currentSessionTranscript = "";
         for (let i = 0; i < event.results.length; i++) {
-          currentTranscript += event.results[i][0].transcript;
+          currentSessionTranscript += event.results[i][0].transcript;
         }
-        setTranscript(currentTranscript);
+        let prefix = baseTranscriptRef.current;
+        if (prefix && !prefix.endsWith(" ") && currentSessionTranscript && !currentSessionTranscript.startsWith(" ")) {
+            prefix += " ";
+        }
+        setTranscript(prefix + currentSessionTranscript);
       };
 
       recognition.onerror = (event) => {
         console.error("Speech recognition error", event.error);
-        message.error("Speech recognition error: " + event.error);
+        if (event.error !== "no-speech") {
+          message.error("Speech recognition error: " + event.error);
+        }
         setIsRecording(false);
       };
 
       recognition.onend = () => {
+        console.log("[SpeechRecognition] onend - Recording session ended");
         setIsRecording(false);
       };
 
@@ -61,10 +80,10 @@ const AiScribePage = () => {
       setIsRecording(false);
     } else {
       if (recognitionRef.current) {
+        baseTranscriptRef.current = latestTranscriptRef.current;
         recognitionRef.current.lang = language;
         recognitionRef.current.start();
         setIsRecording(true);
-        setTranscript("");
         setTranslatedText("");
       }
     }
