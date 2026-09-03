@@ -121,9 +121,7 @@ const VideoConsult = () => {
       await AxiosInstance.post("/consultation/clinical-notes", {
         roomName,
         transcript: liveTranscript.map(t => `${t.sender}: ${t.text}`).join('\n'),
-        chiefComplaint: values.chiefComplaint,
-        treatmentPlan: values.treatmentPlan,
-        summary: values.summary,
+        ...values
       });
       message.success("Clinical note verified and saved successfully!");
       setIsScribeModalOpen(false);
@@ -167,14 +165,35 @@ const VideoConsult = () => {
             layout="vertical"
             onFinish={handleSubmitClinicalNote}
           >
-            <Form.Item label="Chief Complaint" name="chiefComplaint">
-              <Input.TextArea rows={4} placeholder="Enter chief complaint..." />
+            <Form.Item label="Patient Problem (Chief Complaint)" name="chiefComplaint">
+              <Input.TextArea rows={2} placeholder="Enter chief complaint..." />
+            </Form.Item>
+            <Form.Item label="Duration" name="duration">
+              <Input placeholder="E.g., 2 weeks, 3 days..." />
+            </Form.Item>
+            <Form.Item label="History" name="history">
+              <Input.TextArea rows={2} placeholder="Enter history..." />
+            </Form.Item>
+            <Form.Item label="Examination Findings" name="examinationFindings">
+              <Input.TextArea rows={2} placeholder="Enter examination findings..." />
+            </Form.Item>
+            <Form.Item label="Assessment" name="assessment">
+              <Input.TextArea rows={2} placeholder="Enter assessment..." />
+            </Form.Item>
+            <Form.Item label="Diagnosis" name="diagnosis">
+              <Input.TextArea rows={2} placeholder="Enter diagnosis..." />
             </Form.Item>
             <Form.Item label="Treatment Plan" name="treatmentPlan">
-              <Input.TextArea rows={4} placeholder="Enter treatment plan..." />
+              <Input.TextArea rows={3} placeholder="Enter treatment plan..." />
+            </Form.Item>
+            <Form.Item label="Home Exercise Program" name="homeExerciseProgram">
+              <Input.TextArea rows={2} placeholder="Enter home exercise program..." />
+            </Form.Item>
+            <Form.Item label="Follow Up" name="followUp">
+              <Input placeholder="E.g., 1 week, 1 month..." />
             </Form.Item>
             <Form.Item label="Summary / Raw AI Output" name="summary">
-              <Input.TextArea rows={6} placeholder="Summary..." />
+              <Input.TextArea rows={4} placeholder="Summary..." />
             </Form.Item>
           </Form>
         </div>
@@ -366,23 +385,38 @@ const VideoConsult = () => {
              const resultText = scribeData.result || JSON.stringify(scribeData, null, 2);
              setScribeResult(resultText);
              
-             // Very basic parsing heuristic for testing if it's text
-             let parsedCC = "";
-             let parsedTP = "";
-             let parsedSummary = resultText;
-             
-             if (typeof resultText === "string") {
-               const ccMatch = resultText.match(/chief complaint[:\s]+([^]*?)(?=treatment plan[:\s]+|summary[:\s]+|diagnosis[:\s]+|assessment[:\s]+|$)/i);
-               if (ccMatch) parsedCC = ccMatch[1].trim();
-
-               const tpMatch = resultText.match(/treatment plan[:\s]+([^]*?)(?=chief complaint[:\s]+|summary[:\s]+|diagnosis[:\s]+|assessment[:\s]+|$)/i);
-               if (tpMatch) parsedTP = tpMatch[1].trim();
+             // Parse JSON if AI scribe returned it, otherwise fallback
+             let parsedData = {};
+             try {
+                if (typeof scribeData === 'object' && scribeData !== null && !scribeData.result) {
+                    parsedData = scribeData;
+                } else if (typeof resultText === 'string') {
+                    const jsonMatch = resultText.match(/\{[\s\S]*\}/);
+                    if (jsonMatch) {
+                        parsedData = JSON.parse(jsonMatch[0]);
+                    }
+                }
+             } catch(e) {
+                console.log("Could not parse AI response as JSON", e);
              }
 
+             // Map keys intelligently (case insensitive)
+             const getVal = (keys) => {
+                 const foundKey = Object.keys(parsedData).find(k => keys.some(key => k.toLowerCase().includes(key)));
+                 return foundKey ? parsedData[foundKey] : "";
+             };
+
              scribeForm.setFieldsValue({
-               chiefComplaint: parsedCC,
-               treatmentPlan: parsedTP,
-               summary: parsedSummary,
+               chiefComplaint: getVal(['chief complaint', 'problem', 'issue']) || parsedData.chiefComplaint || parsedData.patientProblem || "",
+               duration: getVal(['duration', 'time']) || parsedData.duration || "",
+               history: getVal(['history']) || parsedData.history || "",
+               examinationFindings: getVal(['examination', 'finding']) || parsedData.examinationFindings || "",
+               assessment: getVal(['assessment']) || parsedData.assessment || "",
+               diagnosis: getVal(['diagnosis']) || parsedData.diagnosis || "",
+               treatmentPlan: getVal(['treatment', 'plan']) || parsedData.treatmentPlan || "",
+               homeExerciseProgram: getVal(['exercise', 'home']) || parsedData.homeExerciseProgram || "",
+               followUp: getVal(['follow up', 'followup']) || parsedData.followUp || "",
+               summary: getVal(['summary']) || parsedData.summary || resultText,
              });
 
              setIsScribeModalOpen(true);
